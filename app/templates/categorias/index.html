@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block titulo %}Categorías{% endblock %}
+
+{% block page_title %}Categorías{% endblock %}
+
+{% block page_sub %}
+Gestión de categorías de joyas
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <div class="card-header">
+        <div class="card-title">
+            Listado de categorías
+        </div>
+
+        <a href="{{ url_for('categoria.crear') }}" class="btn btn-primary">
+            Nueva Categoría
+        </a>
+    </div>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Categoría</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for categoria in categorias %}
+
+            <tr>
+
+                <td>{{ categoria.id_categoria }}</td>
+
+                <td>{{ categoria.nombre_categoria }}</td>
+
+                <td>
+
+                    <a href="{{ url_for('categoria.editar', id_categoria=categoria.id_categoria) }}">
+                        Editar
+                    </a>
+
+                    <a href="{{ url_for('categoria.eliminar', id_categoria=categoria.id_categoria) }}"
+                       onclick="return confirm('¿Eliminar categoría?')">
+                        Eliminar
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
