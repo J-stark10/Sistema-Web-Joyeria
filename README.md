@@ -1,5 +1,8 @@
 # Configuración Inicial del Proyecto
 
+## 0. Si estas en linux
+`python3` en ves de `python`
+
 ## 1. Clonar el repositorio
 
 ```bash
@@ -86,7 +89,7 @@ flask db upgrade
 Ejecutar:
 
 ```bash
-python create_admin.py
+python crear_admin.py
 ```
 
 Datos sugeridos:
