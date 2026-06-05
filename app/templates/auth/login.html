@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar sesión — Joyería El Illimani</title>
+
+  <!-- Theme script ANTES del CSS para evitar flash de tema incorrecto -->
+  <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+
+  <style>
+    /* ── Layout login: pantalla completa centrada ── */
+    body {
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+      background: var(--bg-page);
+    }
+
+    .login-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 440px;
+      width: 900px;
+      max-width: 96vw;
+      min-height: 540px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 0.5px solid var(--border);
+    }
+
+    /* ── Panel izquierdo — decorativo ── */
+    .login-left {
+      background: var(--gold-600);
+      padding: 48px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    [data-theme="dark"] .login-left { background: #3A2506; }
+
+    .login-left::before {
+      content: '◆';
+      position: absolute;
+      font-size: 260px;
+      right: -60px;
+      bottom: -40px;
+      color: rgba(255,255,255,0.06);
+      font-family: var(--font-serif);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .left-brand {
+      font-family: var(--font-serif);
+      color: var(--gold-50);
+    }
+    .left-brand-gem  { font-size: 28px; font-weight: 600; letter-spacing: 0.02em; }
+    .left-brand-sub  { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.7; margin-top: 4px; }
+
+    .left-copy { color: var(--gold-50); }
+    .left-copy-title {
+      font-family: var(--font-serif);
+      font-size: 26px;
+      font-weight: 500;
+      line-height: 1.3;
+      margin-bottom: 12px;
+      opacity: 0.95;
+    }
+    .left-copy-desc {
+      font-size: 13px;
+      line-height: 1.7;
+      opacity: 0.7;
+    }
+
+    .left-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 20px; }
+    .left-pill {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.12);
+      color: var(--gold-50);
+      border: 0.5px solid rgba(255,255,255,0.2);
+    }
+
+    /* ── Panel derecho — formulario ── */
+    .login-right {
+      background: var(--bg-card);
+      padding: 48px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .login-heading {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .login-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+
+    /* ── Formulario ── */
+    .form-group { margin-bottom: 18px; }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      letter-spacing: 0.03em;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      background: var(--bg-page);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .form-input::placeholder { color: var(--text-muted); }
+
+    .form-input:focus {
+      border-color: var(--gold-400);
+      box-shadow: 0 0 0 3px rgba(239,159,39,0.12);
+    }
+
+    .form-input.is-invalid {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+    }
+
+    .form-error {
+      font-size: 11px;
+      color: #ef4444;
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Input con icono de ojo (contraseña) */
+    .input-wrap { position: relative; }
+    .input-wrap .form-input { padding-right: 42px; }
+    .eye-btn {
+      position: absolute;
+      right: 12px; top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 16px;
+      line-height: 1;
+      padding: 2px;
+      transition: color 0.15s;
+    }
+    .eye-btn:hover { color: var(--text-primary); }
+
+    /* ── Recordarme ── */
+    .form-check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .form-check input[type="checkbox"] {
+      width: 15px; height: 15px;
+      accent-color: var(--gold-400);
+      cursor: pointer;
+    }
+    .form-check label { font-size: 13px; color: var(--text-secondary); cursor: pointer; }
+
+    /* ── Botón principal ── */
+    .btn-login {
+      width: 100%;
+      padding: 11px;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: var(--font-body);
+      color: #fff;
+      background: var(--gold-600);
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      letter-spacing: 0.02em;
+    }
+    .btn-login:hover   { background: var(--gold-400); }
+    .btn-login:active  { transform: scale(0.98); }
+
+    /* ── Footer del formulario ── */
+    .login-footer {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 0.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .login-footer-note { font-size: 11px; color: var(--text-muted); }
+
+    /* ── Flash en login (inline, no fixed) ── */
+    .login-alert {
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      margin-bottom: 20px;
+      border: 0.5px solid transparent;
+    }
+    .login-alert-danger  { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+    .login-alert-success { background: var(--teal-50); color: var(--teal-600); border-color: var(--teal-100); }
+    .login-alert-warning { background: #fef9c3; color: #a16207; border-color: #fde047; }
+    .login-alert-info    { background: #dbeafe; color: #1e40af; border-color: #93c5fd; }
+
+    [data-theme="dark"] .login-alert-danger  { background: rgba(239,68,68,0.12);   color: #fca5a5; border-color: rgba(239,68,68,0.25); }
+    [data-theme="dark"] .login-alert-success { background: rgba(29,158,117,0.12); color: var(--teal-100); border-color: rgba(29,158,117,0.25); }
+    [data-theme="dark"] .login-alert-warning { background: rgba(234,179,8,0.10);  color: #fbbf24; border-color: rgba(234,179,8,0.2); }
+    [data-theme="dark"] .login-alert-info    { background: rgba(59,130,246,0.1);  color: #93c5fd; border-color: rgba(59,130,246,0.2); }
+
+    /* ── Seguridad nota ── */
+    .security-note {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    /* ── Theme toggle en login ── */
+    .login-theme-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+    }
+
+    @media (max-width: 700px) {
+      .login-wrapper       { grid-template-columns: 1fr; width: 96vw; }
+      .login-left          { display: none; }
+      .login-right         { padding: 36px 28px; }
+      .login-theme-btn     { top: 14px; right: 14px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Toggle tema (fixed, esquina superior derecha) -->
+  <div class="login-theme-btn">
+    <div class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema" role="button" aria-label="Cambiar tema"></div>
+  </div>
+
+  <!-- Flash messages del servidor -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div style="position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;min-width:300px;">
+        {% for category, message in messages %}
+          <div class="login-alert login-alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="login-wrapper">
+
+    <!-- ══ Panel izquierdo ══ -->
+    <div class="login-left">
+      <div class="left-brand">
+        <div class="left-brand-gem">◆ El Illimani</div>
+        <div class="left-brand-sub">Joyería Artesanal · La Paz, Bolivia</div>
+      </div>
+
+      <div class="left-copy">
+        <div class="left-copy-title">
+          Control de<br>compra y venta<br>en un solo lugar.
+        </div>
+        <div class="left-copy-desc">
+          Sistema web para gestionar ventas, compras,
+          inventario de joyas en plata, oro y piedras
+          semipreciosas bolivianas.
+        </div>
+        <div class="left-pills">
+          <span class="left-pill">Plata 950</span>
+          <span class="left-pill">Plata 925</span>
+          <span class="left-pill">Oro 14K</span>
+          <span class="left-pill">Oro 18K</span>
+          <span class="left-pill">Bolivianita</span>
+          <span class="left-pill">Amatista</span>
+        </div>
+      </div>
+
+      <div style="font-size:11px; color:rgba(250,238,218,0.5);">
+        Universidad Pública de El Alto · Ingeniería de Sistemas I · 2026
+      </div>
+    </div>
+
+    <!-- ══ Panel derecho — Formulario ══ -->
+    <div class="login-right">
+
+      <div class="login-heading">Iniciar sesión</div>
+      <div class="login-sub">Ingresa tus credenciales para continuar</div>
+
+      <!-- Errores inline del formulario (WTForms) -->
+      {% if form.errors %}
+        <div class="login-alert login-alert-danger">
+          {% for field, errors in form.errors.items() %}
+            {% for error in errors %}{{ error }} {% endfor %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <form method="POST" action="{{ url_for('auth.login') }}" novalidate>
+        {{ form.hidden_tag() }}
+
+        <!-- Campo usuario -->
+        <div class="form-group">
+          <label class="form-label" for="nombre_usuario">Usuario</label>
+          <input
+            class="form-input {% if form.nombre_usuario.errors %}is-invalid{% endif %}"
+            type="text"
+            id="nombre_usuario"
+            name="nombre_usuario"
+            value="{{ form.nombre_usuario.data or '' }}"
+            placeholder="Ingresa tu usuario"
+            autocomplete="username"
+            autofocus
+          >
+          {% for error in form.nombre_usuario.errors %}
+            <div class="form-error">⚠ {{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Campo contraseña -->
+        <div class="form-group">
+          <label class="form-label" for="contrasena">Contraseña</label>
+          <div class="input-wrap">
+            <input
+              class="form-input {% if form.contrasena.errors %}is-invalid{% endif %}"
+              type="password"
+              id="contrasena"
+              name="contrasena"
+              placeholder="••••••••"
+              autocomplete="current-password"
+            >
+            <button type="button" class="eye-btn" onclick="togglePassword()" aria-label="Mostrar/ocultar contraseña">
+              👁
+            </button>
+          </div>
+          {% for error in form.contrasena.errors %}
+            <div class="form-error">⚠ {{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Recordarme -->
+        <div class="form-check">
+          <input type="checkbox" id="recordarme" name="recordarme">
+          <label for="recordarme">Recordarme en este dispositivo</label>
+        </div>
+
+        <!-- Botón submit -->
+        <button type="submit" class="btn-login">
+          Iniciar sesión →
+        </button>
+
+      </form>
+
+      <!-- Footer con nota de seguridad -->
+      <div class="login-footer">
+        <span class="login-footer-note">Joyería «El Illimani» · La Paz, 2026</span>
+      </div>
+
+      <div class="security-note">
+        🔒 Sesión protegida · Cierre automático tras 30 min de inactividad
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function togglePassword() {
+      const input = document.getElementById('contrasena');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,174 @@
+/* ═══════════════════════════════════════════
+   Joyería El Illimani — Theme CSS
+   Sistema Web Control Compra-Venta 2026
+   ═══════════════════════════════════════════ */
+
+/* ── Fuentes ── */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap');
+
+/* ── Variables Light Mode ── */
+:root {
+  /* Paleta dorada (oro) */
+  --gold-50:  #FAEEDA;
+  --gold-100: #FAC775;
+  --gold-400: #EF9F27;
+  --gold-600: #BA7517;
+  --gold-900: #633806;
+
+  /* Paleta plata (neutros) */
+  --silver-50:  #F1EFE8;
+  --silver-100: #D3D1C7;
+  --silver-400: #888780;
+  --silver-600: #5F5E5A;
+  --silver-900: #2C2C2A;
+
+  /* Paleta teal (piedras) */
+  --teal-50:  #E1F5EE;
+  --teal-100: #9FE1CB;
+  --teal-400: #1D9E75;
+  --teal-600: #0F6E56;
+  --teal-900: #04342C;
+
+  /* Semánticos */
+  --color-success:  #22c55e;
+  --color-danger:   #ef4444;
+  --color-warning:  #f59e0b;
+  --color-info:     #3b82f6;
+
+  /* Superficies */
+  --bg-page:    #F5F3EC;
+  --bg-card:    #FFFFFF;
+  --bg-sidebar: #FFFFFF;
+
+  /* Texto */
+  --text-primary:   #1C1A15;
+  --text-secondary: #5F5E5A;
+  --text-muted:     #888780;
+
+  /* Bordes */
+  --border:       rgba(136,135,128,0.2);
+  --border-hover: rgba(186,117,23,0.4);
+
+  /* Layout */
+  --sidebar-w:    240px;
+  --topbar-h:     56px;
+  --radius-sm:    6px;
+  --radius-md:    10px;
+  --radius-lg:    14px;
+
+  /* Tipografía */
+  --font-body:  'DM Sans', sans-serif;
+  --font-serif: 'Cormorant Garamond', serif;
+}
+
+/* ── Variables Dark Mode ── */
+[data-theme="dark"] {
+  --bg-page:    #1A1813;
+  --bg-card:    #232018;
+  --bg-sidebar: #1C1A14;
+
+  --text-primary:   #F5F0E8;
+  --text-secondary: #B4B2A9;
+  --text-muted:     #888780;
+
+  --border:       rgba(255,255,255,0.07);
+  --border-hover: rgba(239,159,39,0.3);
+}
+
+/* ── Reset base ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { font-size: 16px; }
+
+body {
+  font-family: var(--font-body);
+  background:  var(--bg-page);
+  color:       var(--text-primary);
+  transition:  background 0.3s, color 0.3s;
+  line-height: 1.5;
+}
+
+a { text-decoration: none; color: inherit; }
+
+/* ── Utilidades badges ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+}
+.badge-success { background: var(--teal-50);   color: var(--teal-600); }
+.badge-warning { background: #fef9c3;           color: #a16207; }
+.badge-danger  { background: #fee2e2;           color: #991b1b; }
+.badge-gold    { background: var(--gold-50);    color: var(--gold-600); }
+.badge-silver  { background: var(--silver-50);  color: var(--silver-600); }
+
+[data-theme="dark"] .badge-success { background: rgba(29,158,117,0.15); color: var(--teal-100); }
+[data-theme="dark"] .badge-warning { background: rgba(234,179,8,0.12);  color: #fbbf24; }
+[data-theme="dark"] .badge-danger  { background: rgba(239,68,68,0.12);  color: #fca5a5; }
+[data-theme="dark"] .badge-gold    { background: rgba(239,159,39,0.12); color: var(--gold-100); }
+[data-theme="dark"] .badge-silver  { background: rgba(136,135,128,0.15);color: var(--silver-100); }
+
+/* ── Flash messages ── */
+.flash-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 340px;
+}
+.flash {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  border: 0.5px solid transparent;
+  animation: slideIn 0.25s ease;
+}
+.flash-success { background: var(--teal-50);  color: var(--teal-600);  border-color: var(--teal-100); }
+.flash-danger  { background: #fee2e2;          color: #991b1b;          border-color: #fca5a5; }
+.flash-warning { background: #fef9c3;          color: #a16207;          border-color: #fde047; }
+.flash-info    { background: #dbeafe;          color: #1e40af;          border-color: #93c5fd; }
+.flash-close   { background: none; border: none; cursor: pointer; color: inherit; font-size: 16px; opacity: 0.6; }
+.flash-close:hover { opacity: 1; }
+
+[data-theme="dark"] .flash-success { background: rgba(29,158,117,0.15); color: var(--teal-100);  border-color: rgba(29,158,117,0.3); }
+[data-theme="dark"] .flash-danger  { background: rgba(239,68,68,0.15);  color: #fca5a5;          border-color: rgba(239,68,68,0.3); }
+[data-theme="dark"] .flash-warning { background: rgba(234,179,8,0.12);  color: #fbbf24;          border-color: rgba(234,179,8,0.25); }
+[data-theme="dark"] .flash-info    { background: rgba(59,130,246,0.12); color: #93c5fd;          border-color: rgba(59,130,246,0.25); }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Theme toggle ── */
+.theme-toggle {
+  width: 34px; height: 20px;
+  background: var(--border);
+  border-radius: 20px;
+  cursor: pointer;
+  position: relative;
+  border: 0.5px solid var(--border-hover);
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.theme-toggle::after {
+  content: '';
+  width: 14px; height: 14px;
+  background: var(--gold-400);
+  border-radius: 50%;
+  position: absolute;
+  top: 2px; left: 2px;
+  transition: transform 0.2s;
+}
+[data-theme="dark"] .theme-toggle::after { transform: translateX(14px); }

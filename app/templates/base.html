@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+
+    <title>
+        {% block titulo %}
+        Joyería El Illimani
+        {% endblock %}
+    </title>
+
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/theme.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/layout.css') }}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+{% include 'components/sidebar.html' %}
+
+<div class="main">
+
+    {% include 'components/topbar.html' %}
+
+    <div class="page-content">
+
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+</div>
+
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>
