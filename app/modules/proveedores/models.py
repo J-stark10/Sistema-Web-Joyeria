@@ -12,5 +12,64 @@ class Proveedor(db.Model):
 
     compras = db.relationship('Compra', backref='proveedor', lazy=True)
 
+    # ==========================
+    # CRUD
+    # ==========================
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def update(self, nombre_razon_social=None, nit=None, telefono=None, correo=None, activo=None):
+
+        if nombre_razon_social is not None:
+            self.nombre_razon_social = nombre_razon_social
+
+        if nit is not None:
+            self.nit = nit
+
+        if telefono is not None:
+            self.telefono = telefono
+
+        if correo is not None:
+            self.correo = correo
+
+        if activo is not None:
+            self.activo = activo
+
+        db.session.commit()
+
+    def delete(self):
+        self.activo = False
+        db.session.commit()
+
+    def restore(self):
+        self.activo = True
+        db.session.commit()
+
+    # ==========================
+    # CONSULTAS
+    # ==========================
+
+    @staticmethod
+    def get_all():
+        return Proveedor.query.order_by(Proveedor.nombre_razon_social).all()
+
+    @staticmethod
+    def get_activos():
+        return Proveedor.query.filter_by(activo=True).order_by(Proveedor.nombre_razon_social).all()
+
+    @staticmethod
+    def get_by_id(id_proveedor):
+        return Proveedor.query.get(id_proveedor)
+
+    @staticmethod
+    def get_by_nit(nit):
+        return Proveedor.query.filter_by(nit=nit).first()
+
+    # ==========================
+    # REPRESENTACIÓN
+    # ==========================
+
     def __repr__(self):
         return f'<Proveedor {self.nombre_razon_social} | NIT: {self.nit}>'
