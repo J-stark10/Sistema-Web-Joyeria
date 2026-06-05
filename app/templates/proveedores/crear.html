@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block titulo %}Nuevo Proveedor{% endblock %}
+
+{% block page_title %}Nuevo Proveedor{% endblock %}
+
+{% block page_sub %}
+Registrar proveedor en el sistema
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <form method="POST">
+
+        <div class="form-group">
+            <label>Razón Social</label>
+            <input type="text" name="nombre_razon_social" required>
+        </div>
+
+        <div class="form-group">
+            <label>NIT</label>
+            <input type="text" name="nit" required>
+        </div>
+
+        <div class="form-group">
+            <label>Teléfono</label>
+            <input type="text" name="telefono" required>
+        </div>
+
+        <div class="form-group">
+            <label>Correo</label>
+            <input type="email" name="correo">
+        </div>
+
+        <button type="submit">
+            Guardar
+        </button>
+
+        <a href="{{ url_for('proveedor.index') }}">
+            Cancelar
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}
