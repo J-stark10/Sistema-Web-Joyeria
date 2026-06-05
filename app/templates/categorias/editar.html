@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block titulo %}Editar Categoría{% endblock %}
+
+{% block page_title %}Editar Categoría{% endblock %}
+
+{% block page_sub %}
+Modificar categoría registrada
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <form method="POST">
+
+        <div class="form-group">
+
+            <label>Nombre de la Categoría</label>
+
+            <input type="text"
+                   name="nombre_categoria"
+                   value="{{ categoria.nombre_categoria }}"
+                   required>
+
+        </div>
+
+        <button type="submit">
+            Actualizar
+        </button>
+
+        <a href="{{ url_for('categoria.index') }}">
+            Cancelar
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

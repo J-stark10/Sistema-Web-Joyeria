@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block titulo %}Nueva Categoría{% endblock %}
+
+{% block page_title %}Nueva Categoría{% endblock %}
+
+{% block page_sub %}
+Registrar una nueva categoría
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <form method="POST">
+
+        <div class="form-group">
+            <label>Nombre de la Categoría</label>
+
+            <input type="text"
+                   name="nombre_categoria"
+                   required>
+        </div>
+
+        <button type="submit">
+            Guardar
+        </button>
+
+        <a href="{{ url_for('categoria.index') }}">
+            Cancelar
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

@@ -20,11 +20,15 @@ def create_app(config_name="default"):
     from app.modules.usuarios.routes import usuario_bp
     from app.modules.clientes.routes import cliente_bp
     from app.modules.proveedores.routes import proveedor_bp
+    from app.modules.materiales.routes import material_bp
+    from app.modules.categorias.routes import categoria_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(usuario_bp)
     app.register_blueprint(cliente_bp)
     app.register_blueprint(proveedor_bp)
+    app.register_blueprint(material_bp)
+    app.register_blueprint(categoria_bp)
 
     return app
