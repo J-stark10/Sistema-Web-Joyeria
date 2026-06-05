@@ -1,68 +1,112 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}
+{% block titulo %}
 Editar Usuario
+{% endblock %}
+
+{% block page_title %}
+Usuarios
+{% endblock %}
+
+{% block page_sub %}
+Modificar información del usuario
 {% endblock %}
 
 {% block content %}
 
-<h2>Editar Usuario</h2>
+<div class="content">
 
-<form method="POST">
+    <div class="card form-card">
 
-    <input
-        type="text"
-        name="nombre_usuario"
-        value="{{ usuario.nombre_usuario }}"
-        required
-    >
+        <div class="card-header">
+            <div class="card-title">
+                Editar Usuario
+            </div>
+        </div>
 
-    <br><br>
+        <form method="POST" class="form-grid">
 
-    <select name="rol">
+            <div class="form-group">
 
-        <option
-            value="ADMIN"
-            {% if usuario.rol == 'ADMIN' %}
-                selected
-            {% endif %}
-        >
-            Administrador
-        </option>
+                <label>Nombre de usuario</label>
 
-        <option
-            value="VENDEDOR"
-            {% if usuario.rol == 'VENDEDOR' %}
-                selected
-            {% endif %}
-        >
-            Vendedor
-        </option>
+                <input
+                    type="text"
+                    name="nombre_usuario"
+                    value="{{ usuario.nombre_usuario }}"
+                    required
+                >
 
-    </select>
+            </div>
 
-    <br><br>
+            <div class="form-group">
 
-    <label>
+                <label>Rol</label>
 
-        <input
-            type="checkbox"
-            name="activo"
-            {% if usuario.activo %}
-                checked
-            {% endif %}
-        >
+                <select name="rol">
 
-        Activo
+                    <option
+                        value="ADMIN"
+                        {% if usuario.rol == 'ADMIN' %}
+                            selected
+                        {% endif %}
+                    >
+                        Administrador
+                    </option>
 
-    </label>
+                    <option
+                        value="VENDEDOR"
+                        {% if usuario.rol == 'VENDEDOR' %}
+                            selected
+                        {% endif %}
+                    >
+                        Vendedor
+                    </option>
 
-    <br><br>
+                </select>
 
-    <button type="submit">
-        Actualizar
-    </button>
+            </div>
 
-</form>
+            <div class="form-group">
+
+                <label class="checkbox">
+
+                    <input
+                        type="checkbox"
+                        name="activo"
+                        {% if usuario.activo %}
+                            checked
+                        {% endif %}
+                    >
+
+                    Usuario activo
+
+                </label>
+
+            </div>
+
+            <div class="form-actions">
+
+                <a
+                    href="{{ url_for('usuario.index') }}"
+                    class="btn btn-secondary"
+                >
+                    Cancelar
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Actualizar
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
 
 {% endblock %}

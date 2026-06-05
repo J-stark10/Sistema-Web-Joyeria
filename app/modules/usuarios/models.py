@@ -67,16 +67,9 @@ class Usuario(UserMixin, db.Model):
 
     @staticmethod
     def get_by_username(nombre_usuario):
-        return Usuario.query.filter_by(
-            nombre_usuario=nombre_usuario
-        ).first()
+        return Usuario.query.filter_by(nombre_usuario=nombre_usuario).first()
 
-    def update(
-        self,
-        nombre_usuario=None,
-        rol=None,
-        activo=None
-    ):
+    def update(self, nombre_usuario=None, rol=None, activo=None):
         if nombre_usuario is not None:
             self.nombre_usuario = nombre_usuario
 
