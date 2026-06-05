@@ -1,0 +1,1 @@
+from app.auth import login_manager as login_loader

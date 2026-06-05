@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+Dashboard
+{% endblock %}
+
+{% block page_title %}
+Dashboard
+{% endblock %}
+
+{% block page_sub %}
+Resumen general del sistema
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-grid">
+
+    <div class="card">
+        <h3>Ventas Hoy</h3>
+        <h2>Bs. 1,250</h2>
+    </div>
+
+    <div class="card">
+        <h3>Stock Disponible</h3>
+        <h2>57</h2>
+    </div>
+
+    <div class="card">
+        <h3>Stock Bajo</h3>
+        <h2>4</h2>
+    </div>
+
+    <div class="card">
+        <h3>Proveedores</h3>
+        <h2>12</h2>
+    </div>
+
+</div>
+
+{% endblock %}
