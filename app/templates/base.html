@@ -2,6 +2,7 @@
 <html lang="es" data-theme="light">
 <head>
     <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
     <title>
         {% block titulo %}
@@ -16,6 +17,9 @@
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/layout.css') }}">
+
+    <link rel="stylesheet" 
+          href="{{ url_for('static', filename='css/forms.css') }}">
 
     {% block extra_css %}{% endblock %}
 </head>
