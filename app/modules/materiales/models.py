@@ -1,4 +1,4 @@
-from app import db
+from app.extensions import db
 
 class Material(db.Model):
     __tablename__ = 'material'

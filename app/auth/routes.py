@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 
 from app import bcrypt
 from app.modules.usuarios.models import Usuario
-from app.modules.auth.forms import LoginForm
+from app.auth.forms import LoginForm
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
