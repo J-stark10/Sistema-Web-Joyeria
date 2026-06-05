@@ -1,1 +1,0 @@
-from app.extensions import login_manager as login_loader
