@@ -1,5 +1,5 @@
 from app import create_app, db, bcrypt
-from app.models.usuario import Usuario
+from app.modules.usuarios.models import Usuario
 
 app = create_app('development')
 
