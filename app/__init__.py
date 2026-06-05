@@ -10,7 +10,6 @@ migrate = Migrate()
 login_manager = LoginManager()
 bcrypt = Bcrypt()
 
-
 def create_app(config_name='default'):
     app = Flask(__name__)
     app.config.from_object(config_dict[config_name])
@@ -20,6 +19,7 @@ def create_app(config_name='default'):
     login_manager.init_app(app)
     bcrypt.init_app(app)
 
+    from app import models
     from app.auth.login_manager import load_user
 
     login_manager.login_view = 'auth.login'
