@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+Nueva Joya
+{% endblock %}
+
+{% block page_title %}
+Nueva Joya
+{% endblock %}
+
+{% block page_sub %}
+Registrar nueva joya
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <form method="POST">
+
+        <div class="form-group">
+            <label>Código</label>
+            <input type="text"
+                   name="codigo"
+                   required>
+        </div>
+
+        <div class="form-group">
+            <label>Nombre</label>
+            <input type="text"
+                   name="nombre"
+                   required>
+        </div>
+
+        <div class="form-group">
+            <label>Categoría</label>
+
+            <select name="id_categoria" required>
+
+                <option value="">
+                    Seleccione...
+                </option>
+
+                {% for categoria in categorias %}
+                <option value="{{ categoria.id_categoria }}">
+                    {{ categoria.nombre_categoria }}
+                </option>
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+        <div class="form-group">
+            <label>Material</label>
+
+            <select name="id_material" required>
+
+                <option value="">
+                    Seleccione...
+                </option>
+
+                {% for material in materiales %}
+                <option value="{{ material.id_material }}">
+                    {{ material.nombre_material }}
+                </option>
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+        <div class="form-group">
+            <label>Precio Compra</label>
+            <input type="number"
+                   step="0.01"
+                   name="precio_compra"
+                   required>
+        </div>
+
+        <div class="form-group">
+            <label>Precio Venta</label>
+            <input type="number"
+                   step="0.01"
+                   name="precio_venta"
+                   required>
+        </div>
+
+        <div class="form-group">
+            <label>Stock Mínimo</label>
+            <input type="number"
+                   name="stock_minimo"
+                   value="0"
+                   required>
+        </div>
+
+        <button type="submit">
+            Guardar
+        </button>
+
+        <a href="{{ url_for('joya.index') }}">
+            Cancelar
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}
