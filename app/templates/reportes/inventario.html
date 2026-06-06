@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Inventario Valorizado{% endblock %}
+
+{% block content %}
+
+<div class="container mx-auto">
+
+    <h1 class="text-2xl font-bold mb-6">
+        Inventario Valorizado
+    </h1>
+
+    <div class="mb-4">
+
+        <a
+            href="{{ url_for('reporte.inventario_pdf') }}"
+            class="px-4 py-2 bg-red-600 text-white rounded"
+        >
+            Exportar PDF
+        </a>
+
+    </div>
+
+    <div class="overflow-x-auto">
+
+        <table class="table-auto w-full border">
+
+            <thead>
+
+                <tr>
+
+                    <th class="border p-2">
+                        Código
+                    </th>
+
+                    <th class="border p-2">
+                        Joya
+                    </th>
+
+                    <th class="border p-2">
+                        Categoría
+                    </th>
+
+                    <th class="border p-2">
+                        Material
+                    </th>
+
+                    <th class="border p-2">
+                        Stock
+                    </th>
+
+                    <th class="border p-2">
+                        Precio Compra
+                    </th>
+
+                    <th class="border p-2">
+                        Valor Inventario
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for joya in joyas %}
+
+                <tr>
+
+                    <td class="border p-2">
+                        {{ joya.codigo }}
+                    </td>
+
+                    <td class="border p-2">
+                        {{ joya.nombre }}
+                    </td>
+
+                    <td class="border p-2">
+                        {{ joya.categoria.nombre_categoria }}
+                    </td>
+
+                    <td class="border p-2">
+                        {{ joya.material.nombre_material }}
+                    </td>
+
+                    <td class="border p-2">
+                        {{ joya.stock_actual }}
+                    </td>
+
+                    <td class="border p-2">
+                        Bs. {{ joya.precio_compra }}
+                    </td>
+
+                    <td class="border p-2">
+                        Bs. {{ joya.valor_en_stock }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <div class="mt-6 text-xl font-bold">
+
+        Valor Total Inventario:
+        Bs. {{ total_inventario }}
+
+    </div>
+
+</div>
+
+{% endblock %}
