@@ -20,7 +20,6 @@ Responsable de:
 * Categorías
 * Materiales
 * Joyas
-* Inventario
 * Control de stock
 
 ---
