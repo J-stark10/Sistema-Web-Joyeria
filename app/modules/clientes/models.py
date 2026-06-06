@@ -11,7 +11,7 @@ class Cliente(db.Model):
     activo = db.Column(db.Boolean, default=True, nullable=False)
     fecha_registro = db.Column(db.DateTime, server_default=db.func.now())
 
-    ventas = db.relationship('Venta', backref='cliente', lazy=True)
+    ventas = db.relationship('Venta', back_populates='cliente', lazy=True)
 
     # ==========================
     # CRUD

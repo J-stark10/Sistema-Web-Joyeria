@@ -12,7 +12,7 @@ class Usuario(UserMixin, db.Model):
     rol = db.Column(db.String(20), nullable=False)
     activo = db.Column(db.Boolean, default=True)
 
-    ventas = db.relationship('Venta', backref='usuario', lazy=True)
+    ventas = db.relationship('Venta', back_populates='usuario', lazy=True)
     compras = db.relationship('Compra', back_populates='usuario', lazy=True)
     ajustes_inventario = db.relationship('AjusteInventario', backref='usuario', lazy=True)
 

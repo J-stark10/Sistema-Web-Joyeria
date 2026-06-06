@@ -19,7 +19,7 @@ class Joya(db.Model):
 
     activo = db.Column(db.Boolean, default=True)
 
-    detalles_venta = db.relationship('DetalleVenta', backref='joya', lazy=True)
+    detalles_venta = db.relationship('DetalleVenta', back_populates='joya', lazy=True)
     detalles_compra = db.relationship('DetalleCompra', backref='joya', lazy=True)
     ajustes = db.relationship('AjusteInventario', backref='joya', lazy=True)
 

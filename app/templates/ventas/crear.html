@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block titulo %}Nueva Venta{% endblock %}
+
+{% block page_title %}Nueva Venta{% endblock %}
+
+{% block page_sub %}Registrar venta a cliente{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <form method="POST">
+
+        <div class="form-group">
+
+            <label>Cliente</label>
+
+            <select name="id_cliente">
+
+                <option value="">Sin cliente</option>
+
+                {% for cliente in clientes %}
+                <option value="{{ cliente.id_cliente }}">
+                    {{ cliente.nombre }}
+                </option>
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+        <hr>
+
+        <div class="card-header">
+            <div class="card-title">Detalle de Venta</div>
+
+            <button type="button" onclick="agregarFila()">
+                Agregar Joya
+            </button>
+        </div>
+
+        <table id="tabla-detalles">
+
+            <thead>
+                <tr>
+                    <th>Joya</th>
+                    <th>Cantidad</th>
+                    <th>Precio Venta</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+
+                    <td>
+                        <select name="id_joya[]" required>
+                            <option value="">Seleccione</option>
+
+                            {% for joya in joyas %}
+                            <option value="{{ joya.id_joya }}">
+                                {{ joya.codigo }} - {{ joya.nombre }} (Stock: {{ joya.stock_actual }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+
+                    <td>
+                        <input type="number" name="cantidad[]" min="1" required>
+                    </td>
+
+                    <td>
+                        <input type="number" name="precio[]" step="0.01" min="0.01" required>
+                    </td>
+
+                    <td>
+                        <button type="button" onclick="eliminarFila(this)">
+                            Eliminar
+                        </button>
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+        <br>
+
+        <button type="submit">
+            Registrar Venta
+        </button>
+
+        <a href="{{ url_for('venta.index') }}">
+            Cancelar
+        </a>
+
+    </form>
+
+</div>
+
+<script>
+
+function agregarFila() {
+
+    let tabla = document.querySelector("#tabla-detalles tbody");
+    let fila = tabla.rows[0].cloneNode(true);
+
+    fila.querySelectorAll("input").forEach(input => input.value = "");
+    fila.querySelector("select").selectedIndex = 0;
+
+    tabla.appendChild(fila);
+}
+
+function eliminarFila(btn) {
+
+    let tabla = document.querySelector("#tabla-detalles tbody");
+
+    if (tabla.rows.length === 1) {
+        alert("Debe existir al menos una joya.");
+        return;
+    }
+
+    btn.closest("tr").remove();
+}
+
+</script>
+
+{% endblock %}
