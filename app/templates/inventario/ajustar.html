@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Ajustar Inventario{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>Nuevo Ajuste de Inventario</h2>
+
+    <form method="POST">
+
+        <div class="mb-3">
+
+            <label class="form-label">Joya</label>
+
+            <select name="id_joya" class="form-select" required>
+
+                <option value="">Seleccione...</option>
+
+                {% for joya in joyas %}
+                    <option value="{{ joya.id_joya }}">
+                        {{ joya.codigo }} - {{ joya.nombre }}
+                    </option>
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+        <div class="mb-3">
+
+            <label class="form-label">Tipo Ajuste</label>
+
+            <select name="tipo_ajuste" class="form-select" required>
+
+                <option value="ENTRADA">ENTRADA</option>
+                <option value="SALIDA">SALIDA</option>
+
+            </select>
+
+        </div>
+
+        <div class="mb-3">
+
+            <label class="form-label">Cantidad</label>
+
+            <input
+                type="number"
+                min="1"
+                name="cantidad"
+                class="form-control"
+                required
+            >
+
+        </div>
+
+        <div class="mb-3">
+
+            <label class="form-label">Motivo</label>
+
+            <textarea
+                name="motivo"
+                class="form-control"
+                rows="3"
+                required
+            ></textarea>
+
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            Guardar
+        </button>
+
+        <a href="{{ url_for('inventario.index') }}" class="btn btn-secondary">
+            Cancelar
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

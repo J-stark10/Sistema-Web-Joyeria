@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Historial{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>
+        Historial de Inventario
+    </h2>
+
+    <h4>
+        {{ joya.codigo }} - {{ joya.nombre }}
+    </h4>
+
+    <div class="alert alert-info">
+
+        Stock Actual:
+        <strong>{{ joya.stock_actual }}</strong>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Cantidad</th>
+                <th>Usuario</th>
+                <th>Motivo</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for ajuste in ajustes %}
+
+            <tr>
+
+                <td>{{ ajuste.fecha_ajuste.strftime('%d/%m/%Y %H:%M') }}</td>
+
+                <td>
+
+                    {% if ajuste.tipo_ajuste == 'ENTRADA' %}
+                        <span class="badge bg-success">ENTRADA</span>
+                    {% else %}
+                        <span class="badge bg-danger">SALIDA</span>
+                    {% endif %}
+
+                </td>
+
+                <td>{{ ajuste.cantidad_ajuste }}</td>
+
+                <td>{{ ajuste.usuario.nombre_usuario }}</td>
+
+                <td>{{ ajuste.motivo }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
