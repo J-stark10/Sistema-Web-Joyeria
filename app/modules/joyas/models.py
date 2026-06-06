@@ -104,6 +104,18 @@ class Joya(db.Model):
         self.activo = True
         db.session.commit()
 
+    def aumentar_stock(self, cantidad):
+        self.stock_actual += cantidad
+        db.session.commit()
+
+    def disminuir_stock(self, cantidad):
+        self.stock_actual -= cantidad
+        db.session.commit()
+
+    def actualizar_stock(self,nuevo_stock):
+        self.stock_actual = nuevo_stock
+        db.session.commit()
+
     # ==========================
     # CONSULTAS
     # ==========================

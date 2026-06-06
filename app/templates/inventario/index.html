@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Inventario{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Historial de Ajustes</h2>
+
+        <div>
+            <a href="{{ url_for('inventario.stock_bajo') }}" class="btn btn-warning">
+                Stock Bajo
+            </a>
+
+            <a href="{{ url_for('inventario.ajustar') }}" class="btn btn-primary">
+                Nuevo Ajuste
+            </a>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+            <tr>
+                <th>Fecha</th>
+                <th>Joya</th>
+                <th>Tipo</th>
+                <th>Cantidad</th>
+                <th>Usuario</th>
+                <th>Motivo</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for ajuste in ajustes %}
+
+            <tr>
+
+                <td>{{ ajuste.fecha_ajuste.strftime('%d/%m/%Y %H:%M') }}</td>
+
+                <td>
+                    <a href="{{ url_for('inventario.historial', id_joya=ajuste.id_joya) }}">
+                        {{ ajuste.joya.nombre }}
+                    </a>
+                </td>
+
+                <td>
+
+                    {% if ajuste.tipo_ajuste == 'ENTRADA' %}
+                        <span class="badge bg-success">ENTRADA</span>
+                    {% else %}
+                        <span class="badge bg-danger">SALIDA</span>
+                    {% endif %}
+
+                </td>
+
+                <td>{{ ajuste.cantidad_ajuste }}</td>
+
+                <td>{{ ajuste.usuario.nombre_usuario }}</td>
+
+                <td>{{ ajuste.motivo }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
