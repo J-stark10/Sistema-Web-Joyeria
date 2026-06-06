@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+Detalle Venta
+{% endblock %}
+
+{% block page_title %}
+Detalle de Venta
+{% endblock %}
+
+{% block page_sub %}
+Venta #{{ venta.id_venta }}
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <div class="card-header">
+        <div class="card-title">
+            Información General
+        </div>
+    </div>
+
+    <table>
+        <tbody>
+
+            <tr>
+                <th>ID Venta</th>
+                <td>{{ venta.id_venta }}</td>
+            </tr>
+
+            <tr>
+                <th>Cliente</th>
+                <td>{{ venta.cliente.nombre }}</td>
+            </tr>
+
+            <tr>
+                <th>Usuario</th>
+                <td>{{ venta.usuario.nombre_usuario }}</td>
+            </tr>
+
+            <tr>
+                <th>Fecha</th>
+                <td>{{ venta.fecha_venta.strftime('%d/%m/%Y %H:%M') }}</td>
+            </tr>
+
+            <tr>
+                <th>Estado</th>
+                <td>
+
+                    {% if venta.estado == 'COMPLETADA' %}
+
+                        <span class="badge badge-success">
+                            COMPLETADA
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge badge-danger">
+                            ANULADA
+                        </span>
+
+                    {% endif %}
+
+                </td>
+            </tr>
+
+            <tr>
+                <th>Total</th>
+                <td>
+                    <strong>
+                        Bs. {{ venta.total_venta }}
+                    </strong>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+
+</div>
+
+<br>
+
+<div class="card">
+
+    <div class="card-header">
+        <div class="card-title">
+            Detalle de Productos
+        </div>
+    </div>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Joya</th>
+                <th>Cantidad</th>
+                <th>Precio Venta</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for detalle in venta.detalles %}
+
+            <tr>
+
+                <td>
+                    {{ detalle.joya.codigo }}
+                </td>
+
+                <td>
+                    {{ detalle.joya.nombre }}
+                </td>
+
+                <td>
+                    {{ detalle.cantidad }}
+                </td>
+
+                <td>
+                    Bs. {{ detalle.precio_unit_venta }}
+                </td>
+
+                <td>
+                    Bs. {{ detalle.subtotal }}
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+        <tfoot>
+
+            <tr>
+                <th colspan="4">
+                    TOTAL
+                </th>
+
+                <th>
+                    Bs. {{ venta.total_venta }}
+                </th>
+            </tr>
+
+        </tfoot>
+
+    </table>
+
+</div>
+
+<br>
+
+<a href="{{ url_for('venta.index') }}" class="btn btn-secondary">
+    Volver
+</a>
+
+{% if venta.estado == 'COMPLETADA' %}
+
+<a href="{{ url_for('venta.anular', id_venta=venta.id_venta) }}"
+   class="btn btn-danger"
+   onclick="return confirm('¿Desea anular esta venta?')">
+    Anular Venta
+</a>
+
+{% endif %}
+
+{% endblock %}

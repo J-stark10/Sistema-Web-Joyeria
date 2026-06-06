@@ -24,6 +24,7 @@ def create_app(config_name="default"):
     from app.modules.categorias.routes import categoria_bp
     from app.modules.joyas.routes import joya_bp
     from app.modules.compras.routes import compra_bp
+    from app.modules.ventas.routes import venta_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
@@ -34,5 +35,6 @@ def create_app(config_name="default"):
     app.register_blueprint(categoria_bp)
     app.register_blueprint(joya_bp)
     app.register_blueprint(compra_bp)
+    app.register_blueprint(venta_bp)
 
     return app
