@@ -10,7 +10,7 @@ class Proveedor(db.Model):
     correo = db.Column(db.String(30))
     activo = db.Column(db.Boolean, default=True)
 
-    compras = db.relationship('Compra', backref='proveedor', lazy=True)
+    compras = db.relationship('Compra', back_populates='proveedor', lazy=True)
 
     # ==========================
     # CRUD

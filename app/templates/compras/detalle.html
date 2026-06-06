@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+Detalle Compra
+{% endblock %}
+
+{% block page_title %}
+Detalle de Compra
+{% endblock %}
+
+{% block page_sub %}
+Compra #{{ compra.id_compra }}
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <div class="card-header">
+        <div class="card-title">
+            Información General
+        </div>
+    </div>
+
+    <table>
+
+        <tbody>
+
+            <tr>
+                <th>ID Compra</th>
+                <td>{{ compra.id_compra }}</td>
+            </tr>
+
+            <tr>
+                <th>Proveedor</th>
+                <td>{{ compra.proveedor.nombre_razon_social }}</td>
+            </tr>
+
+            <tr>
+                <th>Usuario</th>
+                <td>{{ compra.usuario.nombre_usuario }}</td>
+            </tr>
+
+            <tr>
+                <th>Fecha</th>
+                <td>{{ compra.fecha_compra.strftime('%d/%m/%Y %H:%M') }}</td>
+            </tr>
+
+            <tr>
+                <th>Estado</th>
+
+                <td>
+
+                    {% if compra.estado == 'COMPLETADA' %}
+
+                        <span class="badge badge-success">
+                            COMPLETADA
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge badge-danger">
+                            ANULADA
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            <tr>
+                <th>Total</th>
+                <td>
+                    <strong>
+                        Bs. {{ compra.total_compra }}
+                    </strong>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<br>
+
+<div class="card">
+
+    <div class="card-header">
+
+        <div class="card-title">
+            Detalle de Productos
+        </div>
+
+    </div>
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>Código</th>
+                <th>Joya</th>
+                <th>Cantidad</th>
+                <th>Precio Compra</th>
+                <th>Subtotal</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for detalle in compra.detalles %}
+
+            <tr>
+
+                <td>
+                    {{ detalle.joya.codigo }}
+                </td>
+
+                <td>
+                    {{ detalle.joya.nombre }}
+                </td>
+
+                <td>
+                    {{ detalle.cantidad }}
+                </td>
+
+                <td>
+                    Bs. {{ detalle.precio_unit_compra }}
+                </td>
+
+                <td>
+                    Bs. {{ detalle.subtotal }}
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+        <tfoot>
+
+            <tr>
+
+                <th colspan="4">
+                    TOTAL
+                </th>
+
+                <th>
+                    Bs. {{ compra.total_compra }}
+                </th>
+
+            </tr>
+
+        </tfoot>
+
+    </table>
+
+</div>
+
+<br>
+
+<a href="{{ url_for('compra.index') }}" class="btn btn-secondary">
+    Volver
+</a>
+
+{% if compra.estado == 'COMPLETADA' %}
+
+<a href="{{ url_for('compra.anular', id_compra=compra.id_compra) }}"
+   class="btn btn-danger"
+   onclick="return confirm('¿Desea anular esta compra?')">
+    Anular Compra
+</a>
+
+{% endif %}
+
+{% endblock %}

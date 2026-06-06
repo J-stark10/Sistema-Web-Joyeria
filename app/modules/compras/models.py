@@ -9,9 +9,54 @@ class Compra(db.Model):
 
     fecha_compra = db.Column(db.DateTime, server_default=db.func.now())
     total_compra = db.Column(db.Numeric(12, 2), nullable=False)
-    estado = db.Column(db.String(20), default='PENDIENTE')
+    estado = db.Column(db.String(20), default='COMPLETADA')
 
     detalles = db.relationship('DetalleCompra', backref='compra', lazy=True, cascade='all, delete-orphan')
+    proveedor = db.relationship('Proveedor', back_populates='compras')
+    usuario = db.relationship('Usuario', back_populates='compras')
+
+    # ==========================
+    # CRUD
+    # ==========================
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def update(self, estado=None):
+
+        if estado is not None:
+            self.estado = estado
+
+        db.session.commit()
+
+    def anular(self):
+        self.estado = 'ANULADA'
+        db.session.commit()
+
+    # ==========================
+    # CONSULTAS
+    # ==========================
+
+    @staticmethod
+    def get_all():
+        return Compra.query.order_by(Compra.id_compra.desc()).all()
+
+    @staticmethod
+    def get_by_id(id_compra):
+        return Compra.query.get(id_compra)
+
+    @staticmethod
+    def get_completadas():
+        return Compra.query.filter_by(estado='COMPLETADA').all()
+
+    @staticmethod
+    def get_anuladas():
+        return Compra.query.filter_by(estado='ANULADA').all()
+
+    # ==========================
+    # REPRESENTACIÓN
+    # ==========================
 
     def __repr__(self): 
         return f'<Compra #{self.id_compra} | Estado: {self.estado} | Total: {self.total_compra}>'
@@ -26,6 +71,30 @@ class DetalleCompra(db.Model):
     cantidad = db.Column(db.Integer, nullable=False)
     precio_unit_compra = db.Column(db.Numeric(10,2), nullable=False)
     subtotal = db.Column(db.Numeric(12,2), nullable=False)
+
+    # ==========================
+    # CRUD
+    # ==========================
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    # ==========================
+    # CONSULTAS
+    # ==========================
+
+    @staticmethod
+    def get_by_compra(id_compra):
+        return DetalleCompra.query.filter_by(id_compra=id_compra).all()
+
+    @staticmethod
+    def get_by_id(id_det_compra):
+        return DetalleCompra.query.get(id_det_compra)
+
+    # ==========================
+    # REPRESENTACIÓN
+    # ==========================
 
     def __repr__(self):
         return f'<DetalleCompra compra#{self.id_compra} | joya#{self.id_joya} | canti: {self.cantidad}'
