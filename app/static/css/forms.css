@@ -1,56 +1,130 @@
-.form-card{
-    max-width: 800px;
+/* ── Formularios ── */
+
+.card-form {
+    padding: 20px;
 }
 
-.form-grid{
-    display:flex;
-    flex-direction:column;
-    gap:1rem;
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.form-group{
-    display:flex;
-    flex-direction:column;
-    gap:.4rem;
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
 }
 
-.form-group label{
-    font-weight:600;
-    color:var(--text-primary);
+.form-group label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
 }
 
 .form-group input,
 .form-group select,
-.form-group textarea{
-
-    width:100%;
-
-    padding:.8rem 1rem;
-
-    border:1px solid var(--border-color);
-
-    border-radius:10px;
-
-    background:white;
-
-    font-size:.95rem;
+.form-group textarea {
+  width: 100%;
+  padding: .75rem 1rem;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  font-size: .95rem;
+  transition: border-color .2s, box-shadow .2s;
 }
 
 .form-group input:focus,
-.form-group select:focus{
-
-    outline:none;
-
-    border-color:var(--gold-500);
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--gold-400);
+  box-shadow: 0 0 0 3px var(--border-hover);
 }
 
-.form-actions{
+/* ── Acciones ── */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
 
-    display:flex;
+/* ── Botones ── */
+.btn {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background .2s, transform .2s;
+  border: none;
+}
 
-    justify-content:flex-end;
+.btn-primary {
+  background: var(--gold-400);
+  color: #fff;
+}
 
-    gap:.8rem;
+.btn-primary:hover {
+  background: var(--gold-600);
+  transform: translateY(-2px);
+}
 
-    margin-top:1rem;
+.btn-secondary {
+  background: var(--silver-100);
+  color: var(--text-primary);
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-secondary:hover {
+  background: var(--silver-400);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* ── Checkbox ── */
+.form-check {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.form-check input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--gold-400);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+
+.form-check label {
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* ── Dark Mode Forms ── */
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group select,
+[data-theme="dark"] .form-group textarea {
+  background: var(--bg-card);
+  border: 0.5px solid var(--border);
+  color: var(--text-primary);
+}
+[data-theme="dark"] .form-check input[type="checkbox"] {
+  accent-color: var(--gold-100);
+}
+
+[data-theme="dark"] .btn-secondary {
+  background: var(--silver-600);
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+  background: var(--silver-900);
+  color: var(--text-primary);
 }
