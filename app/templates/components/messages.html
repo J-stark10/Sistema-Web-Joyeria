@@ -1,0 +1,12 @@
+<div class="msg-container">
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for cat, msg in messages %}
+            <div class="msg msg-{{ cat }}">
+                <span>{{ msg }}</span>
+                <button class="msg-close">&times;</button>
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
