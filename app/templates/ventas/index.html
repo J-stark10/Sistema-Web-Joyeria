@@ -13,7 +13,7 @@
     <div class="card-header">
         <div class="card-title">Lista de Ventas</div>
 
-        <a href="{{ url_for('venta.crear') }}">
+        <a href="{{ url_for('venta.crear') }}" class="btn btn-primary">
             Nueva Venta
         </a>
     </div>
@@ -53,12 +53,12 @@
 
                 <td>
 
-                    <a href="{{ url_for('venta.detalle', id_venta=venta.id_venta) }}">
+                    <a href="{{ url_for('venta.detalle', id_venta=venta.id_venta) }}" class="badge badge-gold">
                         Ver
                     </a>
 
                     {% if venta.estado != 'ANULADA' %}
-                    <a href="{{ url_for('venta.anular', id_venta=venta.id_venta) }}">
+                    <a href="{{ url_for('venta.anular', id_venta=venta.id_venta) }}" class="badge badge-danger">
                         Anular
                     </a>
                     {% endif %}

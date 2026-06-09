@@ -8,40 +8,25 @@
 
 {% block content %}
 
-<div class="card">
-
-    <form method="POST">
+<div class="card card-form">
+    <form method="POST" class="form-grid">
 
         <div class="form-group">
-
-            <label>Cliente</label>
-
-            <select name="id_cliente">
-
+            <label for="id_cliente">Cliente</label>
+            <select id="id_cliente" name="id_cliente">
                 <option value="">Sin cliente</option>
-
                 {% for cliente in clientes %}
-                <option value="{{ cliente.id_cliente }}">
-                    {{ cliente.nombre }}
-                </option>
+                <option value="{{ cliente.id_cliente }}">{{ cliente.nombre }} - {{ cliente.ci_nit }}</option>
                 {% endfor %}
-
             </select>
-
         </div>
-
-        <hr>
 
         <div class="card-header">
             <div class="card-title">Detalle de Venta</div>
-
-            <button type="button" onclick="agregarFila()">
-                Agregar Joya
-            </button>
+            <button type="button" class="btn btn-primary" onclick="agregarFila()">Agregar Joya</button>
         </div>
 
         <table id="tabla-detalles">
-
             <thead>
                 <tr>
                     <th>Joya</th>
@@ -50,15 +35,11 @@
                     <th>Acción</th>
                 </tr>
             </thead>
-
             <tbody>
-
                 <tr>
-
                     <td>
                         <select name="id_joya[]" required>
                             <option value="">Seleccione</option>
-
                             {% for joya in joyas %}
                             <option value="{{ joya.id_joya }}">
                                 {{ joya.codigo }} - {{ joya.nombre }} (Stock: {{ joya.stock_actual }})
@@ -66,40 +47,21 @@
                             {% endfor %}
                         </select>
                     </td>
-
-                    <td>
-                        <input type="number" name="cantidad[]" min="1" required>
-                    </td>
-
-                    <td>
-                        <input type="number" name="precio[]" step="0.01" min="0.01" required>
-                    </td>
-
-                    <td>
-                        <button type="button" onclick="eliminarFila(this)">
-                            Eliminar
-                        </button>
-                    </td>
-
+                    <td><input type="number" name="cantidad[]" min="1" required></td>
+                    <td><input type="number" name="precio[]" step="0.01" min="0.01" required></td>
+                    <td><button type="button" class="btn btn-danger" onclick="eliminarFila(this)">Eliminar</button></td>
                 </tr>
-
             </tbody>
-
         </table>
 
-        <br>
-
-        <button type="submit">
-            Registrar Venta
-        </button>
-
-        <a href="{{ url_for('venta.index') }}">
-            Cancelar
-        </a>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Registrar Venta</button>
+            <a href="{{ url_for('venta.index') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
 
     </form>
-
 </div>
+
 
 <script>
 
