@@ -610,7 +610,7 @@ tbody td {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 36px; /* más indentado que nav-item */
+  padding: 8px 36px;
   font-size: 12px;
   color: var(--text-secondary);
   border-left: 2.5px solid transparent;
@@ -649,3 +649,7 @@ tbody td {
   display: block;
 }
 
+[data-theme="dark"] .nav-subitem:hover,
+[data-theme="dark"] .nav-subitem.active {
+  background: rgba(239,159,39,0.08);
+}

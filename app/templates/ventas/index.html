@@ -45,7 +45,12 @@
 
                 <td>{{ venta.total_venta }} Bs</td>
 
-                <td>{{ venta.estado }}</td>
+                <td>{% if venta.estado == 'COMPLETADA' %}
+                    <span class="badge badge-success">{{ venta.estado }}</span>
+                    {% else %}
+                    <span class="badge badge-warning">{{ venta.estado }}</span>
+                    {% endif %}
+                </td>
 
                 <td>
 
