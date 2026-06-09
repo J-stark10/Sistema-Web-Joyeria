@@ -599,3 +599,53 @@ tbody td {
 }
 
 .quick-label { font-size: 12px; color: var(--text-secondary); font-weight: 500; text-align: center; }
+
+
+.nav-parent {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.nav-subitem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 36px; /* más indentado que nav-item */
+  font-size: 12px;
+  color: var(--text-secondary);
+  border-left: 2.5px solid transparent;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+
+.nav-subitem:hover {
+  color: var(--text-primary);
+  background: var(--gold-50);
+  border-left-color: var(--gold-100);
+}
+
+.nav-subitem.active {
+  color: var(--gold-600);
+  background: var(--gold-50);
+  border-left-color: var(--gold-400);
+  font-weight: 500;
+}
+
+.nav-subitem .nav-icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.7;
+}
+.nav-subitem.active .nav-icon,
+.nav-subitem:hover .nav-icon {
+  opacity: 1;
+}
+
+.nav-submenu {
+  display: none; 
+}
+
+.nav-parent.active + .nav-submenu {
+  display: block;
+}
+

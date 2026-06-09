@@ -13,46 +13,109 @@
 
         <div class="form-group">
             <label for="id_cliente">Cliente</label>
-            <select id="id_cliente" name="id_cliente">
-                <option value="">Sin cliente</option>
+            <select id="id_cliente" name="id_cliente" onchange="mostrarCliente(this)" required>
+                <option value="">Seleccionar Cliente</option>
                 {% for cliente in clientes %}
-                <option value="{{ cliente.id_cliente }}">{{ cliente.nombre }} - {{ cliente.ci_nit }}</option>
+                <option value="{{ cliente.id_cliente }}" 
+                    data-nombre="{{ cliente.nombre }}"
+                    data-direccion="{{ cliente.direccion }}" 
+                    data-ci="{{ cliente.ci_nit }}">
+                    {{ cliente.nombre }} - {{ cliente.ci_nit }}
+                </option>
                 {% endfor %}
             </select>
         </div>
 
+        <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" id="cliente-nombre" disabled>
+        </div>
+        <div class="form-group">
+            <label>Dirección</label>
+            <input type="text" id="cliente-direccion" disabled>
+        </div>
+        <div class="form-group">
+            <label>CI/NIT</label>
+            <input type="text" id="cliente-ci" disabled>
+        </div>
+
+        <div class="form-group">
+            <label for="joya-select">Seleccionar Joya</label>
+            <select id="joya-select" onchange="mostrarJoya(this)" required>
+                <option value="">Seleccione</option>
+                {% for joya in joyas %}
+                <option value="{{ joya.id_joya }}"
+                        data-nombre="{{ joya.nombre }}"
+                        data-codigo="{{ joya.codigo }}"
+                        data-categoria="{{ joya.categoria.nombre_categoria }}"
+                        data-stock="{{ joya.stock_actual }}"
+                        data-precio="{{ joya.precio_venta }}">
+                    {{ joya.codigo }} - {{ joya.nombre }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Código</label>
+            <input type="text" id="joya-codigo" disabled>
+        </div>
+        <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" id="joya-nombre" disabled>
+        </div>
+        <div class="form-group">
+            <label>Categoría</label>
+            <input type="text" id="joya-categoria" disabled>
+        </div>
+        <div class="form-group">
+            <label>Stock</label>
+            <input type="text" id="joya-stock" disabled>
+        </div>
+        <div class="form-group">
+            <label>Precio</label>
+            <input type="text" id="joya-precio" disabled>
+        </div>
+
+        <!-- Inputs para cantidad y precio -->
+        <div class="form-group">
+            <label for="cantidad">Cantidad</label>
+            <input type="number" id="cantidad" min="1" required>
+        </div>
+
+        <div class="form-group">
+            <label for="precio">Precio</label>
+            <input type="number" id="precio" step="0.01" min="0.01" required>
+        </div>
+
         <div class="card-header">
             <div class="card-title">Detalle de Venta</div>
-            <button type="button" class="btn btn-primary" onclick="agregarFila()">Agregar Joya</button>
+            <button type="button" class="btn btn-primary" onclick="agregarJoya()">Agregar al detalle</button>
         </div>
 
         <table id="tabla-detalles">
             <thead>
                 <tr>
-                    <th>Joya</th>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Stock Actual</th>
                     <th>Cantidad</th>
-                    <th>Precio Venta</th>
+                    <th>Precio</th>
+                    <th>Subtotal
                     <th>Acción</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>
-                        <select name="id_joya[]" required>
-                            <option value="">Seleccione</option>
-                            {% for joya in joyas %}
-                            <option value="{{ joya.id_joya }}">
-                                {{ joya.codigo }} - {{ joya.nombre }} (Stock: {{ joya.stock_actual }})
-                            </option>
-                            {% endfor %}
-                        </select>
-                    </td>
-                    <td><input type="number" name="cantidad[]" min="1" required></td>
-                    <td><input type="number" name="precio[]" step="0.01" min="0.01" required></td>
-                    <td><button type="button" class="btn btn-danger" onclick="eliminarFila(this)">Eliminar</button></td>
-                </tr>
+                <!-- Se llenará dinámicamente -->
             </tbody>
         </table>
+
+
+        <div class="form-group">
+            <label><strong>Total Venta:</strong></label>
+            <span id="total-venta">0.00 Bs.</span>
+        </div>
+
 
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Registrar Venta</button>
@@ -65,28 +128,93 @@
 
 <script>
 
-function agregarFila() {
-
-    let tabla = document.querySelector("#tabla-detalles tbody");
-    let fila = tabla.rows[0].cloneNode(true);
-
-    fila.querySelectorAll("input").forEach(input => input.value = "");
-    fila.querySelector("select").selectedIndex = 0;
-
-    tabla.appendChild(fila);
-}
-
-function eliminarFila(btn) {
-
-    let tabla = document.querySelector("#tabla-detalles tbody");
-
-    if (tabla.rows.length === 1) {
-        alert("Debe existir al menos una joya.");
-        return;
+    function mostrarCliente(select) {
+        let option = select.options[select.selectedIndex];
+        if (option.value) {
+            document.getElementById("cliente-nombre").value = option.dataset.nombre;
+            document.getElementById("cliente-direccion").value = option.dataset.direccion;
+            document.getElementById("cliente-ci").value = option.dataset.ci;
+        } else {
+            document.getElementById("cliente-nombre").value = "";
+            document.getElementById("cliente-direccion").value = "";
+            document.getElementById("cliente-ci").value = "";
+        }
     }
 
-    btn.closest("tr").remove();
-}
+    function mostrarJoya(select) {
+        let option = select.options[select.selectedIndex];
+        if (option.value) {
+            document.getElementById("joya-codigo").value = option.dataset.codigo;
+            document.getElementById("joya-nombre").value = option.dataset.nombre;
+            document.getElementById("joya-categoria").value = option.dataset.categoria;
+            document.getElementById("joya-stock").value = option.dataset.stock;
+            document.getElementById("joya-precio").value = option.dataset.precio;
+        } else {
+            document.getElementById("joya-codigo").value = "";
+            document.getElementById("joya-nombre").value = "";
+            document.getElementById("joya-categoria").value = "";
+            document.getElementById("joya-stock").value = "";
+            document.getElementById("joya-precio").value = "";
+        }
+    }
+
+    function agregarJoya() {
+        let select = document.getElementById("joya-select");
+        let option = select.options[select.selectedIndex];
+        if (!option.value) return;
+
+        let cantidad = document.getElementById("cantidad").value;
+        let precio = document.getElementById("precio").value;
+
+        if (!cantidad || !precio) {
+            alert("Debe ingresar cantidad y precio antes de agregar.");
+            return;
+        }
+
+        let subtotal = (parseFloat(cantidad) * parseFloat(precio)).toFixed(2);
+
+        let tabla = document.querySelector("#tabla-detalles tbody");
+        let fila = document.createElement("tr");
+
+        fila.innerHTML = `
+            <td>${option.dataset.codigo}
+                <input type="hidden" name="id_joya[]" value="${option.value}">
+            </td>
+            <td>${option.dataset.nombre}</td>
+            <td>${option.dataset.stock}</td>
+            <td>
+                ${cantidad}
+                <input type="hidden" name="cantidad[]" value="${cantidad}">
+            </td>
+            <td>
+                ${precio}
+                <input type="hidden" name="precio[]" value="${precio}">
+            </td>
+            <td>
+                ${subtotal}
+                <input type="hidden" name="subtotal[]" value="${subtotal}">
+            </td>
+            <td><button type="button" class="btn btn-danger" onclick="eliminarFila(this)">Eliminar</button></td>
+        `;
+
+        tabla.appendChild(fila);
+
+        actualizarTotal();
+    }
+
+    function eliminarFila(btn) {
+        btn.closest("tr").remove();
+        actualizarTotal();
+    }
+
+    function actualizarTotal() {
+        let total = 0;
+        document.querySelectorAll("#tabla-detalles tbody tr").forEach(fila => {
+            let subtotal = parseFloat(fila.querySelector("input[name='subtotal[]']").value);
+            total += subtotal;
+        });
+        document.getElementById("total-venta").innerText = total.toFixed(2) + " Bs.";
+    }
 
 </script>
 

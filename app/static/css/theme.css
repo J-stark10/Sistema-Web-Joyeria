@@ -210,13 +210,6 @@ a { text-decoration: none; color: inherit; }
   background: #df2929;
 }
 
-/* ── Dark Mode Tabla Detalle de Venta ── */
-[data-theme="dark"] #tabla-detalles td input,
-[data-theme="dark"] #tabla-detalles td select {
-  color: var(--text-primary);
-  border-bottom: 0.5px solid var(--border);
-}
-
 /* ── Dark Mode Ver detalle ── */
 [data-theme="dark"] .info-item {
   background: var(--bg-card);
