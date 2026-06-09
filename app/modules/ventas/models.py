@@ -28,17 +28,22 @@ class Venta(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def calcular_total(self):
-        return sum(d.subtotal for d in self.detalles)
+    # def calcular_total(self):
+    #     return sum(d.subtotal for d in self.detalles)
 
-    def actualizar_total(self):
-        self.total_venta = sum(d.subtotal for d in self.detalles)
+    # def actualizar_total(self):
+    #     self.total_venta = sum(d.subtotal for d in self.detalles)
 
-    def recalcular_total(self):
-        self.total_venta = sum(
-            Decimal(d.subtotal) for d in self.detalles
-        )
-        db.session.commit()
+    # def recalcular_total(self):
+    #     self.total_venta = sum(
+    #         Decimal(d.subtotal) for d in self.detalles
+    #     )
+    #     db.session.commit()
+    
+    def recalcular_total(self, commit=False):
+        self.total_venta = sum(Decimal(d.subtotal) for d in self.detalles)
+        if commit:
+            db.session.commit()
 
     def anular(self):
         self.estado = 'ANULADA'

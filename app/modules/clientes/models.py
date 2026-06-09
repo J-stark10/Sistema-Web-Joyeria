@@ -34,7 +34,7 @@ class Cliente(db.Model):
             self.activo = activo
         db.session.commit()
 
-    def delete(self):
+    def deactivate(self):
         self.activo = False
         db.session.commit()
 

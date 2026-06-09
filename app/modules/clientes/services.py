@@ -79,7 +79,7 @@ class ClienteService:
 
         if not cliente:
             raise ValueError( "Cliente no encontrado." )
-        cliente.delete()
+        cliente.deactivate()
 
     # ==========================
     # REACTIVAR 
