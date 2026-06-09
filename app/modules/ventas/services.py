@@ -22,10 +22,10 @@ class VentaService:
 
     @staticmethod
     def crear_venta(id_usuario, id_cliente, items):
-        try:
+        try:            
             venta = Venta(
-                id_usuario=id_usuario,
-                id_cliente=id_cliente if id_cliente else None,
+                id_usuario=int(id_usuario),
+                id_cliente=int(id_cliente),
                 total_venta=0
             )
 
@@ -34,15 +34,19 @@ class VentaService:
             total = 0
 
             for item in items:
-                joya = Joya.query.get(item["id_joya"])
+                joya = Joya.query.get(int(item["id_joya"]))
 
                 if not joya:
                     raise ValueError("Joya no encontrada")
+                
+                cantidad = int(item["cantidad"])
+                precio = Decimal(str(item["precio"]))
 
-                if joya.stock_actual < item["cantidad"]:
+                if joya.stock_actual < cantidad:
                     raise ValueError(f"Stock insuficiente para {joya.nombre}")
 
-                subtotal = Decimal(item["cantidad"] * item["precio"])
+                subtotal = (Decimal(cantidad) * precio).quantize(Decimal("0.01"))
+                
 
                 detalle = DetalleVenta(
                     venta=venta,
@@ -54,10 +58,10 @@ class VentaService:
 
                 db.session.add(detalle)
 
-                joya.stock_actual -= item["cantidad"]
+                joya.disminuir_stock(item["cantidad"])
                 total += subtotal
 
-            venta.total_venta = total
+            venta.total_venta = total.quantize(Decimal("0.01")) # Redondeamos
 
             db.session.commit()
             return venta
