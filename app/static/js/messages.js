@@ -1,8 +1,9 @@
 function initMessages(autoHide = true, delay = 4000) {
-  const messages = document.querySelectorAll(".msg");
+  const messages = document.querySelectorAll(".flash");
 
   messages.forEach(msg => {
-    const closeBtn = msg.querySelector(".msg-close");
+
+    const closeBtn = msg.querySelector(".flash-close");
     if (closeBtn) {
       closeBtn.addEventListener("click", () => {
         msg.remove();

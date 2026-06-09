@@ -1,10 +1,10 @@
-<div class="msg-container">
+<div class="flash-container">
     {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
             {% for cat, msg in messages %}
-            <div class="msg msg-{{ cat }}">
+            <div class="flash flash-{{ cat }}">
                 <span>{{ msg }}</span>
-                <button class="msg-close">&times;</button>
+                <button class="flash-close">&times;</button>
             </div>
             {% endfor %}
         {% endif %}
