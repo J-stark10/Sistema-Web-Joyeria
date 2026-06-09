@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}Reporte de Ventas{% endblock %}
+
+{% block content %}
+
+<div class="container mx-auto">
+
+    <h1 class="text-2xl font-bold mb-6">
+        Reporte de Ventas
+    </h1>
+
+    <form method="POST" class="mb-6">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <div>
+                <label class="block mb-2">
+                    Fecha Inicio
+                </label>
+
+                <input
+                    type="date"
+                    name="fecha_inicio"
+                    class="border rounded w-full p-2"
+                    required
+                >
+            </div>
+
+            <div>
+                <label class="block mb-2">
+                    Fecha Fin
+                </label>
+
+                <input
+                    type="date"
+                    name="fecha_fin"
+                    class="border rounded w-full p-2"
+                    required
+                >
+            </div>
+
+        </div>
+
+        <button
+            type="submit"
+            class="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
+        >
+            Generar Reporte
+        </button>
+
+    </form>
+
+    {% if ventas %}
+
+    <div class="overflow-x-auto">
+
+        <table class="table-auto w-full border">
+
+            <thead>
+
+                <tr>
+
+                    <th class="border p-2">
+                        N°
+                    </th>
+
+                    <th class="border p-2">
+                        Fecha
+                    </th>
+
+                    <th class="border p-2">
+                        Cliente
+                    </th>
+
+                    <th class="border p-2">
+                        Vendedor
+                    </th>
+
+                    <th class="border p-2">
+                        Total
+                    </th>
+
+                    <th class="border p-2">
+                        Estado
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for venta in ventas %}
+
+                <tr>
+
+                    <td class="border p-2">
+                        {{ venta.id_venta }}
+                    </td>
+
+                    <td class="border p-2">
+                        {{ venta.fecha_venta.strftime('%d/%m/%Y') }}
+                    </td>
+
+                    <td class="border p-2">
+
+                        {% if venta.cliente %}
+                            {{ venta.cliente.nombre }}
+                        {% else %}
+                            Consumidor Final
+                        {% endif %}
+
+                    </td>
+
+                    <td class="border p-2">
+                        {{ venta.usuario.nombre_usuario }}
+                    </td>
+
+                    <td class="border p-2">
+                        Bs. {{ venta.total_venta }}
+                    </td>
+
+                    <td class="border p-2">
+                        {{ venta.estado }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <div class="mt-4 text-xl font-bold">
+
+        Total Ventas:
+        Bs. {{ total_ventas }}
+
+    </div>
+
+    {% endif %}
+
+    {% if ventas %}
+
+    <a
+        href="{{ url_for('reporte.ventas_pdf', fecha_inicio=fecha_inicio, fecha_fin=fecha_fin) }}"
+        class="px-4 py-2 bg-red-600 text-white rounded"
+    >
+        Exportar PDF
+    </a>
+
+    {% endif %}
+</div>
+
+{% endblock %}

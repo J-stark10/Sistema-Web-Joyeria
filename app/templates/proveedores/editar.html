@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block titulo %}Editar Proveedor{% endblock %}
+
+{% block page_title %}Editar Proveedor{% endblock %}
+
+{% block page_sub %}
+Modificar información del proveedor
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <form method="POST">
+
+        <div class="form-group">
+            <label>Razón Social</label>
+            <input type="text"
+                   name="nombre_razon_social"
+                   value="{{ proveedor.nombre_razon_social }}"
+                   required>
+        </div>
+
+        <div class="form-group">
+            <label>NIT</label>
+            <input type="text"
+                   name="nit"
+                   value="{{ proveedor.nit }}"
+                   required>
+        </div>
+
+        <div class="form-group">
+            <label>Teléfono</label>
+            <input type="text"
+                   name="telefono"
+                   value="{{ proveedor.telefono }}"
+                   required>
+        </div>
+
+        <div class="form-group">
+            <label>Correo</label>
+            <input type="email"
+                   name="correo"
+                   value="{{ proveedor.correo or '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>
+                <input type="checkbox"
+                       name="activo"
+                       {% if proveedor.activo %}checked{% endif %}>
+                Proveedor activo
+            </label>
+        </div>
+
+        <button type="submit">
+            Actualizar
+        </button>
+
+        <a href="{{ url_for('proveedor.index') }}">
+            Cancelar
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

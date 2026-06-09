@@ -1,35 +1,44 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_login import LoginManager
-from flask_bcrypt import Bcrypt
 from config import config_dict
+from app.extensions import *
 
-db = SQLAlchemy()
-migrate = Migrate()
-login_manager = LoginManager()
-bcrypt = Bcrypt()
+from app.auth.login_manager import (init_login_manager)
 
 
-def create_app(config_name='default'):
+def create_app(config_name="default"):
     app = Flask(__name__)
     app.config.from_object(config_dict[config_name])
 
     db.init_app(app)
     migrate.init_app(app, db)
-    login_manager.init_app(app)
     bcrypt.init_app(app)
 
-    from app.auth.login_manager import load_user
+    init_login_manager(app)
 
-    login_manager.login_view = 'auth.login'
-    login_manager.login_message = 'Debes iniciar sesión para acceder.'
-    login_manager.login_message_category = 'warning'
-
-    from app.routes.auth import auth_bp
-    from app.routes.dashboard import dashboard_bp
+    from app.auth.routes import auth_bp
+    from app.core.dashboard import dashboard_bp
+    from app.modules.usuarios.routes import usuario_bp
+    from app.modules.clientes.routes import cliente_bp
+    from app.modules.proveedores.routes import proveedor_bp
+    from app.modules.materiales.routes import material_bp
+    from app.modules.categorias.routes import categoria_bp
+    from app.modules.joyas.routes import joya_bp
+    from app.modules.compras.routes import compra_bp
+    from app.modules.ventas.routes import venta_bp
+    from app.modules.inventario.routes import inventario_bp
+    from app.modules.reportes.routes import reporte_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
+    app.register_blueprint(usuario_bp)
+    app.register_blueprint(cliente_bp)
+    app.register_blueprint(proveedor_bp)
+    app.register_blueprint(material_bp)
+    app.register_blueprint(categoria_bp)
+    app.register_blueprint(joya_bp)
+    app.register_blueprint(compra_bp)
+    app.register_blueprint(venta_bp)
+    app.register_blueprint(inventario_bp)
+    app.register_blueprint(reporte_bp)
 
     return app

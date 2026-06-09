@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+Compras
+{% endblock %}
+
+{% block page_title %}
+Compras
+{% endblock %}
+
+{% block page_sub %}
+Gestión de compras registradas
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <div class="card-header">
+
+        <div class="card-title">
+            Listado de Compras
+        </div>
+
+        <a href="{{ url_for('compra.crear') }}"
+           class="btn btn-primary">
+            Nueva Compra
+        </a>
+
+    </div>
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Proveedor</th>
+                <th>Usuario</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for compra in compras %}
+
+            <tr>
+
+                <td>
+                    {{ compra.id_compra }}
+                </td>
+
+                <td>
+                    {{ compra.fecha_compra.strftime('%d/%m/%Y %H:%M') }}
+                </td>
+
+                <td>
+                    {{ compra.proveedor.nombre_razon_social }}
+                </td>
+
+                <td>
+                    {{ compra.usuario.nombre_usuario }}
+                </td>
+
+                <td>
+                    Bs. {{ compra.total_compra }}
+                </td>
+
+                <td>
+
+                    {% if compra.estado == 'COMPLETADA' %}
+
+                        <span class="badge badge-success">
+                            COMPLETADA
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge badge-danger">
+                            ANULADA
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    <a href="{{ url_for('compra.detalle', id_compra=compra.id_compra) }}">
+                        Ver
+                    </a>
+
+                    {% if compra.estado == 'COMPLETADA' %}
+
+                        |
+
+                        <a href="{{ url_for('compra.anular', id_compra=compra.id_compra) }}"
+                           onclick="return confirm('¿Anular esta compra?')">
+                            Anular
+                        </a>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

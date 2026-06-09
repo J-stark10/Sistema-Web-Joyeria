@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block titulo %}Clientes{% endblock %}
+
+{% block page_title %}Clientes{% endblock %}
+
+{% block page_sub %}
+Gestión de clientes registrados
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <div class="card-header">
+        <div class="card-title">Listado de clientes</div>
+
+        <a href="{{ url_for('cliente.crear') }}"
+           class="btn btn-primary">
+            Nuevo Cliente
+        </a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>CI / NIT</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for cliente in clientes %}
+
+            <tr>
+
+                <td>{{ cliente.nombre }}</td>
+
+                <td>{{ cliente.ci_nit }}</td>
+
+                <td>{{ cliente.telefono or '-' }}</td>
+
+                <td>{{ cliente.direccion or '-' }}</td>
+
+                <td>
+                    {% if cliente.activo %}
+                        <span class="badge badge-success">Activo</span>
+                    {% else %}
+                        <span class="badge badge-danger">Inactivo</span>
+                    {% endif %}
+                </td>
+
+                <td>
+
+                    <a href="{{ url_for('cliente.editar', id_cliente=cliente.id_cliente) }}"  class="badge badge-silver">
+                        Editar
+                    </a>
+
+                    {% if cliente.activo %}
+
+                    <a href="{{ url_for('cliente.desactivar', id_cliente=cliente.id_cliente) }}" class="badge badge-warning"
+                       onclick="return confirm('¿Desactivar cliente?')">
+                        Desactivar
+                    </a>
+
+                    {% else %}
+
+                    <a href="{{ url_for('cliente.activar', id_cliente=cliente.id_cliente) }}" class="badge badge-success">
+                        Activar
+                    </a>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

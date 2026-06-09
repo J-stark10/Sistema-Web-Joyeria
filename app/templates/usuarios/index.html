@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Usuarios
+{% endblock %}
+
+{% block content %}
+
+<h2>Usuarios</h2>
+
+<a href="{{ url_for('usuario.crear') }}">
+    Nuevo Usuario
+</a>
+
+<table border="1">
+
+    <tr>
+        <th>ID</th>
+        <th>Usuario</th>
+        <th>Rol</th>
+        <th>Activo</th>
+        <th>Acciones</th>
+    </tr>
+
+    {% for usuario in usuarios %}
+    <tr>
+
+        <td>{{ usuario.id_usuario }}</td>
+
+        <td>{{ usuario.nombre_usuario }}</td>
+
+        <td>{{ usuario.rol }}</td>
+
+        <td>{{ usuario.activo }}</td>
+
+        <td>
+
+            <a href="{{ url_for('usuario.editar',
+                id_usuario=usuario.id_usuario) }}">
+                Editar
+            </a>
+
+        </td>
+
+    </tr>
+    {% endfor %}
+
+</table>
+
+{% endblock %}

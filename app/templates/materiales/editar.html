@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block titulo %}Editar Material{% endblock %}
+
+{% block page_title %}Editar Material{% endblock %}
+
+{% block page_sub %}
+Modificar información del material
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <form method="POST">
+
+        <div class="form-group">
+            <label>Nombre del Material</label>
+
+            <input type="text"
+                   name="nombre_material"
+                   value="{{ material.nombre_material }}"
+                   required>
+        </div>
+
+        <button type="submit">
+            Actualizar
+        </button>
+
+        <a href="{{ url_for('material.index') }}">
+            Cancelar
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

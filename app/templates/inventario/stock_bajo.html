@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Stock Bajo{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>Joyas con Stock Bajo</h2>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Stock Actual</th>
+                <th>Stock Mínimo</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for joya in joyas %}
+
+            <tr>
+
+                <td>{{ joya.codigo }}</td>
+
+                <td>
+                    <a href="{{ url_for('inventario.historial', id_joya=joya.id_joya) }}">
+                        {{ joya.nombre }}
+                    </a>
+                </td>
+
+                <td>
+                    <span class="badge bg-danger">
+                        {{ joya.stock_actual }}
+                    </span>
+                </td>
+
+                <td>{{ joya.stock_minimo }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

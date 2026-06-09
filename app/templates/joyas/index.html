@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+Joyas
+{% endblock %}
+
+{% block page_title %}
+Joyas
+{% endblock %}
+
+{% block page_sub %}
+Gestión de joyas registradas
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <div class="card-header">
+        <div class="card-title">Listado de Joyas</div>
+
+        <a href="{{ url_for('joya.crear') }}"
+           class="btn btn-primary">
+            Nueva Joya
+        </a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Material</th>
+                <th>Precio Compra</th>
+                <th>Precio Venta</th>
+                <th>Stock</th>
+                <th>Estado</th>
+                <th width="180">Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for joya in joyas %}
+
+            <tr>
+
+                <td>{{ joya.codigo }}</td>
+
+                <td>{{ joya.nombre }}</td>
+
+                <td>{{ joya.categoria.nombre_categoria }}</td>
+
+                <td>{{ joya.material.nombre_material }}</td>
+
+                <td>Bs. {{ joya.precio_compra }}</td>
+
+                <td>Bs. {{ joya.precio_venta }}</td>
+
+                <td>
+
+                    {% if joya.stock_bajo %}
+                        <span class="badge badge-danger">
+                            {{ joya.stock_actual }}
+                        </span>
+                    {% else %}
+                        {{ joya.stock_actual }}
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {% if joya.activo %}
+                        <span class="badge badge-success">
+                            Activo
+                        </span>
+                    {% else %}
+                        <span class="badge badge-danger">
+                            Inactivo
+                        </span>
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    <a href="{{ url_for('joya.editar', id_joya=joya.id_joya) }}">
+                        Editar
+                    </a>
+
+                    |
+
+                    {% if joya.activo %}
+
+                    <a href="{{ url_for('joya.desactivar', id_joya=joya.id_joya) }}"
+                       onclick="return confirm('¿Desactivar joya?')">
+                        Desactivar
+                    </a>
+
+                    {% else %}
+
+                    <a href="{{ url_for('joya.activar', id_joya=joya.id_joya) }}">
+                        Activar
+                    </a>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

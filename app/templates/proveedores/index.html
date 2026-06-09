@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block titulo %}Proveedores{% endblock %}
+
+{% block page_title %}Proveedores{% endblock %}
+
+{% block page_sub %}
+Gestión de proveedores registrados
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <div class="card-header">
+        <div class="card-title">Listado de proveedores</div>
+
+        <a href="{{ url_for('proveedor.crear') }}" class="btn btn-primary">
+            Nuevo Proveedor
+        </a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Razón Social</th>
+                <th>NIT</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for proveedor in proveedores %}
+
+            <tr>
+
+                <td>{{ proveedor.nombre_razon_social }}</td>
+
+                <td>{{ proveedor.nit }}</td>
+
+                <td>{{ proveedor.telefono }}</td>
+
+                <td>{{ proveedor.correo or '-' }}</td>
+
+                <td>
+                    {% if proveedor.activo %}
+                        <span class="badge badge-success">Activo</span>
+                    {% else %}
+                        <span class="badge badge-danger">Inactivo</span>
+                    {% endif %}
+                </td>
+
+                <td>
+
+                    <a href="{{ url_for('proveedor.editar', id_proveedor=proveedor.id_proveedor) }}">
+                        Editar
+                    </a>
+
+                    {% if proveedor.activo %}
+
+                    <a href="{{ url_for('proveedor.desactivar', id_proveedor=proveedor.id_proveedor) }}"
+                       onclick="return confirm('¿Desactivar proveedor?')">
+                        Desactivar
+                    </a>
+
+                    {% else %}
+
+                    <a href="{{ url_for('proveedor.activar', id_proveedor=proveedor.id_proveedor) }}">
+                        Activar
+                    </a>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

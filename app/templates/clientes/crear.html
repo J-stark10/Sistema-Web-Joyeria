@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block titulo %}Nuevo Cliente{% endblock %}
+
+{% block page_title %}Nuevo Cliente{% endblock %}
+
+{% block page_sub %}
+Registrar cliente en el sistema
+{% endblock %}
+
+{% block content %}
+
+<div class="card card-form">
+    <form method="POST" class="form-grid">
+
+        <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input id="nombre" type="text" name="nombre" placeholder="Ej. Juan Perez" required>
+        </div>
+
+        <div class="form-group">
+            <label for="ci_nit">CI / NIT</label>
+            <input id="ci_nit" type="number" name="ci_nit" placeholder="Ej. 78547986" required>
+        </div>
+
+        <div class="form-group">
+            <label for="telefono">Teléfono</label>
+            <input id="telefono" type="number" name="telefono" placeholder="Ej. 787965452">
+        </div>
+
+        <div class="form-group">
+            <label for="direccion">Dirección</label>
+            <textarea id="direccion" type="text" name="direccion" placeholder="Ej. Av. Butch"></textarea>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{{ url_for('cliente.index') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+
+    </form>
+</div>
+
+{% endblock %}

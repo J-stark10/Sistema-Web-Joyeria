@@ -3,6 +3,8 @@
 ## 0. Si estas en linux
 `python3` en ves de `python`
 
+---
+
 ## 1. Clonar el repositorio
 
 ```bash

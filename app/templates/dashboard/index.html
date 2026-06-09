@@ -19,28 +19,173 @@ Resumen general del sistema
 
 {% block content %}
 
-<div class="dashboard-grid">
+  <div class="content">
 
-    <div class="card">
-        <h3>Ventas Hoy</h3>
-        <h2>Bs. 1,250</h2>
+    <!-- Métricas -->
+    <div class="metrics-grid">
+
+      <div class="metric-card">
+        <div class="metric-label">
+          <div class="metric-dot" style="background:#EF9F27;"></div>
+          Ventas hoy
+        </div>
+        <div class="metric-value" style="color: var(--gold-600);">Bs. 1.240</div>
+        <div class="metric-sub">6 transacciones</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">
+          <div class="metric-dot" style="background:#1D9E75;"></div>
+          Stock disponible
+        </div>
+        <div class="metric-value" style="color: #0F6E56;">47 items</div>
+        <div class="metric-sub">5 categorías</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">
+          <div class="metric-dot" style="background:#ef4444;"></div>
+          Stock bajo mínimo
+        </div>
+        <div class="metric-value" style="color:#ef4444;">3 joyas</div>
+        <div class="metric-sub">Requieren reposición</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">
+          <div class="metric-dot" style="background:#888780;"></div>
+          Proveedores activos
+        </div>
+        <div class="metric-value" style="color: var(--text-primary);">8</div>
+        <div class="metric-sub">Plata, oro y piedras</div>
+      </div>
+
     </div>
 
-    <div class="card">
-        <h3>Stock Disponible</h3>
-        <h2>57</h2>
+    <!-- Accesos rápidos -->
+    <div class="quick-grid">
+      <a class="quick-btn" href="{{ url_for('venta.crear') }}">
+        <div class="quick-icon" style="background:var(--gold-50);">💍</div>
+        <div class="quick-label">Nueva venta</div>
+      </a>
+      <a class="quick-btn" href="#">
+        <div class="quick-icon" style="background:var(--teal-50);">📦</div>
+        <div class="quick-label">Registrar compra</div>
+      </a>
+      <a class="quick-btn" href="#">
+        <div class="quick-icon" style="background:var(--silver-50);">📊</div>
+        <div class="quick-label">Generar reporte</div>
+      </a>
     </div>
 
-    <div class="card">
-        <h3>Stock Bajo</h3>
-        <h2>4</h2>
+    <!-- Tabla + Panel stock -->
+    <div class="two-col">
+
+      <!-- Últimas ventas -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Últimas ventas registradas</div>
+          <a class="card-action" href="#">Ver historial →</a>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>N.° Venta</th>
+              <th>Cliente</th>
+              <th>Producto</th>
+              <th>Total</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="td-muted">#0042</span></td>
+              <td>María Quispe</td>
+              <td>Anillo Plata 925</td>
+              <td style="font-weight:500; color:var(--gold-600);">Bs. 320</td>
+              <td><span class="badge badge-success">Completada</span></td>
+            </tr>
+            <tr>
+              <td><span class="td-muted">#0041</span></td>
+              <td>—</td>
+              <td>Collar Bolivianita</td>
+              <td style="font-weight:500; color:var(--gold-600);">Bs. 580</td>
+              <td><span class="badge badge-success">Completada</span></td>
+            </tr>
+            <tr>
+              <td><span class="td-muted">#0040</span></td>
+              <td>Carlos Mendoza</td>
+              <td>Aros Oro 18K</td>
+              <td style="font-weight:500; color:var(--gold-600);">Bs. 1.200</td>
+              <td><span class="badge badge-success">Completada</span></td>
+            </tr>
+            <tr>
+              <td><span class="td-muted">#0039</span></td>
+              <td>Inst. Corp. S.A.</td>
+              <td>Pulsera Plata 950 ×3</td>
+              <td style="font-weight:500; color:var(--gold-600);">Bs. 870</td>
+              <td><span class="badge badge-success">Completada</span></td>
+            </tr>
+            <tr>
+              <td><span class="td-muted">#0038</span></td>
+              <td>Ana Torres</td>
+              <td>Dije Cuarzo Rosa</td>
+              <td style="font-weight:500; color:var(--gold-600);">Bs. 190</td>
+              <td><span class="badge badge-success">Completada</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Panel stock bajo -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">⚠ Stock bajo mínimo</div>
+          <a class="card-action" href="#">Gestionar →</a>
+        </div>
+        <div class="stock-list">
+
+          <div class="stock-item">
+            <div class="stock-gem">💎</div>
+            <div class="stock-info">
+              <div class="stock-name">Anillo Oro 18K</div>
+              <div class="stock-material">Oro 18 quilates</div>
+            </div>
+            <div class="stock-qty">
+              <div class="stock-current">2</div>
+              <div class="stock-min">mín. 5</div>
+            </div>
+          </div>
+
+          <div class="stock-item">
+            <div class="stock-gem">🔮</div>
+            <div class="stock-info">
+              <div class="stock-name">Collar Bolivianita</div>
+              <div class="stock-material">Piedra semipreciosa</div>
+            </div>
+            <div class="stock-qty">
+              <div class="stock-current">1</div>
+              <div class="stock-min">mín. 3</div>
+            </div>
+          </div>
+
+          <div class="stock-item">
+            <div class="stock-gem">⭐</div>
+            <div class="stock-info">
+              <div class="stock-name">Pulsera Plata 950</div>
+              <div class="stock-material">Plata 950</div>
+            </div>
+            <div class="stock-qty">
+              <div class="stock-current">3</div>
+              <div class="stock-min">mín. 8</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
 
-    <div class="card">
-        <h3>Proveedores</h3>
-        <h2>12</h2>
-    </div>
-
-</div>
+  </div>
 
 {% endblock %}

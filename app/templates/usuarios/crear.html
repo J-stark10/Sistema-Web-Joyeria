@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+Crear Usuario
+{% endblock %}
+
+{% block page_title %}
+Usuarios
+{% endblock %}
+
+{% block page_sub %}
+Registrar nuevo usuario del sistema
+{% endblock %}
+
+{% block content %}
+
+<div class="content">
+
+    <div class="card form-card">
+
+        <div class="card-header">
+            <div class="card-title">
+                Nuevo Usuario
+            </div>
+        </div>
+
+        <form method="POST" class="form-grid">
+
+            <div class="form-group">
+                <label>Nombre de usuario</label>
+                <input
+                    type="text"
+                    name="nombre_usuario"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input
+                    type="password"
+                    name="password"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Rol</label>
+
+                <select name="rol">
+
+                    <option value="ADMIN">
+                        Administrador
+                    </option>
+
+                    <option value="VENDEDOR">
+                        Vendedor
+                    </option>
+
+                </select>
+            </div>
+
+            <div class="form-actions">
+
+                <a
+                    href="{{ url_for('usuario.index') }}"
+                    class="btn btn-secondary"
+                >
+                    Cancelar
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Guardar Usuario
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

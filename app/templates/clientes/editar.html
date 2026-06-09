@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block titulo %}Editar Cliente{% endblock %}
+
+{% block page_title %}Editar Cliente{% endblock %}
+
+{% block page_sub %}
+Modificar información del cliente
+{% endblock %}
+
+{% block content %}
+
+<div class="card card-form">
+    <form method="POST" class="form-grid">
+
+        <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input id="nombre" type="text" name="nombre" value="{{ cliente.nombre }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="ci_nit">CI / NIT</label>
+            <input id="ci_nit" type="text" name="ci_nit" value="{{ cliente.ci_nit }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="telefono">Teléfono</label>
+            <input id="telefono" type="text" name="telefono" value="{{ cliente.telefono or '' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="direccion">Dirección</label>
+            <textarea id="direccion" name="direccion">{{ cliente.direccion or '' }}</textarea>
+        </div>
+
+        <div class="form-check">
+            <input id="activo" type="checkbox" name="activo" {% if cliente.activo %}checked{% endif %}>
+            <label for="activo">Cliente activo</label>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Actualizar</button>
+            <a href="{{ url_for('cliente.index') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+
+    </form>
+</div>
+
+
+{% endblock %}
