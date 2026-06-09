@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-
+from decimal import Decimal
 from app.modules.ventas.services import VentaService
 from app.modules.clientes.models import Cliente
 from app.modules.joyas.models import Joya
@@ -34,12 +34,12 @@ def crear():
                 items.append({
                     "id_joya": int(ids[i]),
                     "cantidad": int(cantidades[i]),
-                    "precio": float(precios[i])
+                    "precio": Decimal(precios[i])
                 })
 
             VentaService.crear_venta(
                 id_usuario=current_user.id_usuario,
-                id_cliente=request.form.get("id_cliente"),
+                id_cliente=int(request.form.get("id_cliente")),
                 items=items
             )
             flash("Venta registrada correctamente", "success")

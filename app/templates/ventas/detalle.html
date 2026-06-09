@@ -15,69 +15,57 @@ Venta #{{ venta.id_venta }}
 {% block content %}
 
 <div class="card">
+  <div class="card-header">
+    <div class="card-title">Información General</div>
+  </div>
 
-    <div class="card-header">
-        <div class="card-title">
-            Información General
-        </div>
+  <div class="info-grid">
+    <div class="info-item">
+      <span class="label">ID Venta</span>
+      <span class="value">{{ venta.id_venta }}</span>
     </div>
 
-    <table>
-        <tbody>
+    <div class="info-item">
+      <span class="label">Cliente</span>
+      <span class="value">{{ venta.cliente.nombre }}</span>
+    </div>
 
-            <tr>
-                <th>ID Venta</th>
-                <td>{{ venta.id_venta }}</td>
-            </tr>
+    <div class="info-item">
+      <span class="label">CI/NIT</span>
+      <span class="value">{{ venta.cliente.ci_nit }}</span>
+    </div>
 
-            <tr>
-                <th>Cliente</th>
-                <td>{{ venta.cliente.nombre }}</td>
-            </tr>
+    <div class="info-item">
+      <span class="label">Teléfono</span>
+      <span class="value">{{ venta.cliente.telefono }}</span>
+    </div>
 
-            <tr>
-                <th>Usuario</th>
-                <td>{{ venta.usuario.nombre_usuario }}</td>
-            </tr>
+    <div class="info-item">
+      <span class="label">Dirección</span>
+      <span class="value">{{ venta.cliente.direccion }}</span>
+    </div>
 
-            <tr>
-                <th>Fecha</th>
-                <td>{{ venta.fecha_venta.strftime('%d/%m/%Y %H:%M') }}</td>
-            </tr>
+    <div class="info-item">
+      <span class="label">Usuario</span>
+      <span class="value">{{ venta.usuario.nombre_usuario }}</span>
+    </div>
 
-            <tr>
-                <th>Estado</th>
-                <td>
+    <div class="info-item">
+      <span class="label">Fecha</span>
+      <span class="value">{{ venta.fecha_venta.strftime('%d/%m/%Y %H:%M') }}</span>
+    </div>
 
-                    {% if venta.estado == 'COMPLETADA' %}
-
-                        <span class="badge badge-success">
-                            COMPLETADA
-                        </span>
-
-                    {% else %}
-
-                        <span class="badge badge-danger">
-                            ANULADA
-                        </span>
-
-                    {% endif %}
-
-                </td>
-            </tr>
-
-            <tr>
-                <th>Total</th>
-                <td>
-                    <strong>
-                        Bs. {{ venta.total_venta }}
-                    </strong>
-                </td>
-            </tr>
-
-        </tbody>
-    </table>
-
+    <div class="info-item">
+      <span class="label">Estado</span>
+      <span class="value">
+        {% if venta.estado == 'COMPLETADA' %}
+          <span class="badge badge-success">COMPLETADA</span>
+        {% else %}
+          <span class="badge badge-danger">ANULADA</span>
+        {% endif %}
+      </span>
+    </div>
+  </div>
 </div>
 
 <br>
@@ -90,7 +78,7 @@ Venta #{{ venta.id_venta }}
         </div>
     </div>
 
-    <table>
+    <table class="detail-table">
 
         <thead>
             <tr>

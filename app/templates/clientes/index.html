@@ -57,20 +57,20 @@ Gestión de clientes registrados
 
                 <td>
 
-                    <a href="{{ url_for('cliente.editar', id_cliente=cliente.id_cliente) }}">
+                    <a href="{{ url_for('cliente.editar', id_cliente=cliente.id_cliente) }}"  class="badge badge-silver">
                         Editar
                     </a>
 
                     {% if cliente.activo %}
 
-                    <a href="{{ url_for('cliente.desactivar', id_cliente=cliente.id_cliente) }}"
+                    <a href="{{ url_for('cliente.desactivar', id_cliente=cliente.id_cliente) }}" class="badge badge-warning"
                        onclick="return confirm('¿Desactivar cliente?')">
                         Desactivar
                     </a>
 
                     {% else %}
 
-                    <a href="{{ url_for('cliente.activar', id_cliente=cliente.id_cliente) }}">
+                    <a href="{{ url_for('cliente.activar', id_cliente=cliente.id_cliente) }}" class="badge badge-success">
                         Activar
                     </a>
 

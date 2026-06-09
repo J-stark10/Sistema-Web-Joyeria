@@ -22,6 +22,7 @@ class Joya(db.Model):
     detalles_venta = db.relationship('DetalleVenta', back_populates='joya', lazy=True)
     detalles_compra = db.relationship('DetalleCompra', backref='joya', lazy=True)
     ajustes = db.relationship('AjusteInventario', backref='joya', lazy=True)
+    categoria = db.relationship('Categoria', back_populates='joyas', lazy=True)
 
     # ==========================
     # PROPIEDADES

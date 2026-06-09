@@ -6,7 +6,7 @@ class Categoria(db.Model):
     id_categoria = db.Column(db.Integer, primary_key=True)
     nombre_categoria = db.Column(db.String(100), nullable=False, unique=True)
 
-    joyas = db.relationship('Joya', backref='categoria', lazy=True)
+    joyas = db.relationship('Joya', back_populates='categoria', lazy=True)
 
     # ==========================
     # CRUD
