@@ -114,7 +114,7 @@ a { text-decoration: none; color: inherit; }
 /* ── Flash messages ── */
 .flash-container {
   position: fixed;
-  top: 20px;
+  bottom: 20px;
   right: 20px;
   z-index: 9999;
   display: flex;
@@ -172,3 +172,66 @@ a { text-decoration: none; color: inherit; }
   transition: transform 0.2s;
 }
 [data-theme="dark"] .theme-toggle::after { transform: translateX(14px); }
+
+
+/* ── Dark Mode Forms ── */
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group select,
+[data-theme="dark"] .form-group textarea {
+  background: var(--bg-card);
+  border: 0.5px solid var(--border);
+  color: var(--text-primary);
+}
+[data-theme="dark"] .form-check input[type="checkbox"] {
+  accent-color: var(--gold-100);
+}
+
+[data-theme="dark"] .btn-secondary {
+  background: var(--silver-600);
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .btn-primary {
+  background: var(--gold-600);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+  background: var(--silver-900);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .btn-danger {
+  background: #ad1f1f;
+  color: #fff;
+}
+
+[data-theme="dark"] .btn-danger:hover {
+  background: #df2929;
+}
+
+/* ── Dark Mode Tabla Detalle de Venta ── */
+[data-theme="dark"] #tabla-detalles td input,
+[data-theme="dark"] #tabla-detalles td select {
+  color: var(--text-primary);
+  border-bottom: 0.5px solid var(--border);
+}
+
+/* ── Dark Mode Ver detalle ── */
+[data-theme="dark"] .info-item {
+  background: var(--bg-card);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .detail-table thead th {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .detail-table tbody tr:hover {
+  background: rgba(239,159,39,0.08);
+}
+
+[data-theme="dark"] .detail-table tfoot th {
+  background: var(--silver-900);
+  color: var(--text-primary);
+}
