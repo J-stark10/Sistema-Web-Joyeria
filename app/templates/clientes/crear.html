@@ -10,40 +10,35 @@ Registrar cliente en el sistema
 
 {% block content %}
 
-<div class="card">
-
-    <form method="POST">
+<div class="card card-form">
+    <form method="POST" class="form-grid">
 
         <div class="form-group">
-            <label>Nombre</label>
-            <input type="text" name="nombre" required>
+            <label for="nombre">Nombre</label>
+            <input id="nombre" type="text" name="nombre" placeholder="Ej. Juan Perez" required>
         </div>
 
         <div class="form-group">
-            <label>CI / NIT</label>
-            <input type="text" name="ci_nit" required>
+            <label for="ci_nit">CI / NIT</label>
+            <input id="ci_nit" type="number" name="ci_nit" placeholder="Ej. 78547986" required>
         </div>
 
         <div class="form-group">
-            <label>Teléfono</label>
-            <input type="text" name="telefono">
+            <label for="telefono">Teléfono</label>
+            <input id="telefono" type="number" name="telefono" placeholder="Ej. 787965452">
         </div>
 
         <div class="form-group">
-            <label>Dirección</label>
-            <input type="text" name="direccion">
+            <label for="direccion">Dirección</label>
+            <textarea id="direccion" type="text" name="direccion" placeholder="Ej. Av. Butch"></textarea>
         </div>
 
-        <button type="submit">
-            Guardar
-        </button>
-
-        <a href="{{ url_for('cliente.index') }}">
-            Cancelar
-        </a>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{{ url_for('cliente.index') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
 
     </form>
-
 </div>
 
 {% endblock %}
