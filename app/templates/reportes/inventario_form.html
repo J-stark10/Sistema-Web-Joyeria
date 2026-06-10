@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Reporte de Inventario Valorizado{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Reporte de Inventario Valorizado</h2>
+    <p class="text-muted">Seleccione filtros para generar el listado.</p>
+
+    <!-- Formulario de filtros -->
+    <form method="POST" class="row g-3 mb-4">
+        <div class="col-md-5">
+            <label for="id_categoria" class="form-label">Categoría</label>
+            <select name="id_categoria" id="id_categoria" class="form-select">
+                <option value="">-- Todas --</option>
+                {% for cat in categorias %}
+                <option value="{{ cat.id_categoria }}">{{ cat.nombre_categoria }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-5">
+            <label for="id_material" class="form-label">Material</label>
+            <select name="id_material" id="id_material" class="form-select">
+                <option value="">-- Todos --</option>
+                {% for mat in materiales %}
+                <option value="{{ mat.id_material }}">{{ mat.nombre_material }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+        </div>
+    </form>
+
+    <!-- Resultados: solo si existen -->
+    {% if resultados is not none %}
+        <hr>
+        <h4>Resultados</h4>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Código</th>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Material</th>
+                        <th>Stock Actual</th>
+                        <th>Precio Compra (Bs.)</th>
+                        <th>Valor Total en Stock (Bs.)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for joya in resultados %}
+                    <tr {% if joya.stock_bajo %}class="table-warning"{% endif %}>
+                        <td>{{ joya.codigo }}</td>
+                        <td>{{ joya.nombre }}</td>
+                        <td>{{ joya.categoria }}</td>
+                        <td>{{ joya.material }}</td>
+                        <td>{{ joya.stock_actual }}</td>
+                        <td>{{ "%.2f"|format(joya.precio_compra) }}</td>
+                        <td>{{ "%.2f"|format(joya.valor_total_stock) }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center">No hay joyas con los filtros seleccionados.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="table-secondary fw-bold">
+                        <td colspan="6" class="text-end">Total Valor Inventario:</td>
+                        <td>{{ "%.2f"|format(total_valor) }} Bs.</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <!-- Sección de alertas (stock bajo) -->
+        {% if alertas %}
+        <div class="alert alert-warning mt-3">
+            <strong>⚠️ Alertas de stock mínimo:</strong>
+            <ul>
+                {% for j in alertas %}
+                <li>{{ j.codigo }} - {{ j.nombre }}: Stock actual {{ j.stock_actual }} (mínimo {{ j.stock_minimo }})</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}
