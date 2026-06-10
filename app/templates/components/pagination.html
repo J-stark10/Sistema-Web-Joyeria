@@ -1,0 +1,58 @@
+{#
+  Uso:
+  {% from 'components/pagination.html' import pagination %}
+  {{ pagination(pagination_obj, endpoint='ventas.index') }}
+#}
+
+{% macro pagination(p, endpoint, **kwargs) %}
+{% if p and p.pages > 1 %}
+<div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-top:1px solid var(--color-border);">
+  <p style="font-size:0.8125rem;color:var(--color-text-muted);">
+    Mostrando {{ p.first }} – {{ p.last }} de <strong style="color:var(--color-text);">{{ p.total }}</strong> registros
+  </p>
+  <div class="pagination">
+    <!-- Anterior -->
+    {% if p.has_prev %}
+      <a href="{{ url_for(endpoint, page=p.prev_num, **kwargs) }}" class="page-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </a>
+    {% else %}
+      <button class="page-btn" disabled>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+    {% endif %}
+
+    <!-- Páginas -->
+    {% for page_num in p.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+      {% if page_num %}
+        <a
+          href="{{ url_for(endpoint, page=page_num, **kwargs) }}"
+          class="page-btn {{ 'active' if page_num == p.page }}"
+        >{{ page_num }}</a>
+      {% else %}
+        <span style="padding:0 0.25rem;color:var(--color-text-subtle);font-size:0.875rem;">…</span>
+      {% endif %}
+    {% endfor %}
+
+    <!-- Siguiente -->
+    {% if p.has_next %}
+      <a href="{{ url_for(endpoint, page=p.next_num, **kwargs) }}" class="page-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </a>
+    {% else %}
+      <button class="page-btn" disabled>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+{% endmacro %}

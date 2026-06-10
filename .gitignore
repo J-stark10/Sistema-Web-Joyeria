@@ -33,3 +33,31 @@ temp/
 *.tmp
 
 Actualizacion.md
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Flask
+instance/
+
+# Environment variables
+.env
+.env.*
+
+# Node
+node_modules/
+dist/
+build/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

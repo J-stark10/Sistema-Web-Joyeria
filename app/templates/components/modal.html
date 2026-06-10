@@ -1,0 +1,41 @@
+{#
+  Uso:
+  {% from 'components/modal.html' import modal %}
+  {% call modal(id='delete-modal', title='Eliminar registro') %}
+    <p>¿Seguro que deseas eliminar?</p>
+  {% endcall %}
+#}
+
+{% macro modal(id, title, size='md') %}
+<div
+  class="modal-backdrop"
+  id="{{ id }}"
+  style="display:none;"
+  onclick="if(event.target===this) closeModal('{{ id }}')"
+>
+  <div class="modal" style="max-width:{{ '420px' if size=='sm' else '640px' if size=='lg' else '520px' }};">
+    <div class="modal-header">
+      <h3 style="font-size:1rem;font-weight:600;color:var(--color-text);margin:0;">{{ title }}</h3>
+      <button onclick="closeModal('{{ id }}')" class="btn-icon" style="width:28px;height:28px;border:none;">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      {{ caller() }}
+    </div>
+  </div>
+</div>
+
+<script>
+function openModal(id) {
+  const m = document.getElementById(id);
+  if (m) { m.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+}
+function closeModal(id) {
+  const m = document.getElementById(id);
+  if (m) { m.style.display = 'none'; document.body.style.overflow = ''; }
+}
+</script>
+{% endmacro %}

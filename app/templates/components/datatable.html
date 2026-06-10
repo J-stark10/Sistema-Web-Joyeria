@@ -1,0 +1,36 @@
+{#
+  Uso:
+  {% from 'components/datatable.html' import datatable %}
+  {{ datatable(headers, rows, empty_msg='Sin registros') }}
+#}
+
+{% macro datatable(headers=[], rows=[], empty_msg='Sin registros', actions=true) %}
+<div class="table-wrapper">
+  <table class="data-table">
+    <thead>
+      <tr>
+        {% for h in headers %}
+          <th>{{ h }}</th>
+        {% endfor %}
+        {% if actions %}<th style="text-align:right;">Acciones</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% if rows %}
+        {{ caller() }}
+      {% else %}
+        <tr>
+          <td colspan="{{ headers|length + (1 if actions else 0) }}" style="text-align:center;padding:3rem 1rem;">
+            <div class="empty-state" style="padding:0;">
+              <svg xmlns="http://www.w3.org/2000/svg" class="empty-state-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="margin-bottom:0.75rem;">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <p style="font-size:0.875rem;font-weight:500;color:var(--color-text);margin:0;">{{ empty_msg }}</p>
+            </div>
+          </td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+{% endmacro %}
