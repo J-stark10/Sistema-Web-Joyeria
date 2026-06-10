@@ -12,5 +12,15 @@ def index():
         ventas_hoy=1240,
         stock_total=47,
         stock_bajo=3,
-        proveedores=8
+        proveedores=8,
+        stock_bajo_count=0,
+        meses_labels=[
+            "Ene","Feb","Mar","Abr","May","Jun",
+            "Jul","Ago","Sep","Oct","Nov","Dic"
+        ],
+        ventas_mes=[0] * 12,
+        ventas_mensuales=[
+            0,0,0,0,0,0,
+            0,0,0,0,0,0
+        ]
     )

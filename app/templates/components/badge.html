@@ -1,0 +1,25 @@
+{#
+  Uso:
+  {% from 'components/badge.html' import badge, estado_badge %}
+  {{ badge('Activo', 'success') }}
+  {{ estado_badge(joya.estado) }}
+#}
+
+{% macro badge(label, variant='neutral', dot=false) %}
+<span class="badge badge-{{ variant }}">
+  {% if dot %}<span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block;"></span>{% endif %}
+  {{ label }}
+</span>
+{% endmacro %}
+
+{% macro estado_badge(estado) %}
+  {% if estado in ['activo', 'pagado', 'completado', 'disponible'] %}
+    {{ badge(estado | capitalize, 'success', dot=true) }}
+  {% elif estado in ['inactivo', 'cancelado', 'agotado'] %}
+    {{ badge(estado | capitalize, 'danger', dot=true) }}
+  {% elif estado in ['pendiente', 'proceso', 'reservado'] %}
+    {{ badge(estado | capitalize, 'warning', dot=true) }}
+  {% else %}
+    {{ badge(estado | capitalize, 'neutral') }}
+  {% endif %}
+{% endmacro %}

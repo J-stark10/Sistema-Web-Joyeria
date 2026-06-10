@@ -70,26 +70,33 @@ def cambiar_password(id_usuario):
 
     return render_template("usuarios/cambiar_password.html",usuario=usuario)
 
-@usuario_bp.route("/desactivar/<int:id_usuario>")
+@usuario_bp.route("/desactivar/<int:id_usuario>", methods=["POST"])
 def desactivar(id_usuario):
     try:
         UsuarioService.desactivar_usuario(id_usuario)
-        flash( "Usuario desactivado.","warning")
+        flash("Usuario desactivado.", "warning")
 
     except ValueError as e:
-        flash(str(e),"danger")
+        flash(str(e), "danger")
 
-    return redirect( url_for("usuario.index") )
+    return redirect(url_for("usuario.index"))
 
 
-@usuario_bp.route("/activar/<int:id_usuario>")
+@usuario_bp.route("/activar/<int:id_usuario>", methods=["POST"])
 def activar(id_usuario):
     try:
         UsuarioService.activar_usuario(id_usuario)
-        flash("Usuario activado.","success")
+        flash("Usuario activado.", "success")
 
     except ValueError as e:
-        flash(str(e), "danger" )
+        flash(str(e), "danger")
 
-    return redirect( url_for("usuario.index"))
+    return redirect(url_for("usuario.index"))
 
+@usuario_bp.route("/perfil")
+def perfil():
+    return render_template('/usuarios/perfil.html')
+
+@usuario_bp.route("/configuracion")
+def configuracion():
+    return render_template('/usuarios/configuracion.html')

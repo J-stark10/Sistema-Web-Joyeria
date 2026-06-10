@@ -1,141 +1,209 @@
-<aside class="sidebar">
+<aside class="layout-sidebar" id="sidebar">
+  <nav style="padding:0.75rem 0 1.5rem;">
 
-  <div class="sidebar-brand">
-    <div class="brand-gem">◆ El Illimani</div>
-    <div class="brand-sub">Sistema de Control</div>
-  </div>
+    <!-- ── General ── -->
+    <div style="margin-bottom:0.25rem;">
+      <p class="sidebar-section-title" style="
+        font-size:0.6875rem;
+        font-weight:500;
+        text-transform:uppercase;
+        letter-spacing:0.07em;
+        color:var(--color-text-subtle);
+        padding:0 1.375rem;
+        margin:0.75rem 0 0.25rem;
+        transition:opacity var(--transition-md);
+      ">General</p>
 
-  <div class="sidebar-user">
-    <div class="user-avatar">JC</div>
-    <div>
-      <div class="user-name">Javier Choque</div>
-      <div class="user-role">ADMIN</div>
-    </div>
-  </div>
-
-  <nav class="sidebar-nav">
-    <div class="nav-section-label">Principal</div>
-
-    <a class="nav-item" href="{{ url_for('dashboard.index') }}">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
-        <rect x="1" y="1" width="6" height="6" rx="1.5" />
-        <rect x="9" y="1" width="6" height="6" rx="1.5" />
-        <rect x="1" y="9" width="6" height="6" rx="1.5" />
-        <rect x="9" y="9" width="6" height="6" rx="1.5" />
-      </svg>
-      Dashboard
-    </a>
-
-    <div class="nav-item nav-parent">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
-        <path d="M2 5h12M5 1v4M11 1v4M3 8h4M3 11h2" />
-        <rect x="2" y="3" width="12" height="11" rx="1.5" />
-      </svg>
-      Ventas
-    </div>
-    <div class="nav-submenu">
-      <a class="nav-subitem" href="{{ url_for('venta.index') }}">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
-          <path d="M2 2h12v12H2z" />
-          <path d="M2 6h12" />
+      <a href="{{ url_for('dashboard.index') }}"
+         class="nav-item {{ 'active' if request.endpoint == 'dashboard.index' else '' }}">
+        <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
         </svg>
-        Historial Ventas
-      </a>
-      <a class="nav-subitem" href="{{ url_for('venta.crear') }}">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
-          <path d="M8 1v14M1 8h14" />
-        </svg>
-        Nueva Venta
+        <span class="sidebar-label">Dashboard</span>
       </a>
     </div>
 
-    <a class="nav-item" href="{{ url_for('compra.index') }}">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
-        <path d="M3 3h10l-1 8H4L3 3zM1 3h2M6 3V1.5M10 3V1.5" />
-        <circle cx="6" cy="13.5" r="0.8" fill="currentColor" />
-        <circle cx="10" cy="13.5" r="0.8" fill="currentColor" />
-      </svg>
-      Compras
-    </a>
+    <!-- ── Inventario ── -->
+    <div style="margin-bottom:0.25rem;">
+      <p class="sidebar-section-title" style="
+        font-size:0.6875rem;
+        font-weight:500;
+        text-transform:uppercase;
+        letter-spacing:0.07em;
+        color:var(--color-text-subtle);
+        padding:0 1.375rem;
+        margin:0.75rem 0 0.25rem;
+        transition:opacity var(--transition-md);
+      ">Inventario</p>
 
-    <a class="nav-item" href="{{ url_for('joya.index') }}">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
-        <path d="M8 1L3 4v4c0 3 2.5 5.5 5 6.5 2.5-1 5-3.5 5-6.5V4L8 1z" />
-      </svg>
-      Joya
-    </a>
+      <a href="{{ url_for('joya.index') }}"
+         class="nav-item {{ 'active' if request.blueprint == 'joya' else '' }}">
+        <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+        <span class="sidebar-label">Joyas</span>
+      </a>
 
-    <a class="nav-item" href="{{ url_for('inventario.index') }}">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
-        <path d="M8 1L3 4v4c0 3 2.5 5.5 5 6.5 2.5-1 5-3.5 5-6.5V4L8 1z" />
-      </svg>
-      Inventario
-    </a>
+      <a href="{{ url_for('categoria.index') }}"
+         class="nav-item {{ 'active' if request.blueprint == 'categoria' else '' }}">
+        <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+        </svg>
+        <span class="sidebar-label">Categorías</span>
+      </a>
 
-    <div class="nav-section-label">Gestión</div>
+      <a href="{{ url_for('material.index') }}"
+         class="nav-item {{ 'active' if request.blueprint == 'material' else '' }}">
+        <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+        </svg>
+        <span class="sidebar-label">Materiales</span>
+      </a>
+    </div>
 
-    <a class="nav-item" href="{{ url_for('cliente.index') }}">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
-        <circle cx="8" cy="5" r="3" />
-        <path d="M2 14c0-3 2.7-5 6-5s6 2 6 5" />
-      </svg>
-      Clientes
-    </a>
+    <!-- ── Comercial ── -->
+    <div style="margin-bottom:0.25rem;">
+      <p class="sidebar-section-title" style="
+        font-size:0.6875rem;
+        font-weight:500;
+        text-transform:uppercase;
+        letter-spacing:0.07em;
+        color:var(--color-text-subtle);
+        padding:0 1.375rem;
+        margin:0.75rem 0 0.25rem;
+        transition:opacity var(--transition-md);
+      ">Comercial</p>
 
-    <a class="nav-item" href="{{ url_for('proveedor.index') }}">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
-        <rect x="2" y="4" width="12" height="9" rx="1.5" />
-        <path d="M5 4V3a3 3 0 016 0v1" />
-      </svg>
-      Proveedores
-    </a>
+      <a href="{{ url_for('venta.index') }}"
+         class="nav-item {{ 'active' if request.blueprint == 'venta' else '' }}">
+        <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
+        </svg>
+        <span class="sidebar-label">Ventas</span>
+      </a>
 
-    <a class="nav-item" href="{{ url_for('usuario.index') }}">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
-        <path d="M2 12L6 7l3 3 5-6" />
-        <path d="M1 15h14" />
-      </svg>
-      Usuario
-    </a>
+      <a href="{{ url_for('compra.index') }}"
+         class="nav-item {{ 'active' if request.blueprint == 'compra' else '' }}">
+        <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+        <span class="sidebar-label">Compras</span>
+      </a>
 
-    <div class="nav-section-label">Análisis</div>
+      <a href="{{ url_for('cliente.index') }}"
+         class="nav-item {{ 'active' if request.blueprint == 'cliente' else '' }}">
+        <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <span class="sidebar-label">Clientes</span>
+      </a>
+    </div>
 
-    <a class="nav-item" href="{{ url_for('reporte.index') }}">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
-        <path d="M2 12L6 7l3 3 5-6" />
-        <path d="M1 15h14" />
-      </svg>
-      Reportes
-    </a>
+    <!-- ── Administración ── -->
+    <div style="margin-bottom:0.25rem;">
+      <p class="sidebar-section-title" style="
+        font-size:0.6875rem;
+        font-weight:500;
+        text-transform:uppercase;
+        letter-spacing:0.07em;
+        color:var(--color-text-subtle);
+        padding:0 1.375rem;
+        margin:0.75rem 0 0.25rem;
+        transition:opacity var(--transition-md);
+      ">Administración</p>
 
-    <a class="nav-item" href="{{ url_for('material.index') }}">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
-        <path d="M2 12L6 7l3 3 5-6" />
-        <path d="M1 15h14" />
-      </svg>
-      Materiales
-    </a>
+      <a href="{{ url_for('usuario.index') }}"
+         class="nav-item {{ 'active' if request.blueprint == 'usuarios' else '' }}">
+        <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+        <span class="sidebar-label">Usuarios</span>
+      </a>
 
-    <a class="nav-item" href="{{ url_for('categoria.index') }}">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
-        <path d="M2 12L6 7l3 3 5-6" />
-        <path d="M1 15h14" />
-      </svg>
-      Categorias
-    </a>
+      <a href="{{ url_for('proveedor.index') }}"
+         class="nav-item {{ 'active' if request.blueprint == 'proveedores' else '' }}">
+        <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        </svg>
+        <span class="sidebar-label">Proveedores</span>
+      </a>
+    </div>
+
+    <!-- ── Análisis ── -->
+    <div style="margin-bottom:0.25rem;">
+      <p class="sidebar-section-title" style="
+        font-size:0.6875rem;
+        font-weight:500;
+        text-transform:uppercase;
+        letter-spacing:0.07em;
+        color:var(--color-text-subtle);
+        padding:0 1.375rem;
+        margin:0.75rem 0 0.25rem;
+        transition:opacity var(--transition-md);
+      ">Análisis</p>
+
+      <!-- Toggle Reportes -->
+      <button
+        onclick="toggleSubmenu('submenu-reportes', this)"
+        class="nav-item"
+        style="width:100%; border:none; background:transparent; cursor:pointer; justify-content:space-between;"
+      >
+        <div style="display:flex; align-items:center; gap:0.625rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          <span class="sidebar-label">Reportes</span>
+        </div>
+        <!-- Chevron (se oculta colapsado) -->
+        <svg
+          class="sidebar-label submenu-chevron"
+          style="width:14px;height:14px;color:var(--color-text-subtle);flex-shrink:0;transition:transform var(--transition);"
+          fill="none" viewBox="0 0 24 24" stroke="currentColor"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      <!-- Submenú -->
+      <div id="submenu-reportes" style="
+        overflow:hidden;
+        max-height:0;
+        transition:max-height var(--transition-md);
+      ">
+        <!-- Línea guía izquierda + indent -->
+        <div style="margin-left:1.375rem; border-left:1px solid var(--color-border); padding-left:0.25rem;">
+
+          <a href="#"
+            class="nav-item {{ 'active' if request.endpoint == 'reporte.ventas' else '' }}"
+            style="margin-left:0; margin-right:0.5rem; font-size:0.8125rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
+            </svg>
+            <span class="sidebar-label">Reporte de Ventas</span>
+          </a>
+
+          <a href="#"
+            class="nav-item {{ 'active' if request.endpoint == 'reporte.compras' else '' }}"
+            style="margin-left:0; margin-right:0.5rem; font-size:0.8125rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            <span class="sidebar-label">Reporte de Compras</span>
+          </a>
+
+          <a href="#"
+            class="nav-item {{ 'active' if request.endpoint == 'reporte.inventario' else '' }}"
+            style="margin-left:0; margin-right:0.5rem; font-size:0.8125rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+            <span class="sidebar-label">Reporte de Inventario</span>
+          </a>
+
+        </div>
+      </div>
+
+    </div>
+
   </nav>
-
-  <div class="sidebar-footer">
-    <a class="logout-btn" href="{{ url_for('auth.logout') }}">Cerrar session</a>
-    <div class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema"></div>
-  </div>
-
 </aside>
-
-<script>
-  document.querySelectorAll(".nav-parent").forEach(parent => {
-    parent.addEventListener("click", () => {
-      parent.classList.toggle("active");
-    });
-  });
-</script>

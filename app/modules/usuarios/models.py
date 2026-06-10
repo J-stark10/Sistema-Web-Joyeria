@@ -81,10 +81,14 @@ class Usuario(UserMixin, db.Model):
 
         db.session.commit()
 
-    def delete(self):
-        db.session.delete(self)
+    def deactivate(self):
+        self.activo = False
         db.session.commit()
 
+    def restore(self):
+        self.activo = True
+        db.session.commit()
+        
     # ==========================
     # Representación
     # ==========================

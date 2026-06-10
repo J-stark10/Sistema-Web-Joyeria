@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="p-6">
+
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-text">Mi Perfil</h1>
+    <p class="text-sm text-gray-500">Información personal del usuario</p>
+  </div>
+
+  <!-- Card Perfil -->
+  <div class="bg-card rounded-lg shadow p-6">
+
+    <div class="flex items-center gap-6 mb-6">
+      <div class="w-20 h-20 rounded-full bg-gray-300"></div>
+
+      <div>
+        <h2 class="text-lg font-semibold text-text">Nombre Usuario</h2>
+        <p class="text-sm text-gray-500">correo@email.com</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      <div>
+        <label class="block text-sm text-gray-600 mb-1">Nombre</label>
+        <input type="text" class="w-full border rounded px-3 py-2" placeholder="Nombre">
+      </div>
+
+      <div>
+        <label class="block text-sm text-gray-600 mb-1">Apellido</label>
+        <input type="text" class="w-full border rounded px-3 py-2" placeholder="Apellido">
+      </div>
+
+      <div>
+        <label class="block text-sm text-gray-600 mb-1">Correo</label>
+        <input type="email" class="w-full border rounded px-3 py-2" placeholder="Correo">
+      </div>
+
+      <div>
+        <label class="block text-sm text-gray-600 mb-1">Teléfono</label>
+        <input type="text" class="w-full border rounded px-3 py-2" placeholder="Teléfono">
+      </div>
+
+    </div>
+
+    <div class="mt-6">
+      <button class="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded">
+        Guardar Cambios
+      </button>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

@@ -63,7 +63,7 @@ class UsuarioService:
 
         if not usuario:
             raise ValueError("Usuario no encontrado.")
-        usuario.update(activo=False)
+        usuario.deactivate()
 
         return usuario
 
@@ -73,7 +73,7 @@ class UsuarioService:
 
         if not usuario:
             raise ValueError("Usuario no encontrado.")
-        usuario.update(activo=True)
+        usuario.restore()
 
         return usuario
 

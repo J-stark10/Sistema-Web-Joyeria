@@ -1,50 +1,428 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}
-Usuarios
-{% endblock %}
+{% block titulo %}Usuarios{% endblock %}
 
 {% block content %}
 
-<h2>Usuarios</h2>
+<div>
 
-<a href="{{ url_for('usuario.crear') }}">
-    Nuevo Usuario
-</a>
+    <!-- HEADER -->
 
-<table border="1">
+    <div class="page-header">
 
-    <tr>
-        <th>ID</th>
-        <th>Usuario</th>
-        <th>Rol</th>
-        <th>Activo</th>
-        <th>Acciones</th>
-    </tr>
+        <div>
+            <h1 class="page-title">
+                Usuarios
+            </h1>
 
-    {% for usuario in usuarios %}
-    <tr>
+            <p class="page-subtitle">
+                Gestión de usuarios, roles y accesos al sistema.
+            </p>
+        </div>
 
-        <td>{{ usuario.id_usuario }}</td>
+        <a href="{{ url_for('usuario.crear') }}"
+           class="btn btn-primary">
 
-        <td>{{ usuario.nombre_usuario }}</td>
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="w-4 h-4"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor">
 
-        <td>{{ usuario.rol }}</td>
+                <path stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 4v16m8-8H4"/>
 
-        <td>{{ usuario.activo }}</td>
+            </svg>
 
-        <td>
+            Nuevo Usuario
 
-            <a href="{{ url_for('usuario.editar',
-                id_usuario=usuario.id_usuario) }}">
-                Editar
-            </a>
+        </a>
 
-        </td>
+    </div>
 
-    </tr>
-    {% endfor %}
+    <!-- KPI -->
 
-</table>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+
+        <div class="kpi-card">
+
+            <div class="text-3xl font-semibold">
+                {{ usuarios|length }}
+            </div>
+
+            <div class="text-sm mt-1"
+                 style="color:var(--color-text-muted);">
+                Total usuarios
+            </div>
+
+        </div>
+
+        <div class="kpi-card">
+
+            <div class="text-3xl font-semibold"
+                 style="color:var(--color-success);">
+
+                {{ usuarios|selectattr('activo')|list|length }}
+
+            </div>
+
+            <div class="text-sm mt-1"
+                 style="color:var(--color-text-muted);">
+                Usuarios activos
+            </div>
+
+        </div>
+
+        <div class="kpi-card">
+
+            <div class="text-3xl font-semibold"
+                 style="color:var(--color-primary);">
+
+                {{ usuarios
+                    |selectattr('rol','equalto','ADMIN')
+                    |list
+                    |length }}
+
+            </div>
+
+            <div class="text-sm mt-1"
+                 style="color:var(--color-text-muted);">
+                Administradores
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FILTROS -->
+
+    <div class="card mb-6">
+
+        <div class="flex flex-col lg:flex-row gap-3">
+
+            <div class="flex-1">
+
+                <input
+                    type="text"
+                    id="filtro-usuario"
+                    placeholder="Buscar usuario..."
+                    oninput="filtrarUsuarios()"
+                >
+
+            </div>
+
+            <select
+                id="filtro-rol"
+                style="max-width:220px;"
+                onchange="filtrarUsuarios()"
+            >
+
+                <option value="">
+                    Todos los roles
+                </option>
+
+                <option value="ADMIN">
+                    Administrador
+                </option>
+
+                <option value="VENDEDOR">
+                    Vendedor
+                </option>
+
+            </select>
+
+            <select
+                id="filtro-estado"
+                style="max-width:220px;"
+                onchange="filtrarUsuarios()"
+            >
+
+                <option value="">
+                    Todos los estados
+                </option>
+
+                <option value="activo">
+                    Activo
+                </option>
+
+                <option value="inactivo">
+                    Inactivo
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+    <!-- TABLA -->
+
+    <div class="table-wrapper">
+
+        <table
+            class="data-table"
+            id="tabla-usuarios"
+        >
+
+            <thead>
+
+                <tr>
+
+                    <th>Usuario</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for usuario in usuarios %}
+
+                <tr
+
+                    data-usuario="{{ usuario.nombre_usuario|lower }}"
+                    data-rol="{{ usuario.rol }}"
+                    data-estado="{{ 'activo' if usuario.activo else 'inactivo' }}"
+
+                >
+
+                    <!-- USUARIO -->
+
+                    <td>
+
+                        <div class="flex items-center gap-3">
+
+                            <div
+                                class="avatar-initials"
+                                style="
+                                    width:36px;
+                                    height:36px;
+                                "
+                            >
+
+                                {{ usuario.nombre_usuario[:2]|upper }}
+
+                            </div>
+
+                            <div>
+
+                                <div class="font-medium">
+
+                                    {{ usuario.nombre_usuario }}
+
+                                </div>
+
+                                <div
+                                    class="text-xs"
+                                    style="color:var(--color-text-muted);"
+                                >
+
+                                    ID #{{ usuario.id_usuario }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+                    <!-- ROL -->
+
+                    <td>
+
+                        {% if usuario.rol == 'ADMIN' %}
+
+                        <span class="badge badge-warning">
+                            Administrador
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge badge-success">
+                            Vendedor
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- ESTADO -->
+
+                    <td>
+
+                        {% if usuario.activo %}
+
+                        <span class="badge badge-success">
+                            Activo
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge badge-neutral">
+                            Inactivo
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- ACCIONES -->
+
+                    <td>
+
+                        <div class="flex items-center gap-2">
+
+                            <a
+                                href="{{ url_for('usuario.editar', id_usuario=usuario.id_usuario) }}"
+                                class="btn btn-ghost btn-sm"
+                            >
+
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="w-4 h-4"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                     stroke="currentColor">
+
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          stroke-width="1.5"
+                                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+
+                                </svg>
+
+                                Editar
+
+                            </a>
+
+                            {% if usuario.activo %}
+
+                            <a
+                                href="{{ url_for('usuario.desactivar', id_usuario=usuario.id_usuario) }}"
+                                class="btn btn-ghost btn-sm"
+                                style="color:var(--color-warning-text);"
+                                onclick="return confirm('¿Desactivar al usuario {{ usuario.nombre_usuario }}?')"
+                            >
+
+                                Desactivar
+
+                            </a>
+
+                            {% else %}
+
+                            <a
+                                href="{{ url_for('usuario.activar', id_usuario=usuario.id_usuario) }}"
+                                class="btn btn-ghost btn-sm"
+                                style="color:var(--color-success);"
+                            >
+
+                                Activar
+
+                            </a>
+
+                            {% endif %}
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="4">
+
+                        <div class="empty-state">
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="empty-state-icon"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor">
+
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="1.5"
+                                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+
+                            </svg>
+
+                            <p style="font-weight:500;margin-bottom:.25rem;">
+                                No existen usuarios registrados
+                            </p>
+
+                            <p style="font-size:.875rem;">
+                                Cree el primer usuario utilizando el botón "Nuevo Usuario".
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+
+<script>
+
+function filtrarUsuarios() {
+
+    const texto =
+        document.getElementById('filtro-usuario')
+        .value
+        .toLowerCase();
+
+    const rol =
+        document.getElementById('filtro-rol')
+        .value;
+
+    const estado =
+        document.getElementById('filtro-estado')
+        .value;
+
+    document.querySelectorAll(
+        '#tabla-usuarios tbody tr[data-usuario]'
+    ).forEach(function(row) {
+
+        const coincideTexto =
+            row.dataset.usuario.includes(texto);
+
+        const coincideRol =
+            !rol || row.dataset.rol === rol;
+
+        const coincideEstado =
+            !estado || row.dataset.estado === estado;
+
+        row.style.display =
+            coincideTexto &&
+            coincideRol &&
+            coincideEstado
+            ? ''
+            : 'none';
+
+    });
+
+}
+
+</script>
 
 {% endblock %}

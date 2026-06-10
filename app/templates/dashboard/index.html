@@ -1,191 +1,241 @@
-{% extends "base.html" %}
-
-{% block titulo %}
-Dashboard
-{% endblock %}
-
-{% block page_title %}
-Dashboard
-{% endblock %}
-
-{% block page_sub %}
-Resumen general del sistema
-{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet"
-      href="{{ url_for('static', filename='css/dashboard.css') }}">
-{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
 
-  <div class="content">
+<!-- Page header -->
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Dashboard</h1>
+    <p class="page-subtitle">Resumen general de Joyería El Illimani</p>
+  </div>
+  <div style="display:flex;gap:0.5rem;align-items:center;">
+    <button class="btn btn-ghost btn-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+      </svg>
+      Exportar
+    </button>
+    <a href="#" class="btn btn-primary btn-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4" />
+      </svg>
+      Nueva venta
+    </a>
+  </div>
+</div>
 
-    <!-- Métricas -->
-    <div class="metrics-grid">
+<!-- KPI Grid -->
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem;">
 
-      <div class="metric-card">
-        <div class="metric-label">
-          <div class="metric-dot" style="background:#EF9F27;"></div>
-          Ventas hoy
-        </div>
-        <div class="metric-value" style="color: var(--gold-600);">Bs. 1.240</div>
-        <div class="metric-sub">6 transacciones</div>
+  <!-- Ventas del día -->
+  <div class="kpi-card">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;">
+      <div class="kpi-icon" style="background:var(--color-primary-muted);">
+        <svg xmlns="http://www.w3.org/2000/svg" style="width:20px;height:20px;color:var(--color-primary);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
       </div>
-
-      <div class="metric-card">
-        <div class="metric-label">
-          <div class="metric-dot" style="background:#1D9E75;"></div>
-          Stock disponible
-        </div>
-        <div class="metric-value" style="color: #0F6E56;">47 items</div>
-        <div class="metric-sub">5 categorías</div>
-      </div>
-
-      <div class="metric-card">
-        <div class="metric-label">
-          <div class="metric-dot" style="background:#ef4444;"></div>
-          Stock bajo mínimo
-        </div>
-        <div class="metric-value" style="color:#ef4444;">3 joyas</div>
-        <div class="metric-sub">Requieren reposición</div>
-      </div>
-
-      <div class="metric-card">
-        <div class="metric-label">
-          <div class="metric-dot" style="background:#888780;"></div>
-          Proveedores activos
-        </div>
-        <div class="metric-value" style="color: var(--text-primary);">8</div>
-        <div class="metric-sub">Plata, oro y piedras</div>
-      </div>
-
+      <span class="badge badge-success">+12%</span>
     </div>
-
-    <!-- Accesos rápidos -->
-    <div class="quick-grid">
-      <a class="quick-btn" href="{{ url_for('venta.crear') }}">
-        <div class="quick-icon" style="background:var(--gold-50);">💍</div>
-        <div class="quick-label">Nueva venta</div>
-      </a>
-      <a class="quick-btn" href="#">
-        <div class="quick-icon" style="background:var(--teal-50);">📦</div>
-        <div class="quick-label">Registrar compra</div>
-      </a>
-      <a class="quick-btn" href="#">
-        <div class="quick-icon" style="background:var(--silver-50);">📊</div>
-        <div class="quick-label">Generar reporte</div>
-      </a>
-    </div>
-
-    <!-- Tabla + Panel stock -->
-    <div class="two-col">
-
-      <!-- Últimas ventas -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Últimas ventas registradas</div>
-          <a class="card-action" href="#">Ver historial →</a>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>N.° Venta</th>
-              <th>Cliente</th>
-              <th>Producto</th>
-              <th>Total</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><span class="td-muted">#0042</span></td>
-              <td>María Quispe</td>
-              <td>Anillo Plata 925</td>
-              <td style="font-weight:500; color:var(--gold-600);">Bs. 320</td>
-              <td><span class="badge badge-success">Completada</span></td>
-            </tr>
-            <tr>
-              <td><span class="td-muted">#0041</span></td>
-              <td>—</td>
-              <td>Collar Bolivianita</td>
-              <td style="font-weight:500; color:var(--gold-600);">Bs. 580</td>
-              <td><span class="badge badge-success">Completada</span></td>
-            </tr>
-            <tr>
-              <td><span class="td-muted">#0040</span></td>
-              <td>Carlos Mendoza</td>
-              <td>Aros Oro 18K</td>
-              <td style="font-weight:500; color:var(--gold-600);">Bs. 1.200</td>
-              <td><span class="badge badge-success">Completada</span></td>
-            </tr>
-            <tr>
-              <td><span class="td-muted">#0039</span></td>
-              <td>Inst. Corp. S.A.</td>
-              <td>Pulsera Plata 950 ×3</td>
-              <td style="font-weight:500; color:var(--gold-600);">Bs. 870</td>
-              <td><span class="badge badge-success">Completada</span></td>
-            </tr>
-            <tr>
-              <td><span class="td-muted">#0038</span></td>
-              <td>Ana Torres</td>
-              <td>Dije Cuarzo Rosa</td>
-              <td style="font-weight:500; color:var(--gold-600);">Bs. 190</td>
-              <td><span class="badge badge-success">Completada</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Panel stock bajo -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">⚠ Stock bajo mínimo</div>
-          <a class="card-action" href="#">Gestionar →</a>
-        </div>
-        <div class="stock-list">
-
-          <div class="stock-item">
-            <div class="stock-gem">💎</div>
-            <div class="stock-info">
-              <div class="stock-name">Anillo Oro 18K</div>
-              <div class="stock-material">Oro 18 quilates</div>
-            </div>
-            <div class="stock-qty">
-              <div class="stock-current">2</div>
-              <div class="stock-min">mín. 5</div>
-            </div>
-          </div>
-
-          <div class="stock-item">
-            <div class="stock-gem">🔮</div>
-            <div class="stock-info">
-              <div class="stock-name">Collar Bolivianita</div>
-              <div class="stock-material">Piedra semipreciosa</div>
-            </div>
-            <div class="stock-qty">
-              <div class="stock-current">1</div>
-              <div class="stock-min">mín. 3</div>
-            </div>
-          </div>
-
-          <div class="stock-item">
-            <div class="stock-gem">⭐</div>
-            <div class="stock-info">
-              <div class="stock-name">Pulsera Plata 950</div>
-              <div class="stock-material">Plata 950</div>
-            </div>
-            <div class="stock-qty">
-              <div class="stock-current">3</div>
-              <div class="stock-min">mín. 8</div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-    </div>
-
+    <p style="font-size:1.75rem;font-weight:600;color:var(--color-text);letter-spacing:-0.03em;line-height:1;">
+      Bs {{ ventas_dia | default('0.00') }}
+    </p>
+    <p style="font-size:0.8125rem;color:var(--color-text-muted);margin-top:0.375rem;">Ventas de hoy</p>
   </div>
 
+  <!-- Compras del mes -->
+  <div class="kpi-card">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;">
+      <div class="kpi-icon" style="background:var(--color-info-bg);">
+        <svg xmlns="http://www.w3.org/2000/svg" style="width:20px;height:20px;color:var(--color-info-text);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+      </div>
+      <span class="badge badge-info">Este mes</span>
+    </div>
+    <p style="font-size:1.75rem;font-weight:600;color:var(--color-text);letter-spacing:-0.03em;line-height:1;">
+      Bs {{ compras_mes | default('0.00') }}
+    </p>
+    <p style="font-size:0.8125rem;color:var(--color-text-muted);margin-top:0.375rem;">Compras del mes</p>
+  </div>
+
+  <!-- Clientes -->
+  <div class="kpi-card">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;">
+      <div class="kpi-icon" style="background:rgba(139,92,246,0.12);">
+        <svg xmlns="http://www.w3.org/2000/svg" style="width:20px;height:20px;color:#a78bfa;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      </div>
+      <span class="badge badge-neutral">Total</span>
+    </div>
+    <p style="font-size:1.75rem;font-weight:600;color:var(--color-text);letter-spacing:-0.03em;line-height:1;">
+      {{ total_clientes | default(0) }}
+    </p>
+    <p style="font-size:0.8125rem;color:var(--color-text-muted);margin-top:0.375rem;">Clientes registrados</p>
+  </div>
+
+  <!-- Stock bajo -->
+  <div class="kpi-card" style="border-color:{{ 'var(--color-danger)' if stock_bajo_count > 0 else 'var(--color-border)' }};">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;">
+      <div class="kpi-icon" style="background:var(--color-warning-bg);">
+        <svg xmlns="http://www.w3.org/2000/svg" style="width:20px;height:20px;color:var(--color-warning-text);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+      {% if stock_bajo_count | default(0) > 0 %}
+        <span class="badge badge-danger">Atención</span>
+      {% else %}
+        <span class="badge badge-success">OK</span>
+      {% endif %}
+    </div>
+    <p style="font-size:1.75rem;font-weight:600;color:{{ 'var(--color-warning-text)' if stock_bajo_count | default(0) > 0 else 'var(--color-text)' }};letter-spacing:-0.03em;line-height:1;">
+      {{ stock_bajo_count | default(0) }}
+    </p>
+    <p style="font-size:0.8125rem;color:var(--color-text-muted);margin-top:0.375rem;">Productos con stock bajo</p>
+  </div>
+
+</div>
+
+<!-- Gráfico + Últimas ventas -->
+<div style="display:grid;grid-template-columns:1fr 380px;gap:1.5rem;align-items:start;">
+
+  <!-- Gráfico ventas mensuales -->
+  <div class="card" style="padding:1.5rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+      <div>
+        <h2 style="font-size:0.9375rem;font-weight:600;color:var(--color-text);margin:0;">Ventas mensuales</h2>
+        <p style="font-size:0.8125rem;color:var(--color-text-muted);margin:0.2rem 0 0;">Últimos 12 meses</p>
+      </div>
+      <div style="display:flex;gap:0.375rem;">
+        <button class="btn btn-ghost btn-sm" style="font-size:0.75rem;">Año</button>
+        <button class="btn btn-ghost btn-sm" style="font-size:0.75rem;background:var(--color-surface-hover);color:var(--color-text);">Mes</button>
+      </div>
+    </div>
+    <div style="position:relative;height:260px;">
+      <canvas id="ventasChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Últimas ventas -->
+  <div class="card" style="padding:0;">
+    <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--color-border);">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <h2 style="font-size:0.9375rem;font-weight:600;color:var(--color-text);margin:0;">Últimas ventas</h2>
+        <a href="{{ url_for('venta.index') }}" style="font-size:0.8125rem;color:var(--color-primary);text-decoration:none;">
+          Ver todas →
+        </a>
+      </div>
+    </div>
+    <div style="padding:0.5rem 0;">
+      {% for venta in ultimas_ventas | default([]) %}
+        <div style="
+          display:flex;align-items:center;gap:0.875rem;
+          padding:0.75rem 1.5rem;
+          border-bottom:1px solid var(--color-border-subtle);
+          transition:background var(--transition);
+        " onmouseenter="this.style.background='var(--color-surface-hover)'" onmouseleave="this.style.background='transparent'">
+          <div class="avatar-initials" style="width:34px;height:34px;font-size:0.75rem;flex-shrink:0;">
+            {{ venta.cliente_nombre[:2].upper() if venta.cliente_nombre else '??' }}
+          </div>
+          <div style="flex:1;min-width:0;">
+            <p style="font-size:0.8125rem;font-weight:500;color:var(--color-text);margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+              {{ venta.cliente_nombre or 'Cliente directo' }}
+            </p>
+            <p style="font-size:0.75rem;color:var(--color-text-muted);margin:0;">
+              {{ venta.fecha.strftime('%d/%m/%Y') if venta.fecha else '—' }}
+            </p>
+          </div>
+          <div style="text-align:right;flex-shrink:0;">
+            <p style="font-size:0.8125rem;font-weight:600;color:var(--color-text);margin:0;">Bs {{ "%.2f"|format(venta.total) }}</p>
+            <span class="badge {{ 'badge-success' if venta.estado == 'pagado' else 'badge-warning' }}" style="font-size:0.6875rem;">
+              {{ venta.estado | capitalize }}
+            </span>
+          </div>
+        </div>
+      {% else %}
+        <div class="empty-state" style="padding:2.5rem 1rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" class="empty-state-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
+          </svg>
+          <p style="font-size:0.875rem;font-weight:500;margin:0;">Sin ventas aún</p>
+          <p style="font-size:0.8125rem;color:var(--color-text-muted);margin:0.25rem 0 0;">Registra tu primera venta</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(function () {
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const gridColor   = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)';
+  const textColor   = isDark ? '#8a877e' : '#6b6860';
+  const accentColor = getComputedStyle(document.documentElement)
+                        .getPropertyValue('--brand-400').trim() || '#d4a82a';
+
+  const labels = {{ meses_labels | tojson | default('["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"]') }};
+  const data   = {{ ventas_mensuales | tojson | default('[0,0,0,0,0,0,0,0,0,0,0,0]') }};
+
+  const ctx = document.getElementById('ventasChart');
+  if (!ctx) return;
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Ventas (Bs)',
+        data,
+        backgroundColor: accentColor + '22',
+        borderColor: accentColor,
+        borderWidth: 1.5,
+        borderRadius: 5,
+        borderSkipped: false,
+        hoverBackgroundColor: accentColor + '44',
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: isDark ? '#232220' : '#ffffff',
+          borderColor: isDark ? '#3a3935' : '#eae9e4',
+          borderWidth: 1,
+          titleColor: isDark ? '#f0ede6' : '#161512',
+          bodyColor: isDark ? '#8a877e' : '#6b6860',
+          padding: 10,
+          cornerRadius: 8,
+          callbacks: {
+            label: ctx => ' Bs ' + ctx.parsed.y.toFixed(2)
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: gridColor, drawTicks: false },
+          border: { display: false },
+          ticks: { color: textColor, font: { size: 12 } }
+        },
+        y: {
+          grid: { color: gridColor, drawTicks: false },
+          border: { display: false },
+          ticks: {
+            color: textColor,
+            font: { size: 12 },
+            callback: v => 'Bs ' + v.toLocaleString()
+          }
+        }
+      }
+    }
+  });
+})();
+</script>
 {% endblock %}
