@@ -1,181 +1,94 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block title %}Compra #{{ compra.id_compra }}{%
+endblock %} {% block content %}
 
-{% block titulo %}
-Detalle Compra
-{% endblock %}
-
-{% block page_title %}
-Detalle de Compra
-{% endblock %}
-
-{% block page_sub %}
-Compra #{{ compra.id_compra }}
-{% endblock %}
-
-{% block content %}
-
-<div class="card">
-
-    <div class="card-header">
-        <div class="card-title">
-            Información General
-        </div>
-    </div>
-
-    <table>
-
-        <tbody>
-
-            <tr>
-                <th>ID Compra</th>
-                <td>{{ compra.id_compra }}</td>
-            </tr>
-
-            <tr>
-                <th>Proveedor</th>
-                <td>{{ compra.proveedor.nombre_razon_social }}</td>
-            </tr>
-
-            <tr>
-                <th>Usuario</th>
-                <td>{{ compra.usuario.nombre_usuario }}</td>
-            </tr>
-
-            <tr>
-                <th>Fecha</th>
-                <td>{{ compra.fecha_compra.strftime('%d/%m/%Y %H:%M') }}</td>
-            </tr>
-
-            <tr>
-                <th>Estado</th>
-
-                <td>
-
-                    {% if compra.estado == 'COMPLETADA' %}
-
-                        <span class="badge badge-success">
-                            COMPLETADA
-                        </span>
-
-                    {% else %}
-
-                        <span class="badge badge-danger">
-                            ANULADA
-                        </span>
-
-                    {% endif %}
-
-                </td>
-
-            </tr>
-
-            <tr>
-                <th>Total</th>
-                <td>
-                    <strong>
-                        Bs. {{ compra.total_compra }}
-                    </strong>
-                </td>
-            </tr>
-
-        </tbody>
-
-    </table>
-
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Compra #{{ compra.id_compra }}</h1>
+    <p class="page-subtitle">Detalle y resumen de la compra.</p>
+  </div>
+  <div class="flex gap-2">
+    <a href="{{ url_for('compra.index') }}" class="btn btn-ghost">Volver</a>
+    {% if compra.estado == 'COMPLETADA' %}
+    <a
+      href="{{ url_for('compra.anular', id_compra=compra.id_compra) }}"
+      class="btn btn-danger"
+      onclick="return confirm('¿Desea anular esta compra?');"
+      >Anular</a
+    >
+    {% endif %}
+  </div>
 </div>
 
-<br>
-
-<div class="card">
-
-    <div class="card-header">
-
-        <div class="card-title">
-            Detalle de Productos
-        </div>
-
-    </div>
-
-    <table>
-
-        <thead>
-
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+  <!-- Columna izquierda: tabla de ítems (2/3) -->
+  <div class="lg:col-span-2">
+    <div class="card">
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
             <tr>
-                <th>Código</th>
-                <th>Joya</th>
-                <th>Cantidad</th>
-                <th>Precio Compra</th>
-                <th>Subtotal</th>
+              <th>Joya</th>
+              <th>Cantidad</th>
+              <th>Precio Unit.</th>
+              <th>Subtotal</th>
             </tr>
-
-        </thead>
-
-        <tbody>
-
+          </thead>
+          <tbody>
             {% for detalle in compra.detalles %}
-
             <tr>
-
-                <td>
-                    {{ detalle.joya.codigo }}
-                </td>
-
-                <td>
-                    {{ detalle.joya.nombre }}
-                </td>
-
-                <td>
-                    {{ detalle.cantidad }}
-                </td>
-
-                <td>
-                    Bs. {{ detalle.precio_unit_compra }}
-                </td>
-
-                <td>
-                    Bs. {{ detalle.subtotal }}
-                </td>
-
+              <td>
+                <div style="font-weight: 600">
+                  {{ detalle.joya.codigo }} — {{ detalle.joya.nombre }}
+                </div>
+              </td>
+              <td class="font-semibold">{{ detalle.cantidad }}</td>
+              <td style="color: var(--color-text-muted)">
+                Bs. {{ "%.2f"|format(detalle.precio_unit_compra) }}
+              </td>
+              <td class="font-semibold">
+                Bs. {{ "%.2f"|format(detalle.subtotal) }}
+              </td>
             </tr>
-
             {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
-        </tbody>
-
-        <tfoot>
-
-            <tr>
-
-                <th colspan="4">
-                    TOTAL
-                </th>
-
-                <th>
-                    Bs. {{ compra.total_compra }}
-                </th>
-
-            </tr>
-
-        </tfoot>
-
-    </table>
-
+  <!-- Columna derecha: resumen -->
+  <div>
+    <div class="card">
+      <div class="text-sm" style="color: var(--color-text-muted)">
+        Proveedor
+      </div>
+      <div style="font-weight: 600">
+        {{ compra.proveedor.nombre_razon_social }}
+      </div>
+      <div class="mt-3 text-sm" style="color: var(--color-text-muted)">
+        Fecha
+      </div>
+      <div>{{ compra.fecha_compra.strftime('%d/%m/%Y %H:%M') }}</div>
+      <div class="mt-3 text-sm" style="color: var(--color-text-muted)">
+        Usuario
+      </div>
+      <div>{{ compra.usuario.nombre_usuario }}</div>
+      <div class="mt-3 text-sm" style="color: var(--color-text-muted)">
+        Estado
+      </div>
+      <div class="mt-1">
+        {% if compra.estado == 'COMPLETADA' %}<span class="badge badge-success"
+          >Completada</span
+        >{% else %}<span class="badge badge-danger">Anulada</span>{% endif %}
+      </div>
+      <div class="mt-6 text-sm" style="color: var(--color-text-muted)">
+        Total
+      </div>
+      <div class="text-2xl font-semibold">
+        Bs. {{ "%.2f"|format(compra.total_compra) }}
+      </div>
+    </div>
+  </div>
 </div>
-
-<br>
-
-<a href="{{ url_for('compra.index') }}" class="btn btn-secondary">
-    Volver
-</a>
-
-{% if compra.estado == 'COMPLETADA' %}
-
-<a href="{{ url_for('compra.anular', id_compra=compra.id_compra) }}"
-   class="btn btn-danger"
-   onclick="return confirm('¿Desea anular esta compra?')">
-    Anular Compra
-</a>
-
-{% endif %}
 
 {% endblock %}

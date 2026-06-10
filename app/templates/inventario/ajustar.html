@@ -1,83 +1,169 @@
-{% extends 'base.html' %}
+{% extends "base.html" %} {% block title %}Ajuste de Inventario{% endblock %} {%
+block content %}
 
-{% block title %}Ajustar Inventario{% endblock %}
-
-{% block content %}
-
-<div class="container mt-4">
-
-    <h2>Nuevo Ajuste de Inventario</h2>
-
-    <form method="POST">
-
-        <div class="mb-3">
-
-            <label class="form-label">Joya</label>
-
-            <select name="id_joya" class="form-select" required>
-
-                <option value="">Seleccione...</option>
-
-                {% for joya in joyas %}
-                    <option value="{{ joya.id_joya }}">
-                        {{ joya.codigo }} - {{ joya.nombre }}
-                    </option>
-                {% endfor %}
-
-            </select>
-
-        </div>
-
-        <div class="mb-3">
-
-            <label class="form-label">Tipo Ajuste</label>
-
-            <select name="tipo_ajuste" class="form-select" required>
-
-                <option value="ENTRADA">ENTRADA</option>
-                <option value="SALIDA">SALIDA</option>
-
-            </select>
-
-        </div>
-
-        <div class="mb-3">
-
-            <label class="form-label">Cantidad</label>
-
-            <input
-                type="number"
-                min="1"
-                name="cantidad"
-                class="form-control"
-                required
-            >
-
-        </div>
-
-        <div class="mb-3">
-
-            <label class="form-label">Motivo</label>
-
-            <textarea
-                name="motivo"
-                class="form-control"
-                rows="3"
-                required
-            ></textarea>
-
-        </div>
-
-        <button type="submit" class="btn btn-success">
-            Guardar
-        </button>
-
-        <a href="{{ url_for('inventario.index') }}" class="btn btn-secondary">
-            Cancelar
-        </a>
-
-    </form>
-
+<div class="breadcrumb">
+  <a href="{{ url_for('inventario.index') }}">Inventario</a>
+  <span class="breadcrumb-sep">/</span>
+  <span class="breadcrumb-current">Nuevo Ajuste</span>
 </div>
 
+<div style="max-width: 520px; margin: 0 auto">
+  <div class="card">
+    <div class="page-header" style="margin-bottom: 1.5rem">
+      <div>
+        <h2 class="page-title">Ajuste de Stock</h2>
+        <p class="page-subtitle">
+          Registra una entrada o salida manual de inventario.
+        </p>
+      </div>
+    </div>
+
+    <form method="POST">
+      <div class="form-group">
+        <label class="form-label">Joya</label>
+        <select name="id_joya" required>
+          <option value="">Seleccione una joya</option>
+          {% for joya in joyas %}
+          <option value="{{ joya.id_joya }}">
+            {{ joya.codigo }} — {{ joya.nombre }} (stock: {{ joya.stock_actual
+            }})
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tipo de ajuste</label>
+        <div class="grid grid-cols-2 gap-3 mt-1">
+          <label style="cursor: pointer">
+            <input
+              type="radio"
+              name="tipo_ajuste"
+              value="ENTRADA"
+              required
+              style="display: none"
+              id="radio-entrada"
+            />
+            <div
+              id="btn-entrada"
+              onclick="seleccionarTipo('ENTRADA')"
+              style="
+                border: 1px solid var(--color-border);
+                border-radius: var(--radius-md);
+                padding: 0.75rem 1rem;
+                text-align: center;
+                cursor: pointer;
+                transition: all var(--transition);
+                background: var(--color-surface-hover);
+              "
+            >
+              <div style="font-size: 1.25rem; margin-bottom: 0.25rem">↑</div>
+              <div
+                style="
+                  font-weight: 500;
+                  font-size: 0.875rem;
+                  color: var(--color-success);
+                "
+              >
+                Entrada
+              </div>
+              <div style="font-size: 0.75rem; color: var(--color-text-muted)">
+                Agregar stock
+              </div>
+            </div>
+          </label>
+          <label style="cursor: pointer">
+            <input
+              type="radio"
+              name="tipo_ajuste"
+              value="SALIDA"
+              style="display: none"
+              id="radio-salida"
+            />
+            <div
+              id="btn-salida"
+              onclick="seleccionarTipo('SALIDA')"
+              style="
+                border: 1px solid var(--color-border);
+                border-radius: var(--radius-md);
+                padding: 0.75rem 1rem;
+                text-align: center;
+                cursor: pointer;
+                transition: all var(--transition);
+                background: var(--color-surface-hover);
+              "
+            >
+              <div style="font-size: 1.25rem; margin-bottom: 0.25rem">↓</div>
+              <div
+                style="
+                  font-weight: 500;
+                  font-size: 0.875rem;
+                  color: var(--color-danger);
+                "
+              >
+                Salida
+              </div>
+              <div style="font-size: 0.75rem; color: var(--color-text-muted)">
+                Reducir stock
+              </div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Cantidad</label>
+        <input
+          type="number"
+          name="cantidad"
+          min="1"
+          required
+          placeholder="Ej: 5"
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Motivo</label>
+        <input
+          type="text"
+          name="motivo"
+          required
+          placeholder="Ej: Corrección de conteo físico"
+        />
+        <p class="form-hint">Describe brevemente el motivo del ajuste.</p>
+      </div>
+
+      <div class="flex gap-3 justify-end" style="margin-top: 1.5rem">
+        <a href="{{ url_for('inventario.index') }}" class="btn btn-ghost"
+          >Cancelar</a
+        >
+        <button type="submit" class="btn btn-primary">Registrar Ajuste</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %} {% block extra_scripts %}
+<script>
+  function seleccionarTipo(tipo) {
+    document.getElementById("radio-entrada").checked = tipo === "ENTRADA";
+    document.getElementById("radio-salida").checked = tipo === "SALIDA";
+
+    const entrada = document.getElementById("btn-entrada");
+    const salida = document.getElementById("btn-salida");
+
+    entrada.style.borderColor =
+      tipo === "ENTRADA" ? "var(--color-success)" : "var(--color-border)";
+    entrada.style.background =
+      tipo === "ENTRADA"
+        ? "var(--color-success-bg)"
+        : "var(--color-surface-hover)";
+    salida.style.borderColor =
+      tipo === "SALIDA" ? "var(--color-danger)" : "var(--color-border)";
+    salida.style.background =
+      tipo === "SALIDA"
+        ? "var(--color-danger-bg)"
+        : "var(--color-surface-hover)";
+  }
+</script>
 {% endblock %}
