@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Inventario Valorizado</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 2cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        .logo {
+            max-width: 100px;
+            margin-bottom: 10px;
+        }
+        .titulo-reporte {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .info-filtros {
+            font-size: 11px;
+            color: #555;
+            margin-top: 5px;
+        }
+        .info-usuario {
+            font-size: 10px;
+            color: #777;
+            text-align: right;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 6px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .total-row {
+            font-weight: bold;
+            background-color: #f9f9f9;
+        }
+        .alertas {
+            margin-top: 25px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .alertas table {
+            margin-top: 5px;
+            width: 100%;
+        }
+        .alertas th {
+            background-color: #ffeeba;
+        }
+        .text-end {
+            text-align: right;
+        }
+        .fw-bold {
+            font-weight: bold;
+        }
+        footer {
+            text-align: center;
+            font-size: 9px;
+            color: #aaa;
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="{{ url_for('static', filename='img/logo_illimani.png', _external=True) }}" class="logo" alt="Logo Joyería El Illimani">
+        <div class="titulo-reporte">Reporte de Inventario Valorizado</div>
+        <div class="info-filtros">
+            {% if categoria_nombre %}Categoría: {{ categoria_nombre }} | {% endif %}
+            {% if material_nombre %}Material: {{ material_nombre }} | {% endif %}
+            Generado: {{ fecha_generacion }}
+        </div>
+        <div class="info-usuario">
+            Usuario: {{ usuario_nombre }} | {{ fecha_hora }}
+        </div>
+    </div>
+
+    <!-- Tabla principal -->
+    <table>
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Material</th>
+                <th>Stock Actual</th>
+                <th>Precio Compra (Bs.)</th>
+                <th>Valor Total (Bs.)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for joya in resultados %}
+            <tr>
+                <td>{{ joya.codigo }}</td>
+                <td>{{ joya.nombre }}</td>
+                <td>{{ joya.categoria }}</td>
+                <td>{{ joya.material }}</td>
+                <td>{{ joya.stock_actual }}</td>
+                <td>{{ "%.2f"|format(joya.precio_compra) }}</td>
+                <td>{{ "%.2f"|format(joya.valor_total_stock) }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7">No hay joyas con los filtros seleccionados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="total-row">
+                <td colspan="4" class="text-end fw-bold">VALOR TOTAL DEL INVENTARIO</td>
+                <td colspan="1" class="fw-bold">{{ total_stock_unidades }}</td>
+                <td colspan="1" class="text-center">–</td>
+                <td colspan="1" class="fw-bold">{{ "%.2f"|format(total_valor) }} Bs.</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <!-- Alertas de stock bajo -->
+    {% if alertas %}
+    <div class="alertas">
+        <strong>⚠️ Alertas de stock mínimo</strong>
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Producto</th>
+                    <th>Stock actual</th>
+                    <th>Stock mínimo</th>
+                    <th>Diferencia</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for j in alertas %}
+                <tr>
+                    <td>{{ j.codigo }}</td>
+                    <td>{{ j.nombre }}</td>
+                    <td>{{ j.stock_actual }}</td>
+                    <td>{{ j.stock_minimo }}</td>
+                    <td>{{ j.stock_actual - j.stock_minimo }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <footer>
+        Reporte generado automáticamente por Sistema de Gestión Joyería El Illimani
+    </footer>
+</body>
+</html>
