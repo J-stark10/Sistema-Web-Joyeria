@@ -7,69 +7,95 @@
         @page {
             size: letter;
             margin: 2cm;
+            /* Numeración de página en la parte inferior derecha */
+            @bottom-right {
+                content: "Página " counter(page) " de " counter(pages);
+                font-size: 9px;
+                font-family: 'DM Sans', Arial, sans-serif;
+                color: #888780;
+            }
         }
         body {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
+            font-family: 'DM Sans', Arial, sans-serif;
+            font-size: 11px;
             line-height: 1.4;
+            color: #1C1A15;
+            margin: 0;
         }
+        /* Encabezado con flexbox */
         .header {
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
             margin-bottom: 20px;
-            border-bottom: 2px solid #333;
+            border-bottom: 2px solid #BA7517;
             padding-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .logo-col {
+            flex: 1;
+            text-align: left;
         }
         .logo {
-            max-width: 100px;
-            margin-bottom: 10px;
+            max-height: 60px;
+            width: auto;
+        }
+        .titulo-col {
+            flex: 2;
+            text-align: center;
         }
         .titulo-reporte {
             font-size: 18px;
             font-weight: bold;
-            margin: 5px 0;
+            margin: 0;
+            font-family: 'Cormorant Garamond', serif;
         }
-        .info-filtros {
-            font-size: 11px;
-            color: #555;
+        .filtros {
+            font-size: 10px;
+            color: #5F5E5A;
             margin-top: 5px;
         }
-        .info-usuario {
-            font-size: 10px;
-            color: #777;
+        .info-col {
+            flex: 1;
             text-align: right;
-            margin-bottom: 10px;
+            font-size: 9px;
+            color: #5F5E5A;
         }
+        .info-line {
+            margin: 2px 0;
+        }
+        /* Tabla */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
+            font-size: 10px;
         }
         th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #D3D1C7;
             padding: 6px;
             text-align: left;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #F1EFE8;
             font-weight: bold;
         }
         .total-row {
             font-weight: bold;
-            background-color: #f9f9f9;
+            background-color: #F9F9F9;
         }
         .alertas {
             margin-top: 25px;
-            background-color: #fff3cd;
-            border: 1px solid #ffeeba;
+            background-color: #FAEEDA;
+            border: 1px solid #FAC775;
             padding: 10px;
             border-radius: 5px;
         }
         .alertas table {
             margin-top: 5px;
-            width: 100%;
         }
         .alertas th {
-            background-color: #ffeeba;
+            background-color: #FAC775;
         }
         .text-end {
             text-align: right;
@@ -77,101 +103,41 @@
         .fw-bold {
             font-weight: bold;
         }
-        footer {
+        /* Pie de página institucional (se muestra solo al final) */
+        .footer-text {
             text-align: center;
-            font-size: 9px;
-            color: #aaa;
-            margin-top: 20px;
-            border-top: 1px solid #eee;
-            padding-top: 5px;
+            font-size: 8px;
+            color: #888780;
+            margin-top: 30px;
+            border-top: 1px solid #D3D1C7;
+            padding-top: 8px;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <img src="{{ url_for('static', filename='img/logo_illimani.png', _external=True) }}" class="logo" alt="Logo Joyería El Illimani">
-        <div class="titulo-reporte">Reporte de Inventario Valorizado</div>
-        <div class="info-filtros">
-            {% if categoria_nombre %}Categoría: {{ categoria_nombre }} | {% endif %}
-            {% if material_nombre %}Material: {{ material_nombre }} | {% endif %}
-            Generado: {{ fecha_generacion }}
+        <div class="logo-col">
+            <img src="{{ url_for('static', filename='img/logo_illimani.png', _external=True) }}" class="logo" alt="Logo Joyería El Illimani">
         </div>
-        <div class="info-usuario">
-            Usuario: {{ usuario_nombre }} | {{ fecha_hora }}
+        <div class="titulo-col">
+            <div class="titulo-reporte">Reporte de Inventario Valorizado</div>
+            <div class="filtros">
+                {% if categoria_nombre %}Categoría: {{ categoria_nombre }}<br>{% endif %}
+                {% if material_nombre %}Material: {{ material_nombre }}{% endif %}
+            </div>
+        </div>
+        <div class="info-col">
+            <div class="info-line"><strong>Generado:</strong> {{ fecha_hora }}</div>
+            <div class="info-line"><strong>Usuario:</strong> {{ usuario_nombre }}</div>
         </div>
     </div>
 
-    <!-- Tabla principal -->
-    <table>
-        <thead>
-            <tr>
-                <th>Código</th>
-                <th>Producto</th>
-                <th>Categoría</th>
-                <th>Material</th>
-                <th>Stock Actual</th>
-                <th>Precio Compra (Bs.)</th>
-                <th>Valor Total (Bs.)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for joya in resultados %}
-            <tr>
-                <td>{{ joya.codigo }}</td>
-                <td>{{ joya.nombre }}</td>
-                <td>{{ joya.categoria }}</td>
-                <td>{{ joya.material }}</td>
-                <td>{{ joya.stock_actual }}</td>
-                <td>{{ "%.2f"|format(joya.precio_compra) }}</td>
-                <td>{{ "%.2f"|format(joya.valor_total_stock) }}</td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="7">No hay joyas con los filtros seleccionados.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-        <tfoot>
-            <tr class="total-row">
-                <td colspan="4" class="text-end fw-bold">VALOR TOTAL DEL INVENTARIO</td>
-                <td colspan="1" class="fw-bold">{{ total_stock_unidades }}</td>
-                <td colspan="1" class="text-center">–</td>
-                <td colspan="1" class="fw-bold">{{ "%.2f"|format(total_valor) }} Bs.</td>
-            </tr>
-        </tfoot>
-    </table>
+    <!-- Tabla principal y alertas -->
+    {% include "reportes/_reporte_inventario_tabla.html" %}
 
-    <!-- Alertas de stock bajo -->
-    {% if alertas %}
-    <div class="alertas">
-        <strong>⚠️ Alertas de stock mínimo</strong>
-        <table>
-            <thead>
-                <tr>
-                    <th>Código</th>
-                    <th>Producto</th>
-                    <th>Stock actual</th>
-                    <th>Stock mínimo</th>
-                    <th>Diferencia</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for j in alertas %}
-                <tr>
-                    <td>{{ j.codigo }}</td>
-                    <td>{{ j.nombre }}</td>
-                    <td>{{ j.stock_actual }}</td>
-                    <td>{{ j.stock_minimo }}</td>
-                    <td>{{ j.stock_actual - j.stock_minimo }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% endif %}
-
-    <footer>
+    <!-- Pie de página institucional (solo aparece al final del documento) -->
+    <div class="footer-text">
         Reporte generado automáticamente por Sistema de Gestión Joyería El Illimani
-    </footer>
+    </div>
 </body>
 </html>

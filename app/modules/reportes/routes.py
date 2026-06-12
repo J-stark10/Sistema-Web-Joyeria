@@ -2,7 +2,7 @@ from flask import render_template, request, flash, send_file, session, Blueprint
 from weasyprint import HTML
 import io
 from datetime import datetime
-#from . import reportes_bp
+
 from .services import ReporteInventarioService
 
 

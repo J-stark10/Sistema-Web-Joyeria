@@ -172,3 +172,7 @@ a { text-decoration: none; color: inherit; }
   transition: transform 0.2s;
 }
 [data-theme="dark"] .theme-toggle::after { transform: translateX(14px); }
+/*Para el stock bajo en reportes inventario*/
+.fila-stock-bajo {
+    background-color: rgba(239, 159, 39, 0.12);
+}

@@ -1,0 +1,78 @@
+{# templates/reportes/_reporte_inventario_tabla.html #}
+{# Recibe: resultados, total_stock_unidades, total_valor, alertas #}
+
+<div style="overflow-x: auto; margin-top: 1rem;">
+    <table style="width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: var(--radius-md); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <thead style="background: var(--silver-100); color: var(--text-primary);">
+            <tr>
+                <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--border);">Código</th>
+                <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--border);">Producto</th>
+                <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--border);">Categoría</th>
+                <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--border);">Material</th>
+                <th style="padding: 12px; text-align: right; border-bottom: 1px solid var(--border);">Stock Actual</th>
+                <th style="padding: 12px; text-align: right; border-bottom: 1px solid var(--border);">Precio Compra (Bs.)</th>
+                <th style="padding: 12px; text-align: right; border-bottom: 1px solid var(--border);">Valor Total (Bs.)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for joya in resultados %}
+            <tr style="border-bottom: 1px solid var(--border);" {% if joya.stock_bajo %}class="fila-stock-bajo"{% endif %}>
+                <td style="padding: 10px 12px;">{{ joya.codigo }}</td>
+                <td style="padding: 10px 12px;">{{ joya.nombre }}</td>
+                <td style="padding: 10px 12px;">{{ joya.categoria }}</td>
+                <td style="padding: 10px 12px;">{{ joya.material }}</td>
+                <td style="padding: 10px 12px; text-align: right;">{{ joya.stock_actual }}</td>
+                <td style="padding: 10px 12px; text-align: right;">{{ "%.2f"|format(joya.precio_compra) }}</td>
+                <td style="padding: 10px 12px; text-align: right;">{{ "%.2f"|format(joya.valor_total_stock) }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="padding: 20px; text-align: center; color: var(--text-muted);">No hay joyas con los filtros seleccionados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot style="background-color: rgba(136, 135, 128, 0.15); font-weight: bold; color: var(--text-primary);">
+            <tr>
+                <td colspan="4" style="padding: 12px; text-align: right;">VALOR TOTAL DEL INVENTARIO</td>
+                <td style="padding: 12px; text-align: right;">{{ total_stock_unidades }}</td>
+                <td style="padding: 12px; text-align: center;">–</td>
+                <td style="padding: 12px; text-align: right;">{{ "%.2f"|format(total_valor) }} Bs.</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<!-- Alertas -->
+{% if alertas %}
+<div class="card border-warning mt-4" style="margin-top: 2rem; border: 1px solid rgba(239, 159, 39, 0.3); border-radius: var(--radius-md); background: var(--bg-card);">
+    <div style="background: rgba(239, 159, 39, 0.15); padding: 0.75rem 1rem; border-bottom: 1px solid rgba(239, 159, 39, 0.2); border-radius: var(--radius-md) var(--radius-md) 0 0;">
+        <strong style="color: var(--text-primary);">⚠️ Alertas de stock mínimo</strong>
+    </div>
+    <div class="card-body" style="padding: 1rem;">
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead style="background-color: rgba(239, 159, 39, 0.2);">
+                    <tr>
+                        <th style="padding: 8px; text-align: left; color: var(--text-primary);">Código</th>
+                        <th style="padding: 8px; text-align: left; color: var(--text-primary);">Producto</th>
+                        <th style="padding: 8px; text-align: right; color: var(--text-primary);">Stock actual</th>
+                        <th style="padding: 8px; text-align: right; color: var(--text-primary);">Stock mínimo</th>
+                        <th style="padding: 8px; text-align: right; color: var(--text-primary);">Diferencia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for j in alertas %}
+                    <tr style="border-bottom: 1px solid var(--border);">
+                        <td style="padding: 6px 8px;">{{ j.codigo }}</td>
+                        <td style="padding: 6px 8px;">{{ j.nombre }}</td>
+                        <td style="padding: 6px 8px; text-align: right;">{{ j.stock_actual }}</td>
+                        <td style="padding: 6px 8px; text-align: right;">{{ j.stock_minimo }}</td>
+                        <td style="padding: 6px 8px; text-align: right;">{{ j.stock_actual - j.stock_minimo }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}

@@ -1,128 +1,55 @@
 {% extends "base.html" %}
 
-{% block title %}Reporte de Inventario Valorizado{% endblock %}
+{% block titulo %}Reporte de Inventario Valorizado{% endblock %}
+{% block page_title %}Reporte de Inventario Valorizado{% endblock %}
+{% block page_sub %}Seleccione filtros y genere el listado valorizado{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>Reporte de Inventario Valorizado</h2>
-    <p class="text-muted">Seleccione filtros para generar el listado.</p>
-
+<div class="form-card" style="max-width: 1200px; margin: 0 auto;">
     <!-- Formulario de filtros -->
-    <form method="POST" class="row g-3 mb-4">
-        <div class="col-md-5">
-            <label for="id_categoria" class="form-label">Categoría</label>
-            <select name="id_categoria" id="id_categoria" class="form-select">
+    <form method="POST" class="form-grid">
+        <div class="form-group">
+            <label for="id_categoria">Categoría</label>
+            <select name="id_categoria" id="id_categoria">
                 <option value="">-- Todas --</option>
                 {% for cat in categorias %}
                 <option value="{{ cat.id_categoria }}">{{ cat.nombre_categoria }}</option>
                 {% endfor %}
             </select>
         </div>
-        <div class="col-md-5">
-            <label for="id_material" class="form-label">Material</label>
-            <select name="id_material" id="id_material" class="form-select">
+        <div class="form-group">
+            <label for="id_material">Material</label>
+            <select name="id_material" id="id_material">
                 <option value="">-- Todos --</option>
                 {% for mat in materiales %}
                 <option value="{{ mat.id_material }}">{{ mat.nombre_material }}</option>
                 {% endfor %}
             </select>
         </div>
-        <div class="col-md-2 d-flex align-items-end">
-            <button type="submit" class="btn btn-secondary">Filtrar</button>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary" style="background: var(--gold-400); border: none; padding: 0.6rem 1.2rem; border-radius: var(--radius-md); font-weight: 500; color: white;">
+                🔍 Filtrar
+            </button>
         </div>
     </form>
 
-
-
-    <!-- Resultados: solo si existen -->
+    <!-- Resultados -->
     {% if resultados is not none %}
-    <!-- Botón para exportar PDF -->
-    <form method="POST" action="{{ url_for('reportes.reporte_inventario_pdf') }}" target="_blank" class="mt-3">
+    <!-- Botón Exportar PDF -->
+    <form method="POST" action="{{ url_for('reportes.reporte_inventario_pdf') }}" target="_blank" style="margin-top: 1.5rem;">
         <input type="hidden" name="id_categoria" value="{{ filtros_actuales.id_categoria }}">
         <input type="hidden" name="id_material" value="{{ filtros_actuales.id_material }}">
-        <button type="submit" class="btn btn-success">
+        <button type="submit" class="btn btn-primary" style="background: var(--teal-400); border: none; padding: 0.6rem 1.2rem; border-radius: var(--radius-md); font-weight: 500; color: white;">
             📄 Exportar a PDF
         </button>
     </form>
-    <hr>
-    <h4>INVENTARIO POR CATEGORIA DE MATERIAL</h4>
 
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped">
-            <thead class="table-dark">
-                <tr>
-                    <th>Código</th>
-                    <th>Producto</th>
-                    <th>Categoría</th>
-                    <th>Material</th>
-                    <th>Stock Actual</th>
-                    <th>Precio Compra (Bs.)</th>
-                    <th>Valor Total en Stock (Bs.)</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for joya in resultados %}
-                <tr {% if joya.stock_bajo %}class="table-warning" {% endif %}>
-                    <td>{{ joya.codigo }}</td>
-                    <td>{{ joya.nombre }}</td>
-                    <td>{{ joya.categoria }}</td>
-                    <td>{{ joya.material }}</td>
-                    <td>{{ joya.stock_actual }}</td>
-                    <td>{{ "%.2f"|format(joya.precio_compra) }}</td>
-                    <td>{{ "%.2f"|format(joya.valor_total_stock) }}</td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="7" class="text-center">No hay joyas con los filtros seleccionados.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr class="total-row">
-                    <td colspan="4" class="text-end fw-bold">VALOR TOTAL DEL INVENTARIO</td>
-                    <td colspan="1" class="fw-bold">{{ total_stock_unidades }}</td>
-                    <td colspan="1" class="text-center">–</td>
-                    <td colspan="1" class="fw-bold">{{ "%.2f"|format(total_valor) }} Bs.</td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
-    <br>
+    <hr style="margin: 1.5rem 0; border-color: var(--border);">
 
-    <!-- Sección de alertas (stock bajo) -->
-    {% if alertas %}
-    <div class="card border-warning mt-4">
-        <div class="card-header bg-warning text-dark">
-            <strong>⚠️ Alertas de stock mínimo</strong>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-sm table-bordered">
-                    <thead class="table-warning">
-                        <tr>
-                            <th>Código</th>
-                            <th>Producto</th>
-                            <th>Stock actual</th>
-                            <th>Stock mínimo</th>
-                            <th>Diferencia</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for j in alertas %}
-                        <tr>
-                            <td>{{ j.codigo }}</td>
-                            <td>{{ j.nombre }}</td>
-                            <td>{{ j.stock_actual }}</td>
-                            <td>{{ j.stock_minimo }}</td>
-                            <td>{{ j.stock_actual - j.stock_minimo }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    {% endif %}
+    <h4 style="font-family: var(--font-serif); color: var(--gold-600);">Inventario por Categoría y Material</h4>
+
+    {# Incluir la tabla reutilizable #}
+    {% include "reportes/_reporte_inventario_tabla.html" %}
     {% endif %}
 </div>
 {% endblock %}
