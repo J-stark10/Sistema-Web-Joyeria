@@ -1,54 +1,197 @@
 {% extends "base.html" %}
 
+{% block titulo %}Configuración{% endblock %}
+
 {% block content %}
-<div class="p-6">
 
-  <!-- Header -->
-  <div class="mb-6">
-    <h1 class="text-2xl font-bold text-text">Configuración</h1>
-    <p class="text-sm text-gray-500">Preferencias del sistema</p>
-  </div>
+<div>
 
-  <!-- Card Config -->
-  <div class="bg-card rounded-lg shadow p-6">
+    <!-- HEADER -->
 
-    <!-- Preferencias -->
-    <div class="mb-6">
-      <h2 class="text-lg font-semibold text-text mb-4">Preferencias</h2>
+    <div class="page-header">
 
-      <div class="flex items-center justify-between mb-3">
-        <span class="text-sm text-gray-600">Modo oscuro</span>
-        <input type="checkbox">
-      </div>
+        <div>
 
-      <div class="flex items-center justify-between mb-3">
-        <span class="text-sm text-gray-600">Notificaciones</span>
-        <input type="checkbox">
-      </div>
+            <h1 class="page-title">
+                Configuración
+            </h1>
+
+            <p class="page-subtitle">
+                Administre las preferencias generales y seguridad del sistema.
+            </p>
+
+        </div>
+
     </div>
 
-    <!-- Seguridad -->
-    <div class="mb-6">
-      <h2 class="text-lg font-semibold text-text mb-4">Seguridad</h2>
+    <!-- GRID -->
 
-      <div class="mb-4">
-        <label class="block text-sm text-gray-600 mb-1">Nueva contraseña</label>
-        <input type="password" class="w-full border rounded px-3 py-2">
-      </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-      <div>
-        <label class="block text-sm text-gray-600 mb-1">Confirmar contraseña</label>
-        <input type="password" class="w-full border rounded px-3 py-2">
-      </div>
+        <!-- PREFERENCIAS -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div class="card-title">
+                    Preferencias del Sistema
+                </div>
+
+            </div>
+
+            <div class="space-y-5">
+
+                <div class="flex items-center justify-between">
+
+                    <div>
+
+                        <div class="font-medium">
+                            Modo Oscuro
+                        </div>
+
+                        <div
+                            class="text-sm"
+                            style="color:var(--color-text-muted);"
+                        >
+                            Cambiar entre tema claro y oscuro.
+                        </div>
+
+                    </div>
+
+                    <label class="switch">
+
+                        <input type="checkbox">
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="flex items-center justify-between">
+
+                    <div>
+
+                        <div class="font-medium">
+                            Notificaciones
+                        </div>
+
+                        <div
+                            class="text-sm"
+                            style="color:var(--color-text-muted);"
+                        >
+                            Recibir alertas importantes del sistema.
+                        </div>
+
+                    </div>
+
+                    <label class="switch">
+
+                        <input type="checkbox" checked>
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- SEGURIDAD -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div class="card-title">
+                    Seguridad
+                </div>
+
+            </div>
+
+            <form>
+
+                <div class="form-group mb-4">
+
+                    <label>
+                        Nueva contraseña
+                    </label>
+
+                    <input
+                        type="password"
+                        placeholder="Ingrese nueva contraseña"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Confirmar contraseña
+                    </label>
+
+                    <input
+                        type="password"
+                        placeholder="Repita la contraseña"
+                    >
+
+                </div>
+
+            </form>
+
+        </div>
+
     </div>
 
-    <div>
-      <button class="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded">
-        Guardar Configuración
-      </button>
-    </div>
+    <!-- ACCIONES -->
 
-  </div>
+    <div
+        class="card mt-6"
+        style="padding:1rem;"
+    >
+
+        <div
+            class="flex justify-end gap-3"
+        >
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+            >
+                Cancelar
+            </button>
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     class="w-4 h-4"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke="currentColor">
+
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M5 13l4 4L19 7"/>
+
+                </svg>
+
+                Guardar Configuración
+
+            </button>
+
+        </div>
+
+    </div>
 
 </div>
+
 {% endblock %}

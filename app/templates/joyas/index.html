@@ -1,121 +1,496 @@
 {% extends "base.html" %}
 
-{% block titulo %}
-Joyas
-{% endblock %}
-
-{% block page_title %}
-Joyas
-{% endblock %}
-
-{% block page_sub %}
-Gestión de joyas registradas
-{% endblock %}
+{% block titulo %}Joyas{% endblock %}
 
 {% block content %}
 
-<div class="card">
+<div>
 
-    <div class="card-header">
-        <div class="card-title">Listado de Joyas</div>
+    <!-- HEADER -->
 
-        <a href="{{ url_for('joya.crear') }}"
-           class="btn btn-primary">
+    <div class="page-header">
+
+        <div>
+
+            <h1 class="page-title">
+                Joyas
+            </h1>
+
+            <p class="page-subtitle">
+                Gestión de joyas registradas en el sistema.
+            </p>
+
+        </div>
+
+        <a
+            href="{{ url_for('joya.crear') }}"
+            class="btn btn-primary"
+        >
+
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="w-4 h-4"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor">
+
+                <path stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 4v16m8-8H4"/>
+
+            </svg>
+
             Nueva Joya
+
         </a>
+
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>Categoría</th>
-                <th>Material</th>
-                <th>Precio Compra</th>
-                <th>Precio Venta</th>
-                <th>Stock</th>
-                <th>Estado</th>
-                <th width="180">Acciones</th>
-            </tr>
-        </thead>
+    <!-- KPIs -->
 
-        <tbody>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
 
-            {% for joya in joyas %}
+        <div class="kpi-card">
 
-            <tr>
+            <div class="text-3xl font-semibold">
+                {{ joyas|length }}
+            </div>
 
-                <td>{{ joya.codigo }}</td>
+            <div class="text-sm mt-1"
+                 style="color:var(--color-text-muted);">
 
-                <td>{{ joya.nombre }}</td>
+                Total joyas
 
-                <td>{{ joya.categoria.nombre_categoria }}</td>
+            </div>
 
-                <td>{{ joya.material.nombre_material }}</td>
+        </div>
 
-                <td>Bs. {{ joya.precio_compra }}</td>
+        <div class="kpi-card">
 
-                <td>Bs. {{ joya.precio_venta }}</td>
+            <div class="text-3xl font-semibold"
+                 style="color:var(--color-success);">
 
-                <td>
+                {{ joyas|selectattr('activo')|list|length }}
 
-                    {% if joya.stock_bajo %}
-                        <span class="badge badge-danger">
-                            {{ joya.stock_actual }}
+            </div>
+
+            <div class="text-sm mt-1"
+                 style="color:var(--color-text-muted);">
+
+                Joyas activas
+
+            </div>
+
+        </div>
+
+        <div class="kpi-card">
+
+            <div class="text-3xl font-semibold"
+                 style="color:var(--color-danger);">
+
+                {{ joyas|selectattr('stock_bajo')|list|length }}
+
+            </div>
+
+            <div class="text-sm mt-1"
+                 style="color:var(--color-text-muted);">
+
+                Stock bajo
+
+            </div>
+
+        </div>
+
+        <div class="kpi-card">
+
+            <div class="text-3xl font-semibold"
+                 style="color:var(--color-warning);">
+
+                Bs. {{ joyas|sum(attribute='precio_venta')|round(2) }}
+
+            </div>
+
+            <div class="text-sm mt-1"
+                 style="color:var(--color-text-muted);">
+
+                Valor catálogo
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FILTROS -->
+
+    <div class="card mb-6">
+
+        <div class="flex flex-col lg:flex-row gap-3">
+
+            <div class="flex-1">
+
+                <input
+                    type="text"
+                    id="filtro-joya"
+                    placeholder="Buscar código, nombre, categoría o material..."
+                    oninput="filtrarJoyas()"
+                >
+
+            </div>
+
+            <select
+                id="filtro-estado"
+                style="max-width:220px;"
+                onchange="filtrarJoyas()"
+            >
+
+                <option value="">
+                    Todos los estados
+                </option>
+
+                <option value="activo">
+                    Activo
+                </option>
+
+                <option value="inactivo">
+                    Inactivo
+                </option>
+
+            </select>
+
+            <select
+                id="filtro-stock"
+                style="max-width:220px;"
+                onchange="filtrarJoyas()"
+            >
+
+                <option value="">
+                    Todo el stock
+                </option>
+
+                <option value="bajo">
+                    Stock bajo
+                </option>
+
+                <option value="normal">
+                    Stock normal
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+    <!-- TABLA -->
+
+    <div class="table-wrapper">
+
+        <table
+            class="data-table"
+            id="tabla-joyas"
+        >
+
+            <thead>
+
+                <tr>
+
+                    <th>Joya</th>
+                    <th>Categoría</th>
+                    <th>Material</th>
+                    <th>Compra</th>
+                    <th>Venta</th>
+                    <th>Stock</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for joya in joyas|sort(attribute='id_joya', reverse=True) %}
+
+                <tr
+
+                    data-busqueda="
+                        {{ joya.codigo }}
+                        {{ joya.nombre }}
+                        {{ joya.categoria.nombre_categoria }}
+                        {{ joya.material.nombre_material }}
+                    "
+
+                    data-estado="{{ 'activo' if joya.activo else 'inactivo' }}"
+                    data-stock="{{ 'bajo' if joya.stock_bajo else 'normal' }}"
+
+                >
+
+                    <!-- JOYA -->
+
+                    <td>
+
+                        <div class="flex items-center gap-3">
+
+                            <div
+                                class="avatar-initials"
+                                style="width:36px;height:36px;"
+                            >
+
+                                {{ joya.nombre[:2]|upper }}
+
+                            </div>
+
+                            <div>
+
+                                <div class="font-medium">
+
+                                    {{ joya.nombre }}
+
+                                </div>
+
+                                <div
+                                    class="text-xs"
+                                    style="color:var(--color-text-muted);"
+                                >
+
+                                    {{ joya.codigo }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+                    <!-- CATEGORIA -->
+
+                    <td>
+
+                        <span class="badge badge-neutral">
+
+                            {{ joya.categoria.nombre_categoria }}
+
                         </span>
-                    {% else %}
-                        {{ joya.stock_actual }}
-                    {% endif %}
 
-                </td>
+                    </td>
 
-                <td>
+                    <!-- MATERIAL -->
 
-                    {% if joya.activo %}
+                    <td>
+
+                        {{ joya.material.nombre_material }}
+
+                    </td>
+
+                    <!-- COMPRA -->
+
+                    <td>
+
+                        Bs. {{ "%.2f"|format(joya.precio_compra) }}
+
+                    </td>
+
+                    <!-- VENTA -->
+
+                    <td>
+
+                        <span class="font-semibold">
+
+                            Bs. {{ "%.2f"|format(joya.precio_venta) }}
+
+                        </span>
+
+                    </td>
+
+                    <!-- STOCK -->
+
+                    <td>
+
+                        {% if joya.stock_bajo %}
+
+                        <span class="badge badge-danger">
+
+                            {{ joya.stock_actual }}
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge badge-success">
+
+                            {{ joya.stock_actual }}
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- ESTADO -->
+
+                    <td>
+
+                        {% if joya.activo %}
+
                         <span class="badge badge-success">
                             Activo
                         </span>
-                    {% else %}
-                        <span class="badge badge-danger">
+
+                        {% else %}
+
+                        <span class="badge badge-neutral">
                             Inactivo
                         </span>
-                    {% endif %}
 
-                </td>
+                        {% endif %}
 
-                <td>
+                    </td>
 
-                    <a href="{{ url_for('joya.editar', id_joya=joya.id_joya) }}">
-                        Editar
-                    </a>
+                    <!-- ACCIONES -->
 
-                    |
+                    <td>
 
-                    {% if joya.activo %}
+                        <div class="flex items-center gap-2">
 
-                    <a href="{{ url_for('joya.desactivar', id_joya=joya.id_joya) }}"
-                       onclick="return confirm('¿Desactivar joya?')">
-                        Desactivar
-                    </a>
+                            <a
+                                href="{{ url_for('joya.editar', id_joya=joya.id_joya) }}"
+                                class="btn btn-ghost btn-sm"
+                            >
 
-                    {% else %}
+                                Editar
 
-                    <a href="{{ url_for('joya.activar', id_joya=joya.id_joya) }}">
-                        Activar
-                    </a>
+                            </a>
 
-                    {% endif %}
+                            {% if joya.activo %}
 
-                </td>
+                            <a
+                                href="{{ url_for('joya.desactivar', id_joya=joya.id_joya) }}"
+                                class="btn btn-ghost btn-sm"
+                                style="color:var(--color-warning-text);"
+                                onclick="return confirm('¿Desactivar joya {{ joya.nombre }}?')"
+                            >
 
-            </tr>
+                                Desactivar
 
-            {% endfor %}
+                            </a>
 
-        </tbody>
-    </table>
+                            {% else %}
+
+                            <a
+                                href="{{ url_for('joya.activar', id_joya=joya.id_joya) }}"
+                                class="btn btn-ghost btn-sm"
+                                style="color:var(--color-success);"
+                            >
+
+                                Activar
+
+                            </a>
+
+                            {% endif %}
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="8">
+
+                        <div class="empty-state">
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="empty-state-icon"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor">
+
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="1.5"
+                                      d="M12 4l7 4v8l-7 4-7-4V8l7-4z"/>
+
+                            </svg>
+
+                            <p style="font-weight:500;margin-bottom:.25rem;">
+                                No existen joyas registradas
+                            </p>
+
+                            <p style="font-size:.875rem;">
+                                Cree la primera joya utilizando el botón
+                                "Nueva Joya".
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
 
 </div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+
+<script>
+
+function filtrarJoyas() {
+
+    const texto =
+        document.getElementById('filtro-joya')
+        .value
+        .toLowerCase();
+
+    const estado =
+        document.getElementById('filtro-estado')
+        .value;
+
+    const stock =
+        document.getElementById('filtro-stock')
+        .value;
+
+    document.querySelectorAll(
+        '#tabla-joyas tbody tr[data-busqueda]'
+    ).forEach(function(row){
+
+        const coincideTexto =
+            row.dataset.busqueda
+                .toLowerCase()
+                .includes(texto);
+
+        const coincideEstado =
+            !estado ||
+            row.dataset.estado === estado;
+
+        const coincideStock =
+            !stock ||
+            row.dataset.stock === stock;
+
+        row.style.display =
+            coincideTexto &&
+            coincideEstado &&
+            coincideStock
+            ? ''
+            : 'none';
+
+    });
+
+}
+
+</script>
 
 {% endblock %}

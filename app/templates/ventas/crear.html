@@ -1,328 +1,205 @@
 {% extends "base.html" %}
 
-{% block title %} Crear Venta {% endblock %}
+{% block titulo %}Nueva Venta{% endblock %}
 
 {% block content %}
 
-<form method="POST">
+<form method="POST" id="venta-form">
 
-    <!-- ===================== -->
-    <!-- CLIENTE + RESUMEN -->
-    <!-- ===================== -->
+    <!-- HEADER -->
 
-    <div class="sales-layout">
+    <div class="page-header">
 
-        <div class="card">
+        <div>
+            <h1 class="page-title">
+                Nueva Venta
+            </h1>
 
-            <div class="page-header" style="margin-bottom:1rem;">
-                <div>
-                    <h2 class="page-title">Cliente</h2>
-                    <p class="page-subtitle">
-                        Seleccione el cliente para la venta
-                    </p>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">
-                    Cliente
-                </label>
-
-                <select
-                    id="id_cliente"
-                    name="id_cliente"
-                    onchange="mostrarCliente(this)"
-                    required
-                >
-                    <option value="">
-                        Seleccionar cliente
-                    </option>
-
-                    {% for cliente in clientes %}
-                    <option
-                        value="{{ cliente.id_cliente }}"
-                        data-nombre="{{ cliente.nombre }}"
-                        data-direccion="{{ cliente.direccion }}"
-                        data-ci="{{ cliente.ci_nit }}"
-                    >
-                        {{ cliente.nombre }} - {{ cliente.ci_nit }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div class="info-preview">
-
-                <div class="preview-item">
-                    <span class="preview-label">
-                        Nombre
-                    </span>
-
-                    <span
-                        id="cliente-nombre"
-                        class="preview-value"
-                    >
-                        —
-                    </span>
-                </div>
-
-                <div class="preview-item">
-                    <span class="preview-label">
-                        CI / NIT
-                    </span>
-
-                    <span
-                        id="cliente-ci"
-                        class="preview-value"
-                    >
-                        —
-                    </span>
-                </div>
-
-                <div class="preview-item">
-                    <span class="preview-label">
-                        Dirección
-                    </span>
-
-                    <span
-                        id="cliente-direccion"
-                        class="preview-value"
-                    >
-                        —
-                    </span>
-                </div>
-
-            </div>
-
+            <p class="page-subtitle">
+                Registre una venta de joyas y genere el detalle de productos.
+            </p>
         </div>
 
-        <div class="sales-summary">
+        <div class="sales-summary-card">
 
             <div class="sales-summary-label">
                 Total Venta
             </div>
 
-            <div
-                class="sales-summary-total"
-                id="total-venta"
-            >
+            <div id="total-general" class="sales-summary-total">
                 Bs. 0.00
             </div>
 
             <div class="sales-summary-meta">
-
-                Productos agregados:
-                <strong id="items-count">
-                    0
-                </strong>
-
+                <span id="cantidad-items">0</span>
+                productos agregados
             </div>
 
         </div>
 
     </div>
 
-    <!-- ===================== -->
-    <!-- JOYA -->
-    <!-- ===================== -->
+    <!-- CLIENTE -->
 
-    <div class="card">
+    <div class="card mb-6">
 
-        <div class="page-header">
-
-            <div>
-                <h2 class="page-title">
-                    Agregar Joya
-                </h2>
-
-                <p class="page-subtitle">
-                    Seleccione una joya para añadir al detalle
-                </p>
+        <div class="card-header">
+            <div class="card-title">
+                Información del Cliente
             </div>
-
         </div>
 
         <div class="form-group">
 
-            <label class="form-label">
-                Joya
-            </label>
+            <label>Cliente</label>
 
             <select
-                id="joya-select"
-                onchange="mostrarJoya(this)"
+                name="id_cliente"
+                id="id_cliente"
+                onchange="mostrarCliente(this)"
+                required
             >
 
                 <option value="">
-                    Seleccione una joya
+                    Seleccione un cliente
                 </option>
 
-                {% for joya in joyas %}
+                {% for cliente in clientes %}
+
                 <option
-                    value="{{ joya.id_joya }}"
-                    data-nombre="{{ joya.nombre }}"
-                    data-codigo="{{ joya.codigo }}"
-                    data-categoria="{{ joya.categoria.nombre_categoria }}"
-                    data-stock="{{ joya.stock_actual }}"
-                    data-precio="{{ joya.precio_venta }}"
+                    value="{{ cliente.id_cliente }}"
+                    data-nombre="{{ cliente.nombre }}"
+                    data-ci="{{ cliente.ci_nit }}"
+                    data-direccion="{{ cliente.direccion or '' }}"
                 >
-                    {{ joya.codigo }} - {{ joya.nombre }}
+                    {{ cliente.nombre }} - {{ cliente.ci_nit }}
                 </option>
+
                 {% endfor %}
 
             </select>
 
         </div>
 
-        <div class="jewel-preview">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
 
-            <div class="jewel-grid">
+            <div class="preview-item">
+                <span class="preview-label">
+                    Nombre
+                </span>
 
-                <div class="preview-item">
-                    <span class="preview-label">
-                        Código
-                    </span>
-
-                    <span
-                        id="joya-codigo"
-                        class="preview-value"
-                    >
-                        —
-                    </span>
-                </div>
-
-                <div class="preview-item">
-                    <span class="preview-label">
-                        Nombre
-                    </span>
-
-                    <span
-                        id="joya-nombre"
-                        class="preview-value"
-                    >
-                        —
-                    </span>
-                </div>
-
-                <div class="preview-item">
-                    <span class="preview-label">
-                        Categoría
-                    </span>
-
-                    <span
-                        id="joya-categoria"
-                        class="preview-value"
-                    >
-                        —
-                    </span>
-                </div>
-
-                <div class="preview-item">
-                    <span class="preview-label">
-                        Stock
-                    </span>
-
-                    <span
-                        id="joya-stock"
-                        class="preview-value"
-                    >
-                        —
-                    </span>
-                </div>
-
+                <span id="cliente-nombre" class="preview-value">
+                    —
+                </span>
             </div>
+
+            <div class="preview-item">
+                <span class="preview-label">
+                    CI / NIT
+                </span>
+
+                <span id="cliente-ci" class="preview-value">
+                    —
+                </span>
+            </div>
+
+            <div class="preview-item">
+                <span class="preview-label">
+                    Dirección
+                </span>
+
+                <span id="cliente-direccion" class="preview-value">
+                    —
+                </span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- BUSCADOR DE JOYAS -->
+
+    <div class="card mb-6">
+
+        <div class="card-header">
+            <div class="card-title">
+                Agregar Joyas
+            </div>
+        </div>
+
+        <div class="form-group">
+
+            <label>
+                Buscar por código o nombre
+            </label>
+
+            <input
+                type="text"
+                id="buscar-joya"
+                placeholder="Ej. ANI-001 o Anillo Oro"
+                autocomplete="off"
+            >
 
         </div>
 
         <div
-            class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4"
-        >
+            id="resultados-joyas"
+            class="search-results"
+        ></div>
 
-            <div class="form-group">
-                <label class="form-label">
-                    Cantidad
-                </label>
+    </div>
 
-                <input
-                    type="number"
-                    id="cantidad"
-                    min="1"
-                >
+    <!-- DETALLE -->
+
+    <div class="card">
+
+        <div class="card-header">
+            <div class="card-title">
+                Detalle de Venta
             </div>
+        </div>
 
-            <div class="form-group">
-                <label class="form-label">
-                    Precio Venta
-                </label>
+        <div class="table-wrapper">
 
-                <input
-                    type="number"
-                    id="precio"
-                    step="0.01"
-                >
-            </div>
-
-            <div
-                class="flex items-end"
-                style="display:flex;align-items:end;"
+            <table
+                class="data-table"
+                id="tabla-detalles"
             >
 
-                <button
-                    type="button"
-                    class="btn btn-primary"
-                    onclick="agregarJoya()"
-                >
-                    Agregar al detalle
-                </button>
+                <thead>
 
-            </div>
+                    <tr>
+
+                        <th>Código</th>
+                        <th>Producto</th>
+                        <th>Stock</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Subtotal</th>
+                        <th></th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                </tbody>
+
+            </table>
 
         </div>
 
     </div>
 
-    <!-- ===================== -->
-    <!-- DETALLE -->
-    <!-- ===================== -->
-
-    <div class="table-wrapper mt-6">
-
-        <table
-            class="data-table"
-            id="tabla-detalles"
-        >
-
-            <thead>
-                <tr>
-                    <th>Código</th>
-                    <th>Joya</th>
-                    <th>Stock</th>
-                    <th>Cantidad</th>
-                    <th>Precio</th>
-                    <th>Subtotal</th>
-                    <th></th>
-                </tr>
-            </thead>
-
-            <tbody></tbody>
-
-        </table>
-
-    </div>
-
-    <!-- ===================== -->
     <!-- FOOTER -->
-    <!-- ===================== -->
 
     <div class="sales-footer">
 
         <div>
 
-            <div
-                style="
-                color:var(--color-text-muted);
-                font-size:.875rem;"
-            >
+            <div class="text-sm"
+                 style="color:var(--color-text-muted);">
                 Total de la venta
             </div>
 
@@ -335,15 +212,11 @@
 
         </div>
 
-        <div
-            style="
-            display:flex;
-            gap:.75rem;"
-        >
+        <div class="flex gap-3">
 
             <a
                 href="{{ url_for('venta.index') }}"
-                class="btn btn-ghost"
+                class="btn btn-secondary"
             >
                 Cancelar
             </a>
@@ -360,5 +233,212 @@
     </div>
 
 </form>
+
+<script>
+
+let totalGeneral = 0;
+
+function mostrarCliente(select){
+
+    let option = select.options[select.selectedIndex];
+
+    document.getElementById("cliente-nombre").innerText =
+        option.dataset.nombre || "—";
+
+    document.getElementById("cliente-ci").innerText =
+        option.dataset.ci || "—";
+
+    document.getElementById("cliente-direccion").innerText =
+        option.dataset.direccion || "—";
+}
+
+const buscador = document.getElementById("buscar-joya");
+
+buscador.addEventListener("keyup", async () => {
+
+    let texto = buscador.value.trim();
+
+    if(texto.length < 2){
+
+        document.getElementById("resultados-joyas").innerHTML = "";
+        return;
+    }
+
+    const response =
+        await fetch(`/ventas/buscar-joya?q=${texto}`);
+
+    const joyas = await response.json();
+
+    let html = "";
+
+    joyas.forEach(j => {
+
+        html += `
+
+            <div
+                class="search-item"
+                onclick='agregarJoya(
+                    ${JSON.stringify(j)}
+                )'
+            >
+
+                <div>
+
+                    <strong>${j.codigo}</strong>
+
+                    <div>
+                        ${j.nombre}
+                    </div>
+
+                </div>
+
+                <div>
+
+                    Stock: ${j.stock}
+
+                    <br>
+
+                    Bs. ${j.precio}
+
+                </div>
+
+            </div>
+
+        `;
+    });
+
+    document.getElementById(
+        "resultados-joyas"
+    ).innerHTML = html;
+
+});
+
+function agregarJoya(joya){
+
+    let tbody =
+        document.querySelector("#tabla-detalles tbody");
+
+    let fila = document.createElement("tr");
+
+    fila.innerHTML = `
+
+        <td>${joya.codigo}</td>
+
+        <td>${joya.nombre}</td>
+
+        <td>${joya.stock}</td>
+
+        <td>
+
+            <input
+                type="number"
+                name="cantidad[]"
+                value="1"
+                min="1"
+                onchange="recalcular()"
+                class="cantidad"
+            >
+
+        </td>
+
+        <td>
+
+            <input
+                type="number"
+                name="precio[]"
+                value="${joya.precio}"
+                step="0.01"
+                onchange="recalcular()"
+                class="precio"
+            >
+
+        </td>
+
+        <td class="subtotal">
+
+            Bs. ${joya.precio}
+
+        </td>
+
+        <td>
+
+            <button
+                type="button"
+                class="btn btn-danger"
+                onclick="eliminarFila(this)"
+            >
+                ✕
+            </button>
+
+        </td>
+
+        <input
+            type="hidden"
+            name="id_joya[]"
+            value="${joya.id}"
+        >
+    `;
+
+    tbody.appendChild(fila);
+
+    document.getElementById(
+        "resultados-joyas"
+    ).innerHTML = "";
+
+    buscador.value = "";
+
+    recalcular();
+}
+
+function eliminarFila(btn){
+
+    btn.closest("tr").remove();
+
+    recalcular();
+}
+
+function recalcular(){
+
+    let total = 0;
+
+    document
+    .querySelectorAll("#tabla-detalles tbody tr")
+    .forEach(fila => {
+
+        let cantidad =
+            parseFloat(
+                fila.querySelector(".cantidad").value
+            ) || 0;
+
+        let precio =
+            parseFloat(
+                fila.querySelector(".precio").value
+            ) || 0;
+
+        let subtotal = cantidad * precio;
+
+        fila.querySelector(".subtotal").innerHTML =
+            `Bs. ${subtotal.toFixed(2)}`;
+
+        total += subtotal;
+    });
+
+    document.getElementById(
+        "total-general"
+    ).innerHTML = `Bs. ${total.toFixed(2)}`;
+
+    document.getElementById(
+        "footer-total"
+    ).innerHTML = `Bs. ${total.toFixed(2)}`;
+
+    document.getElementById(
+        "cantidad-items"
+    ).innerText =
+        document.querySelectorAll(
+            "#tabla-detalles tbody tr"
+        ).length;
+}
+
+</script>
 
 {% endblock %}

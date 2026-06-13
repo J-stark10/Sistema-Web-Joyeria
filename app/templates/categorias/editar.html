@@ -1,40 +1,155 @@
+
 {% extends "base.html" %}
 
 {% block titulo %}Editar Categoría{% endblock %}
 
-{% block page_title %}Editar Categoría{% endblock %}
-
-{% block page_sub %}
-Modificar categoría registrada
-{% endblock %}
-
 {% block content %}
 
-<div class="card">
+<div>
 
-    <form method="POST">
+    <!-- HEADER -->
 
-        <div class="form-group">
+    <div class="page-header">
 
-            <label>Nombre de la Categoría</label>
+        <div>
 
-            <input type="text"
-                   name="nombre_categoria"
-                   value="{{ categoria.nombre_categoria }}"
-                   required>
+            <h1 class="page-title">
+                Editar Categoría
+            </h1>
+
+            <p class="page-subtitle">
+                Modifique la información de una categoría registrada en el sistema.
+            </p>
 
         </div>
 
-        <button type="submit">
-            Actualizar
-        </button>
+    </div>
 
-        <a href="{{ url_for('categoria.index') }}">
-            Cancelar
-        </a>
+    <!-- FORMULARIO -->
 
-    </form>
+    <div class="card card-form">
+
+        <form method="POST">
+
+            <div class="form-group">
+
+                <label for="nombre_categoria">
+                    Nombre de la Categoría
+                </label>
+
+                <input
+                    type="text"
+                    id="nombre_categoria"
+                    name="nombre_categoria"
+                    value="{{ categoria.nombre_categoria }}"
+                    placeholder="Ej. Anillos, Collares, Pulseras, Aretes..."
+                    required
+                >
+
+            </div>
+
+            <!-- INFORMACIÓN -->
+
+            <div
+                class="card"
+                style="
+                    margin-top:1rem;
+                    margin-bottom:1.5rem;
+                    background:var(--color-surface-secondary);
+                    border:1px solid var(--color-border);
+                "
+            >
+
+                <div
+                    style="
+                        display:flex;
+                        align-items:flex-start;
+                        gap:.75rem;
+                    "
+                >
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="22"
+                         height="22"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor"
+                         style="color:var(--color-primary);">
+
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+
+                    </svg>
+
+                    <div>
+
+                        <div
+                            style="
+                                font-weight:600;
+                                margin-bottom:.25rem;
+                            "
+                        >
+                            Recomendación
+                        </div>
+
+                        <div
+                            style="
+                                font-size:.875rem;
+                                color:var(--color-text-muted);
+                            "
+                        >
+                            Mantenga nombres claros y consistentes para facilitar
+                            la clasificación y búsqueda de joyas dentro del inventario.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- BOTONES -->
+
+            <div class="form-actions">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="w-4 h-4"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor">
+
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M5 13l4 4L19 7"/>
+
+                    </svg>
+
+                    Actualizar Categoría
+
+                </button>
+
+                <a
+                    href="{{ url_for('categoria.index') }}"
+                    class="btn btn-secondary"
+                >
+                    Cancelar
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
 
 </div>
 
 {% endblock %}
+

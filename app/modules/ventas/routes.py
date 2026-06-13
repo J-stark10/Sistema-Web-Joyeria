@@ -84,3 +84,34 @@ def anular(id_venta):
         flash(str(e), "danger")
 
     return redirect(url_for("venta.index"))
+
+
+
+
+
+
+from flask import jsonify
+from app import db
+
+@venta_bp.route("/buscar-joya")
+def buscar_joya():
+
+    q = request.args.get("q", "")
+
+    joyas = Joya.query.filter(
+        db.or_(
+            Joya.codigo.ilike(f"%{q}%"),
+            Joya.nombre.ilike(f"%{q}%")
+        )
+    ).limit(10).all()
+
+    return jsonify([
+        {
+            "id": j.id_joya,
+            "codigo": j.codigo,
+            "nombre": j.nombre,
+            "stock": j.stock_actual,
+            "precio": float(j.precio_venta)
+        }
+        for j in joyas
+    ])

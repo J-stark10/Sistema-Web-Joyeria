@@ -2,56 +2,278 @@
 
 {% block titulo %}Categorías{% endblock %}
 
-{% block page_title %}Categorías{% endblock %}
-
-{% block page_sub %}
-Gestión de categorías de joyas
-{% endblock %}
-
 {% block content %}
 
-<div class="card">
+<!-- HEADER -->
 
-    <div class="card-header">
-        <div class="card-title">
-            Listado de categorías
-        </div>
+<div class="page-header">
 
-        <a href="{{ url_for('categoria.crear') }}" class="btn btn-primary">
-            Nueva Categoría
-        </a>
+    <div>
+
+        <h1 class="page-title">
+            Categorías
+        </h1>
+
+        <p class="page-subtitle">
+            Gestión de categorías utilizadas para clasificar joyas.
+        </p>
+
     </div>
 
-    <table>
+    <a
+        href="{{ url_for('categoria.crear') }}"
+        class="btn btn-primary"
+    >
+
+        <svg xmlns="http://www.w3.org/2000/svg"
+             class="w-4 h-4"
+             fill="none"
+             viewBox="0 0 24 24"
+             stroke="currentColor">
+
+            <path stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"/>
+
+        </svg>
+
+        Nueva Categoría
+
+    </a>
+
+</div>
+
+<!-- KPI -->
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+
+    <div class="kpi-card">
+
+        <div class="text-3xl font-semibold">
+            {{ categorias|length }}
+        </div>
+
+        <div class="text-sm mt-1"
+             style="color:var(--color-text-muted);">
+
+            Total categorías
+
+        </div>
+
+    </div>
+
+    <div class="kpi-card">
+
+        <div class="text-3xl font-semibold"
+             style="color:var(--color-primary);">
+
+            {{ categorias|length }}
+
+        </div>
+
+        <div class="text-sm mt-1"
+             style="color:var(--color-text-muted);">
+
+            Categorías registradas
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FILTRO -->
+
+<div class="card mb-6">
+
+    <div class="flex flex-col lg:flex-row gap-3">
+
+        <div class="flex-1">
+
+            <input
+                type="text"
+                id="filtro-categoria"
+                placeholder="Buscar categoría..."
+                oninput="filtrarCategorias()"
+            >
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- TABLA -->
+
+<div class="table-wrapper">
+
+    <table
+        class="data-table"
+        id="tabla-categorias"
+    >
 
         <thead>
+
             <tr>
+
                 <th>ID</th>
                 <th>Categoría</th>
                 <th>Acciones</th>
+
             </tr>
+
         </thead>
 
         <tbody>
 
-            {% for categoria in categorias %}
+            {% for categoria in categorias|sort(attribute='id_categoria', reverse=True) %}
 
-            <tr>
-
-                <td>{{ categoria.id_categoria }}</td>
-
-                <td>{{ categoria.nombre_categoria }}</td>
+            <tr
+                data-categoria="{{ categoria.nombre_categoria|lower }}"
+            >
 
                 <td>
 
-                    <a href="{{ url_for('categoria.editar', id_categoria=categoria.id_categoria) }}">
-                        Editar
-                    </a>
+                    <span
+                        style="
+                            color:var(--color-text-muted);
+                            font-size:0.8125rem;
+                        "
+                    >
 
-                    <a href="{{ url_for('categoria.eliminar', id_categoria=categoria.id_categoria) }}"
-                       onclick="return confirm('¿Eliminar categoría?')">
-                        Eliminar
-                    </a>
+                        #{{ categoria.id_categoria }}
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <div class="flex items-center gap-3">
+
+                        <div
+                            class="avatar-initials"
+                            style="
+                                width:36px;
+                                height:36px;
+                            "
+                        >
+
+                            {{ categoria.nombre_categoria[:2]|upper }}
+
+                        </div>
+
+                        <div>
+
+                            <div class="font-medium">
+
+                                {{ categoria.nombre_categoria }}
+
+                            </div>
+
+                            <div
+                                class="text-xs"
+                                style="color:var(--color-text-muted);"
+                            >
+
+                                Categoría registrada
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </td>
+
+                <td>
+
+                    <div class="flex items-center gap-2">
+
+                        <a
+                            href="{{ url_for('categoria.editar', id_categoria=categoria.id_categoria) }}"
+                            class="btn btn-ghost btn-sm"
+                        >
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="w-4 h-4"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor">
+
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="1.5"
+                                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+
+                            </svg>
+
+                            Editar
+
+                        </a>
+
+                        <a
+                            href="{{ url_for('categoria.eliminar', id_categoria=categoria.id_categoria) }}"
+                            class="btn btn-ghost btn-sm"
+                            style="color:var(--color-danger);"
+                            onclick="return confirm('¿Eliminar categoría {{ categoria.nombre_categoria }}?')"
+                        >
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="w-4 h-4"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor">
+
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="1.5"
+                                      d="M6 18L18 6M6 6l12 12"/>
+
+                            </svg>
+
+                            Eliminar
+
+                        </a>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+            {% else %}
+
+            <tr>
+
+                <td colspan="3">
+
+                    <div class="empty-state">
+
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="empty-state-icon"
+                             fill="none"
+                             viewBox="0 0 24 24"
+                             stroke="currentColor">
+
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="1.5"
+                                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+
+                        </svg>
+
+                        <p style="font-weight:500;margin-bottom:.25rem;">
+                            No existen categorías registradas
+                        </p>
+
+                        <p style="font-size:.875rem;">
+                            Cree la primera categoría utilizando el botón
+                            "Nueva Categoría".
+                        </p>
+
+                    </div>
 
                 </td>
 
@@ -64,5 +286,35 @@ Gestión de categorías de joyas
     </table>
 
 </div>
+
+
+{% endblock %}
+
+{% block extra_scripts %}
+
+<script>
+
+function filtrarCategorias() {
+
+    const texto =
+        document.getElementById('filtro-categoria')
+        .value
+        .toLowerCase();
+
+    document.querySelectorAll(
+        '#tabla-categorias tbody tr[data-categoria]'
+    ).forEach(function(row) {
+
+        const coincide =
+            row.dataset.categoria.includes(texto);
+
+        row.style.display =
+            coincide ? '' : 'none';
+
+    });
+
+}
+
+</script>
 
 {% endblock %}

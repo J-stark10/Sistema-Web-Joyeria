@@ -1,121 +1,462 @@
 {% extends "base.html" %}
 
-{% block titulo %}
-Compras
-{% endblock %}
-
-{% block page_title %}
-Compras
-{% endblock %}
-
-{% block page_sub %}
-Gestión de compras registradas
-{% endblock %}
+{% block titulo %}Compras{% endblock %}
 
 {% block content %}
 
-<div class="card">
+<div>
 
-    <div class="card-header">
+    <!-- HEADER -->
 
-        <div class="card-title">
-            Listado de Compras
+    <div class="page-header">
+
+        <div>
+
+            <h1 class="page-title">
+                Compras
+            </h1>
+
+            <p class="page-subtitle">
+                Gestión y seguimiento de las compras registradas.
+            </p>
+
         </div>
 
         <a href="{{ url_for('compra.crear') }}"
            class="btn btn-primary">
+
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="w-4 h-4"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor">
+
+                <path stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 4v16m8-8H4"/>
+
+            </svg>
+
             Nueva Compra
+
         </a>
 
     </div>
 
-    <table>
+    <!-- KPIs -->
 
-        <thead>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
 
-            <tr>
-                <th>ID</th>
-                <th>Fecha</th>
-                <th>Proveedor</th>
-                <th>Usuario</th>
-                <th>Total</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
+        <div class="kpi-card">
 
-        </thead>
+            <div class="text-3xl font-semibold">
+                {{ compras|length }}
+            </div>
 
-        <tbody>
+            <div class="text-sm mt-1"
+                 style="color:var(--color-text-muted);">
 
-            {% for compra in compras %}
+                Total compras
 
-            <tr>
+            </div>
 
-                <td>
-                    {{ compra.id_compra }}
-                </td>
+        </div>
 
-                <td>
-                    {{ compra.fecha_compra.strftime('%d/%m/%Y %H:%M') }}
-                </td>
+        <div class="kpi-card">
 
-                <td>
-                    {{ compra.proveedor.nombre_razon_social }}
-                </td>
+            <div class="text-3xl font-semibold"
+                 style="color:var(--color-success);">
 
-                <td>
-                    {{ compra.usuario.nombre_usuario }}
-                </td>
+                {{ compras|selectattr('estado','equalto','COMPLETADA')|list|length }}
 
-                <td>
-                    Bs. {{ compra.total_compra }}
-                </td>
+            </div>
 
-                <td>
+            <div class="text-sm mt-1"
+                 style="color:var(--color-text-muted);">
 
-                    {% if compra.estado == 'COMPLETADA' %}
+                Completadas
+
+            </div>
+
+        </div>
+
+        <div class="kpi-card">
+
+            <div class="text-3xl font-semibold"
+                 style="color:var(--color-danger);">
+
+                {{ compras|selectattr('estado','equalto','ANULADA')|list|length }}
+
+            </div>
+
+            <div class="text-sm mt-1"
+                 style="color:var(--color-text-muted);">
+
+                Anuladas
+
+            </div>
+
+        </div>
+
+        <div class="kpi-card">
+
+            <div class="text-3xl font-semibold"
+                 style="color:var(--color-warning);">
+
+                Bs. {{
+                    (
+                        compras
+                        | selectattr('estado','equalto','COMPLETADA')
+                        | map(attribute='total_compra')
+                        | sum
+                    )|round(2)
+                    }}
+
+            </div>
+
+            <div class="text-sm mt-1"
+                 style="color:var(--color-text-muted);">
+
+                Total comprado
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FILTROS -->
+
+    <div class="card mb-6">
+
+        <div class="flex flex-col lg:flex-row gap-3">
+
+            <div class="flex-1">
+
+                <input
+                    type="text"
+                    id="filtro-compra"
+                    placeholder="Buscar proveedor, usuario o ID..."
+                    oninput="filtrarCompras()"
+                >
+
+            </div>
+
+            <select
+                id="filtro-estado"
+                style="max-width:220px;"
+                onchange="filtrarCompras()"
+            >
+
+                <option value="">
+                    Todos los estados
+                </option>
+
+                <option value="COMPLETADA">
+                    Completada
+                </option>
+
+                <option value="ANULADA">
+                    Anulada
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+    <!-- TABLA -->
+
+    <div class="table-wrapper">
+
+        <table
+            class="data-table"
+            id="tabla-compras"
+        >
+
+            <thead>
+
+                <tr>
+
+                    <th>Compra</th>
+                    <th>Proveedor</th>
+                    <th>Usuario</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for compra in compras|sort(attribute='id_compra', reverse=True) %}
+
+                <tr
+
+                    data-busqueda="
+                        {{ compra.id_compra }}
+                        {{ compra.proveedor.nombre_razon_social }}
+                        {{ compra.usuario.nombre_usuario }}
+                    "
+
+                    data-estado="{{ compra.estado }}"
+
+                >
+
+                    <!-- COMPRA -->
+
+                    <td>
+
+                        <div class="flex items-center gap-3">
+
+                            <div class="avatar-initials"
+                                 style="width:36px;height:36px;">
+
+                                #{{ compra.id_compra }}
+
+                            </div>
+
+                            <div>
+
+                                <div class="font-medium">
+
+                                    Compra #{{ compra.id_compra }}
+
+                                </div>
+
+                                <div class="text-xs"
+                                     style="color:var(--color-text-muted);">
+
+                                    Registro del sistema
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+                    <!-- PROVEEDOR -->
+
+                    <td>
+
+                        {{ compra.proveedor.nombre_razon_social }}
+
+                    </td>
+
+                    <!-- USUARIO -->
+
+                    <td>
+
+                        <span style="color:var(--color-text-muted);">
+
+                            {{ compra.usuario.nombre_usuario }}
+
+                        </span>
+
+                    </td>
+
+                    <!-- FECHA -->
+
+                    <td>
+
+                        <span style="
+                            color:var(--color-text-muted);
+                            font-size:0.8125rem;
+                        ">
+
+                            {{ compra.fecha_compra.strftime('%d/%m/%Y %H:%M') }}
+
+                        </span>
+
+                    </td>
+
+                    <!-- TOTAL -->
+
+                    <td>
+
+                        <span class="font-semibold">
+
+                            Bs. {{ "%.2f"|format(compra.total_compra) }}
+
+                        </span>
+
+                    </td>
+
+                    <!-- ESTADO -->
+
+                    <td>
+
+                        {% if compra.estado == 'COMPLETADA' %}
 
                         <span class="badge badge-success">
-                            COMPLETADA
+                            Completada
                         </span>
 
-                    {% else %}
+                        {% else %}
 
                         <span class="badge badge-danger">
-                            ANULADA
+                            Anulada
                         </span>
 
-                    {% endif %}
+                        {% endif %}
 
-                </td>
+                    </td>
 
-                <td>
+                    <!-- ACCIONES -->
 
-                    <a href="{{ url_for('compra.detalle', id_compra=compra.id_compra) }}">
-                        Ver
-                    </a>
+                    <td>
 
-                    {% if compra.estado == 'COMPLETADA' %}
+                        <div class="flex items-center gap-2">
 
-                        |
+                            <a
+                                href="{{ url_for('compra.detalle', id_compra=compra.id_compra) }}"
+                                class="btn btn-ghost btn-sm"
+                            >
 
-                        <a href="{{ url_for('compra.anular', id_compra=compra.id_compra) }}"
-                           onclick="return confirm('¿Anular esta compra?')">
-                            Anular
-                        </a>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="w-4 h-4"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                     stroke="currentColor">
 
-                    {% endif %}
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          stroke-width="1.5"
+                                          d="M15 12H9m12 0A9 9 0 113 12a9 9 0 0118 0z"/>
 
-                </td>
+                                </svg>
 
-            </tr>
+                                Ver
 
-            {% endfor %}
+                            </a>
 
-        </tbody>
+                            {% if compra.estado == 'COMPLETADA' %}
 
-    </table>
+                            <a
+                                href="{{ url_for('compra.anular', id_compra=compra.id_compra) }}"
+                                class="btn btn-ghost btn-sm"
+                                style="color:var(--color-danger);"
+                                onclick="return confirm('¿Desea anular esta compra?')"
+                            >
+
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="w-4 h-4"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                     stroke="currentColor">
+
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          stroke-width="1.5"
+                                          d="M18.364 5.636L5.636 18.364m0-12.728l12.728 12.728"/>
+
+                                </svg>
+
+                                Anular
+
+                            </a>
+
+                            {% endif %}
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="7">
+
+                        <div class="empty-state">
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="empty-state-icon"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor">
+
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="1.5"
+                                      d="M3 7h18M5 7l1 12h12l1-12M9 11h6"/>
+
+                            </svg>
+
+                            <p style="font-weight:500;margin-bottom:.25rem;">
+                                No existen compras registradas
+                            </p>
+
+                            <p style="font-size:.875rem;">
+                                Registre la primera compra utilizando el botón
+                                "Nueva Compra".
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
 
 </div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+
+<script>
+
+function filtrarCompras() {
+
+    const texto =
+        document.getElementById('filtro-compra')
+        .value
+        .toLowerCase();
+
+    const estado =
+        document.getElementById('filtro-estado')
+        .value;
+
+    document.querySelectorAll(
+        '#tabla-compras tbody tr[data-busqueda]'
+    ).forEach(function(row) {
+
+        const coincideTexto =
+            row.dataset.busqueda
+               .toLowerCase()
+               .includes(texto);
+
+        const coincideEstado =
+            !estado ||
+            row.dataset.estado === estado;
+
+        row.style.display =
+            coincideTexto &&
+            coincideEstado
+            ? ''
+            : 'none';
+
+    });
+
+}
+
+</script>
 
 {% endblock %}

@@ -9,163 +9,414 @@ Nueva Compra
 {% endblock %}
 
 {% block page_sub %}
-Registrar compra a proveedor
+Registrar ingreso de mercadería al inventario
 {% endblock %}
 
 {% block content %}
 
-<div class="card">
+<form method="POST">
 
-    <form method="POST">
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
-        <div class="form-group">
+        <!-- CONTENIDO PRINCIPAL -->
+        <div class="xl:col-span-2 space-y-6">
 
-            <label>Proveedor</label>
+            <!-- DATOS GENERALES -->
+            <div class="card">
 
-            <select name="id_proveedor" required>
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">
+                            Información General
+                        </h3>
+                        <p class="text-sm text-muted">
+                            Seleccione el proveedor de la compra
+                        </p>
+                    </div>
+                </div>
 
-                <option value="">
-                    Seleccione un proveedor
-                </option>
+                <div class="form-group">
 
-                {% for proveedor in proveedores %}
+                    <label>
+                        Proveedor
+                    </label>
 
-                <option value="{{ proveedor.id_proveedor }}">
-                    {{ proveedor.nombre_razon_social }}
-                </option>
+                    <select name="id_proveedor" required>
 
-                {% endfor %}
+                        <option value="">
+                            Seleccione un proveedor
+                        </option>
 
-            </select>
+                        {% for proveedor in proveedores %}
 
-        </div>
+                        <option value="{{ proveedor.id_proveedor }}">
+                            {{ proveedor.nombre_razon_social }}
+                        </option>
 
-        <hr>
+                        {% endfor %}
 
-        <div class="card-header">
+                    </select>
 
-            <div class="card-title">
-                Detalle de Compra
+                </div>
+
             </div>
 
-            <button type="button" onclick="agregarFila()">
-                Agregar Joya
-            </button>
+            <!-- DETALLE -->
+            <div class="card">
+
+                <div class="card-header flex items-center justify-between">
+
+                    <div>
+
+                        <h3 class="card-title">
+                            Detalle de Compra
+                        </h3>
+
+                        <p class="text-sm text-muted">
+                            Agregue las joyas adquiridas
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        onclick="agregarFila()"
+                        class="btn btn-primary">
+
+                        + Agregar Joya
+
+                    </button>
+
+                </div>
+
+                <div class="overflow-x-auto">
+
+                    <table id="tabla-detalles">
+
+                        <thead>
+
+                            <tr>
+                                <th>Joya</th>
+                                <th width="100">Stock</th>
+                                <th width="140">Costo Actual</th>
+                                <th width="100">Cantidad</th>
+                                <th width="140">Costo Compra</th>
+                                <th width="140">Subtotal</th>
+                                <th width="100">Acción</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        <tr>
+
+                            <!-- JOYA -->
+                            <td>
+
+                                <select
+                                    name="id_joya[]"
+                                    required
+                                    onchange="actualizarDatosJoya(this)"
+                                >
+
+                                    <option value="">
+                                        Seleccione
+                                    </option>
+
+                                    {% for joya in joyas %}
+
+                                    <option
+                                        value="{{ joya.id_joya }}"
+                                        data-stock="{{ joya.stock_actual }}"
+                                        data-costo="{{ joya.precio_compra }}"
+                                    >
+                                        {{ joya.codigo }} - {{ joya.nombre }}
+                                    </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </td>
+
+                            <!-- STOCK ACTUAL -->
+                            <td>
+
+                                <input
+                                    type="text"
+                                    class="stock-actual"
+                                    readonly
+                                    value="-"
+                                >
+
+                            </td>
+
+                            <!-- COSTO ACTUAL -->
+                            <td>
+
+                                <input
+                                    type="text"
+                                    class="ultimo-costo"
+                                    readonly
+                                    value="-"
+                                >
+
+                            </td>
+
+                            <!-- CANTIDAD -->
+                            <td>
+
+                                <input
+                                    type="number"
+                                    name="cantidad[]"
+                                    min="1"
+                                    value="1"
+                                    required
+                                    oninput="actualizarTotales()"
+                                >
+
+                            </td>
+
+                            <!-- NUEVO COSTO -->
+                            <td>
+
+                                <input
+                                    type="number"
+                                    name="precio[]"
+                                    step="0.01"
+                                    min="0.01"
+                                    required
+                                    oninput="actualizarTotales()"
+                                >
+
+                            </td>
+
+                            <!-- SUBTOTAL -->
+                            <td>
+
+                                <input
+                                    type="text"
+                                    class="subtotal"
+                                    readonly
+                                    value="0.00"
+                                >
+
+                            </td>
+
+                            <!-- ACCIONES -->
+                            <td>
+
+                                <button
+                                    type="button"
+                                    onclick="eliminarFila(this)"
+                                    class="btn btn-danger"
+                                >
+
+                                    Eliminar
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
 
         </div>
 
-        <table id="tabla-detalles">
+        <!-- RESUMEN -->
+        <div>
 
-            <thead>
+            <div class="card sticky top-4">
 
-                <tr>
-                    <th>Joya</th>
-                    <th>Cantidad</th>
-                    <th>Precio Compra</th>
-                    <th>Acción</th>
-                </tr>
+                <div class="card-header">
 
-            </thead>
+                    <h3 class="card-title">
+                        Resumen de Compra
+                    </h3>
 
-            <tbody>
+                </div>
 
-                <tr>
+                <div class="space-y-4">
 
-                    <td>
+                    <div>
 
-                        <select name="id_joya[]" required>
+                        <div class="text-sm text-muted">
+                            Productos agregados
+                        </div>
 
-                            <option value="">
-                                Seleccione
-                            </option>
+                        <div
+                            id="cantidad-productos"
+                            class="text-2xl font-bold">
 
-                            {% for joya in joyas %}
+                            1
 
-                            <option value="{{ joya.id_joya }}">
-                                {{ joya.codigo }} - {{ joya.nombre }}
-                            </option>
+                        </div>
 
-                            {% endfor %}
+                    </div>
 
-                        </select>
+                    <hr>
 
-                    </td>
+                    <div>
 
-                    <td>
+                        <div class="text-sm text-muted">
+                            Total de la compra
+                        </div>
 
-                        <input type="number"
-                               name="cantidad[]"
-                               min="1"
-                               required>
+                        <div
+                            id="total-compra"
+                            class="text-3xl font-bold">
 
-                    </td>
+                            Bs 0.00
 
-                    <td>
+                        </div>
 
-                        <input type="number"
-                               name="precio[]"
-                               step="0.01"
-                               min="0.01"
-                               required>
+                    </div>
 
-                    </td>
+                    <hr>
 
-                    <td>
+                    <button
+                        type="submit"
+                        class="btn btn-primary w-full">
 
-                        <button type="button"
-                                onclick="eliminarFila(this)">
-                            Eliminar
-                        </button>
+                        Registrar Compra
 
-                    </td>
+                    </button>
 
-                </tr>
+                    <a
+                        href="{{ url_for('compra.index') }}"
+                        class="btn btn-secondary w-full">
 
-            </tbody>
+                        Cancelar
 
-        </table>
+                    </a>
 
-        <br>
+                </div>
 
-        <button type="submit">
-            Registrar Compra
-        </button>
+            </div>
 
-        <a href="{{ url_for('compra.index') }}">
-            Cancelar
-        </a>
+        </div>
 
-    </form>
+    </div>
 
-</div>
+</form>
 
 <script>
 
+function actualizarTotales() {
+
+    let total = 0;
+
+    let filas = document.querySelectorAll(
+        "#tabla-detalles tbody tr"
+    );
+
+    filas.forEach(fila => {
+
+        let cantidad = parseFloat(
+            fila.querySelector(
+                'input[name="cantidad[]"]'
+            ).value
+        ) || 0;
+
+        let precio = parseFloat(
+            fila.querySelector(
+                'input[name="precio[]"]'
+            ).value
+        ) || 0;
+
+        let subtotal = cantidad * precio;
+
+        fila.querySelector(".subtotal").value =
+            subtotal.toFixed(2);
+
+        total += subtotal;
+
+    });
+
+    document.getElementById(
+        "cantidad-productos"
+    ).innerText = filas.length;
+
+    document.getElementById(
+        "total-compra"
+    ).innerText = "Bs " + total.toFixed(2);
+}
+
 function agregarFila() {
 
-    let tabla = document.querySelector("#tabla-detalles tbody");
+    let tabla =
+        document.querySelector(
+            "#tabla-detalles tbody"
+        );
 
-    let fila = tabla.rows[0].cloneNode(true);
-
-    fila.querySelectorAll("input").forEach(input => {
-        input.value = "";
-    });
+    let fila =
+        tabla.rows[0].cloneNode(true);
 
     fila.querySelector("select").selectedIndex = 0;
 
+    fila.querySelector('.stock-actual').value = "-";
+    fila.querySelector('.ultimo-costo').value = "-";
+
+    fila.querySelector('input[name="cantidad[]"]').value = 1;
+    fila.querySelector('input[name="precio[]"]').value = "";
+
+    fila.querySelector('.subtotal').value = "0.00";
+
     tabla.appendChild(fila);
+
+    actualizarTotales();
+
 }
 
 function eliminarFila(btn) {
 
-    let tabla = document.querySelector("#tabla-detalles tbody");
+    let tabla = document.querySelector(
+        "#tabla-detalles tbody"
+    );
 
     if (tabla.rows.length === 1) {
-        alert("Debe existir al menos una joya.");
+
+        alert(
+            "Debe existir al menos una joya."
+        );
+
         return;
     }
 
     btn.closest("tr").remove();
+
+    actualizarTotales();
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    actualizarTotales
+);
+
+function actualizarDatosJoya(select) {
+
+    const option =
+        select.options[select.selectedIndex];
+
+    const fila =
+        select.closest("tr");
+
+    fila.querySelector(".stock-actual").value =
+        option.dataset.stock || "-";
+
+    fila.querySelector(".ultimo-costo").value =
+        option.dataset.costo
+            ? "Bs. " + parseFloat(option.dataset.costo).toFixed(2)
+            : "-";
+
 }
 
 </script>

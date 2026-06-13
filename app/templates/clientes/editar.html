@@ -2,49 +2,280 @@
 
 {% block titulo %}Editar Cliente{% endblock %}
 
-{% block page_title %}Editar Cliente{% endblock %}
-
-{% block page_sub %}
-Modificar información del cliente
-{% endblock %}
-
 {% block content %}
 
-<div class="card card-form">
-    <form method="POST" class="form-grid">
+<div>
 
-        <div class="form-group">
-            <label for="nombre">Nombre</label>
-            <input id="nombre" type="text" name="nombre" value="{{ cliente.nombre }}" required>
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h1 class="page-title">
+                Editar Cliente
+            </h1>
+
+            <p class="page-subtitle">
+                Modifique la información del cliente registrado en el sistema.
+            </p>
+
         </div>
 
-        <div class="form-group">
-            <label for="ci_nit">CI / NIT</label>
-            <input id="ci_nit" type="text" name="ci_nit" value="{{ cliente.ci_nit }}" required>
-        </div>
+    </div>
 
-        <div class="form-group">
-            <label for="telefono">Teléfono</label>
-            <input id="telefono" type="text" name="telefono" value="{{ cliente.telefono or '' }}">
-        </div>
+    <!-- FORMULARIO -->
 
-        <div class="form-group">
-            <label for="direccion">Dirección</label>
-            <textarea id="direccion" name="direccion">{{ cliente.direccion or '' }}</textarea>
-        </div>
+    <div class="card card-form">
 
-        <div class="form-check">
-            <input id="activo" type="checkbox" name="activo" {% if cliente.activo %}checked{% endif %}>
-            <label for="activo">Cliente activo</label>
-        </div>
+        <form method="POST">
 
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Actualizar</button>
-            <a href="{{ url_for('cliente.index') }}" class="btn btn-secondary">Cancelar</a>
-        </div>
+            <!-- DATOS DEL CLIENTE -->
 
-    </form>
+            <div
+                style="
+                    display:grid;
+                    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+                    gap:1rem;
+                "
+            >
+
+                <div class="form-group">
+
+                    <label for="nombre">
+                        Nombre Completo
+                    </label>
+
+                    <input
+                        id="nombre"
+                        type="text"
+                        name="nombre"
+                        value="{{ cliente.nombre }}"
+                        placeholder="Ej. Juan Pérez"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="ci_nit">
+                        CI / NIT
+                    </label>
+
+                    <input
+                        id="ci_nit"
+                        type="text"
+                        name="ci_nit"
+                        value="{{ cliente.ci_nit }}"
+                        placeholder="Ej. 78541236"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="telefono">
+                        Teléfono
+                    </label>
+
+                    <input
+                        id="telefono"
+                        type="text"
+                        name="telefono"
+                        value="{{ cliente.telefono or '' }}"
+                        placeholder="Ej. 70012345"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="direccion">
+                        Dirección
+                    </label>
+
+                    <input
+                        id="direccion"
+                        type="text"
+                        name="direccion"
+                        value="{{ cliente.direccion or '' }}"
+                        placeholder="Ej. Av. Principal #123"
+                    >
+
+                </div>
+
+            </div>
+
+            <!-- ESTADO -->
+
+            <div
+                class="card"
+                style="
+                    margin-top:1rem;
+                    margin-bottom:1rem;
+                    background:var(--color-surface-secondary);
+                    border:1px solid var(--color-border);
+                "
+            >
+
+                <div
+                    style="
+                        display:flex;
+                        justify-content:space-between;
+                        align-items:center;
+                    "
+                >
+
+                    <div>
+
+                        <div
+                            style="
+                                font-weight:600;
+                                margin-bottom:.25rem;
+                            "
+                        >
+                            Estado del Cliente
+                        </div>
+
+                        <div
+                            style="
+                                font-size:.875rem;
+                                color:var(--color-text-muted);
+                            "
+                        >
+                            Active o desactive el cliente según corresponda.
+                        </div>
+
+                    </div>
+
+                    <label
+                        style="
+                            display:flex;
+                            align-items:center;
+                            gap:.5rem;
+                            cursor:pointer;
+                        "
+                    >
+
+                        <input
+                            id="activo"
+                            type="checkbox"
+                            name="activo"
+                            {% if cliente.activo %}checked{% endif %}
+                        >
+
+                        <span>
+                            Cliente Activo
+                        </span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+            <!-- INFORMACIÓN -->
+
+            <div
+                class="card"
+                style="
+                    margin-bottom:1.5rem;
+                    background:var(--color-surface-secondary);
+                    border:1px solid var(--color-border);
+                "
+            >
+
+                <div
+                    style="
+                        display:flex;
+                        align-items:flex-start;
+                        gap:.75rem;
+                    "
+                >
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="22"
+                         height="22"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor"
+                         style="color:var(--color-primary);">
+
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+
+                    </svg>
+
+                    <div>
+
+                        <div
+                            style="
+                                font-weight:600;
+                                margin-bottom:.25rem;
+                            "
+                        >
+                            Recomendación
+                        </div>
+
+                        <div
+                            style="
+                                font-size:.875rem;
+                                color:var(--color-text-muted);
+                            "
+                        >
+                            Mantenga actualizados los datos de contacto del cliente
+                            para facilitar futuras ventas, cotizaciones y seguimiento.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- BOTONES -->
+
+            <div class="form-actions">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="w-4 h-4"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor">
+
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M5 13l4 4L19 7"/>
+
+                    </svg>
+
+                    Actualizar Cliente
+
+                </button>
+
+                <a
+                    href="{{ url_for('cliente.index') }}"
+                    class="btn btn-secondary"
+                >
+                    Cancelar
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
 </div>
-
 
 {% endblock %}
