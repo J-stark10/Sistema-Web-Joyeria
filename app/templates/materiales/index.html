@@ -2,65 +2,332 @@
 
 {% block titulo %}Materiales{% endblock %}
 
-{% block page_title %}Materiales{% endblock %}
-
-{% block page_sub %}
-Gestión de materiales registrados
-{% endblock %}
-
 {% block content %}
 
-<div class="card">
+<div>
 
-    <div class="card-header">
-        <div class="card-title">Listado de materiales</div>
+    <!-- HEADER -->
 
-        <a href="{{ url_for('material.crear') }}" class="btn btn-primary">
+    <div class="page-header">
+
+        <div>
+
+            <h1 class="page-title">
+                Materiales
+            </h1>
+
+            <p class="page-subtitle">
+                Gestión de materiales registrados en el sistema.
+            </p>
+
+        </div>
+
+        <a
+            href="{{ url_for('material.crear') }}"
+            class="btn btn-primary"
+        >
+
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="w-4 h-4"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor">
+
+                <path stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 4v16m8-8H4"/>
+
+            </svg>
+
             Nuevo Material
+
         </a>
+
     </div>
 
-    <table>
+    <!-- KPI -->
 
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Material</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
 
-        <tbody>
+        <div class="kpi-card">
 
-            {% for material in materiales %}
+            <div class="text-3xl font-semibold">
+                {{ materiales|length }}
+            </div>
 
-            <tr>
+            <div class="text-sm mt-1"
+                 style="color:var(--color-text-muted);">
 
-                <td>{{ material.id_material }}</td>
+                Total materiales
 
-                <td>{{ material.nombre_material }}</td>
+            </div>
 
-                <td>
+        </div>
 
-                    <a href="{{ url_for('material.editar', id_material=material.id_material) }}">
-                        Editar
-                    </a>
+        <div class="kpi-card">
 
-                    <a href="{{ url_for('material.eliminar', id_material=material.id_material) }}"
-                       onclick="return confirm('¿Eliminar material?')">
-                        Eliminar
-                    </a>
+            <div class="text-3xl font-semibold"
+                 style="color:var(--color-primary);">
 
-                </td>
+                {{ materiales|length }}
 
-            </tr>
+            </div>
 
-            {% endfor %}
+            <div class="text-sm mt-1"
+                 style="color:var(--color-text-muted);">
 
-        </tbody>
+                Materiales registrados
 
-    </table>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FILTROS -->
+
+    <div class="card mb-6">
+
+        <div class="flex flex-col lg:flex-row gap-3">
+
+            <div class="flex-1">
+
+                <input
+                    type="text"
+                    id="filtro-material"
+                    placeholder="Buscar material..."
+                    oninput="filtrarMateriales()"
+                >
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TABLA -->
+
+    <div class="table-wrapper">
+
+        <table
+            class="data-table"
+            id="tabla-materiales"
+        >
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>Material</th>
+                    <th>Acciones</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for material in materiales|sort(attribute='id_material', reverse=True) %}
+
+                <tr
+                    data-material="{{ material.nombre_material|lower }}"
+                >
+
+                    <!-- ID -->
+
+                    <td>
+
+                        <span
+                            style="
+                                color:var(--color-text-muted);
+                                font-size:0.8125rem;
+                            "
+                        >
+
+                            #{{ material.id_material }}
+
+                        </span>
+
+                    </td>
+                    <!-- MATERIAL -->
+
+                    <td>
+
+                        <div class="flex items-center gap-3">
+
+                            <div
+                                class="avatar-initials"
+                                style="
+                                    width:36px;
+                                    height:36px;
+                                "
+                            >
+
+                                {{ material.nombre_material[:2]|upper }}
+
+                            </div>
+
+                            <div>
+
+                                <div class="font-medium">
+
+                                    {{ material.nombre_material }}
+
+                                </div>
+
+                                <div
+                                    class="text-xs"
+                                    style="color:var(--color-text-muted);"
+                                >
+
+                                    Material registrado
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- ACCIONES -->
+
+                    <td>
+
+                        <div class="flex items-center gap-2">
+
+                            <a
+                                href="{{ url_for('material.editar', id_material=material.id_material) }}"
+                                class="btn btn-ghost btn-sm"
+                            >
+
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="w-4 h-4"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                     stroke="currentColor">
+
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          stroke-width="1.5"
+                                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+
+                                </svg>
+
+                                Editar
+
+                            </a>
+
+                            <a
+                                href="{{ url_for('material.eliminar', id_material=material.id_material) }}"
+                                class="btn btn-ghost btn-sm"
+                                style="color:var(--color-danger);"
+                                onclick="return confirm('¿Eliminar material {{ material.nombre_material }}?')"
+                            >
+
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="w-4 h-4"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                     stroke="currentColor">
+
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          stroke-width="1.5"
+                                          d="M6 18L18 6M6 6l12 12"/>
+
+                                </svg>
+
+                                Eliminar
+
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="3">
+
+                        <div class="empty-state">
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="empty-state-icon"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor">
+
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="1.5"
+                                      d="M20 13V7a2 2 0 00-2-2h-3V3H9v2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0H4"/>
+
+                            </svg>
+
+                            <p style="font-weight:500;margin-bottom:.25rem;">
+
+                                No existen materiales registrados
+
+                            </p>
+
+                            <p style="font-size:.875rem;">
+
+                                Cree el primer material utilizando el botón
+                                "Nuevo Material".
+
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
 
 </div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+
+<script>
+
+function filtrarMateriales() {
+
+    const texto =
+        document.getElementById('filtro-material')
+        .value
+        .toLowerCase();
+
+    document.querySelectorAll(
+        '#tabla-materiales tbody tr[data-material]'
+    ).forEach(function(row) {
+
+        const coincide =
+            row.dataset.material.includes(texto);
+
+        row.style.display =
+            coincide ? '' : 'none';
+
+    });
+
+}
+
+</script>
 
 {% endblock %}

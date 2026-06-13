@@ -1,87 +1,183 @@
+
 {% extends "base.html" %}
 
-{% block titulo %}
-Crear Usuario
-{% endblock %}
-
-{% block page_title %}
-Usuarios
-{% endblock %}
-
-{% block page_sub %}
-Registrar nuevo usuario del sistema
-{% endblock %}
+{% block titulo %}Crear Usuario{% endblock %}
 
 {% block content %}
 
-<div class="content">
+<div>
 
-    <div class="card form-card">
+    <!-- HEADER -->
 
-        <div class="card-header">
-            <div class="card-title">
+    <div class="page-header">
+
+        <div>
+
+            <h1 class="page-title">
                 Nuevo Usuario
-            </div>
+            </h1>
+
+            <p class="page-subtitle">
+                Registrar un nuevo usuario con acceso al sistema.
+            </p>
+
         </div>
 
-        <form method="POST" class="form-grid">
-
-            <div class="form-group">
-                <label>Nombre de usuario</label>
-                <input
-                    type="text"
-                    name="nombre_usuario"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label>Contraseña</label>
-                <input
-                    type="password"
-                    name="password"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label>Rol</label>
-
-                <select name="rol">
-
-                    <option value="ADMIN">
-                        Administrador
-                    </option>
-
-                    <option value="VENDEDOR">
-                        Vendedor
-                    </option>
-
-                </select>
-            </div>
-
-            <div class="form-actions">
-
-                <a
-                    href="{{ url_for('usuario.index') }}"
-                    class="btn btn-secondary"
-                >
-                    Cancelar
-                </a>
-
-                <button
-                    type="submit"
-                    class="btn btn-primary"
-                >
-                    Guardar Usuario
-                </button>
-
-            </div>
-
-        </form>
-
     </div>
+
+    <form method="POST">
+
+        <!-- INFORMACIÓN DEL USUARIO -->
+
+        <div class="card mb-6">
+
+            <div class="card-header">
+
+                <div class="card-title">
+                    Información del Usuario
+                </div>
+
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                <div class="form-group">
+
+                    <label>
+                        Nombre de Usuario
+                    </label>
+
+                    <div class="form-help">
+                        Identificador único para ingresar al sistema
+                    </div>
+
+                    <input
+                        type="text"
+                        name="nombre_usuario"
+                        placeholder="Ej. administrador"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Contraseña
+                    </label>
+
+                    <div class="form-help">
+                        Contraseña de acceso para el usuario
+                    </div>
+
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="••••••••"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ROL Y PERMISOS -->
+
+        <div class="card mb-6">
+
+            <div class="card-header">
+
+                <div class="card-title">
+                    Rol y Permisos
+                </div>
+
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                <div class="form-group">
+
+                    <label>
+                        Rol
+                    </label>
+
+                    <div class="form-help">
+                        Nivel de acceso dentro del sistema
+                    </div>
+
+                    <select name="rol">
+
+                        <option value="ADMIN">
+                            Administrador
+                        </option>
+
+                        <option value="VENDEDOR">
+                            Vendedor
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- INFORMACIÓN -->
+
+        <div class="card mb-6">
+
+            <div class="flex items-center gap-3">
+
+                <div class="avatar-initials">
+                    👤
+                </div>
+
+                <div>
+
+                    <div class="font-medium">
+                        Recomendación
+                    </div>
+
+                    <div
+                        class="text-sm"
+                        style="color:var(--color-text-muted);"
+                    >
+                        Utilice contraseñas seguras y asigne únicamente los
+                        permisos necesarios según las funciones del usuario.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- BOTONES -->
+
+        <div class="form-actions">
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+                Guardar Usuario
+            </button>
+            <a
+                href="{{ url_for('usuario.index') }}"
+                class="btn btn-secondary"
+            >
+                Cancelar
+            </a>
+
+
+        </div>
+
+    </form>
 
 </div>
 
 {% endblock %}
+

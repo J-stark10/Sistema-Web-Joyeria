@@ -68,7 +68,14 @@
     <div class="kpi-card">
       <div class="text-3xl font-semibold"
            style="color:var(--color-warning);">
-        Bs. {{ ventas|sum(attribute='total_venta')|round(2) }}
+        Bs. {{
+            (
+                ventas
+                | selectattr('estado','equalto','COMPLETADA')
+                | map(attribute='total_venta')
+                | sum
+            )|round(2)
+            }}
       </div>
       <div class="text-sm mt-1"
            style="color:var(--color-text-muted);">

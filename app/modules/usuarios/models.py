@@ -12,6 +12,8 @@ class Usuario(UserMixin, db.Model):
     rol = db.Column(db.String(20), nullable=False)
     activo = db.Column(db.Boolean, default=True)
 
+    fecha_creacion = db.Column(db.DateTime, default=db.func.current_timestamp())
+
     ventas = db.relationship('Venta', back_populates='usuario', lazy=True)
     compras = db.relationship('Compra', back_populates='usuario', lazy=True)
     ajustes_inventario = db.relationship('AjusteInventario', backref='usuario', lazy=True)
@@ -59,7 +61,7 @@ class Usuario(UserMixin, db.Model):
 
     @staticmethod
     def get_all():
-        return Usuario.query.all()
+        return Usuario.query.order_by(Usuario.id_usuario.desc()).all()
 
     @staticmethod
     def get_by_id(id_usuario):

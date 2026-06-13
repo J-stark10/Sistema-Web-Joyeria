@@ -92,3 +92,4 @@ class UsuarioService:
             return None
 
         return usuario
+    

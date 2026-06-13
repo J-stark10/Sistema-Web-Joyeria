@@ -1,34 +1,154 @@
+
 {% extends "base.html" %}
 
 {% block titulo %}Nuevo Material{% endblock %}
 
-{% block page_title %}Nuevo Material{% endblock %}
-
-{% block page_sub %}
-Registrar material en el sistema
-{% endblock %}
-
 {% block content %}
 
-<div class="card">
+<div>
 
-    <form method="POST">
+    <!-- HEADER -->
 
-        <div class="form-group">
-            <label>Nombre del Material</label>
-            <input type="text" name="nombre_material" required>
+    <div class="page-header">
+
+        <div>
+
+            <h1 class="page-title">
+                Nuevo Material
+            </h1>
+
+            <p class="page-subtitle">
+                Registre un nuevo material para la fabricación y gestión de joyas.
+            </p>
+
         </div>
 
-        <button type="submit">
-            Guardar
-        </button>
+    </div>
 
-        <a href="{{ url_for('material.index') }}">
-            Cancelar
-        </a>
+    <!-- FORMULARIO -->
 
-    </form>
+    <div class="card card-form">
+
+        <form method="POST">
+
+            <div class="form-group">
+
+                <label for="nombre_material">
+                    Nombre del Material
+                </label>
+
+                <input
+                    type="text"
+                    id="nombre_material"
+                    name="nombre_material"
+                    placeholder="Ej. Oro 18K, Plata 925, Acero Quirúrgico..."
+                    required
+                >
+
+            </div>
+
+            <!-- INFORMACIÓN -->
+
+            <div
+                class="card"
+                style="
+                    margin-top:1rem;
+                    margin-bottom:1.5rem;
+                    background:var(--color-surface-secondary);
+                    border:1px solid var(--color-border);
+                "
+            >
+
+                <div
+                    style="
+                        display:flex;
+                        align-items:flex-start;
+                        gap:.75rem;
+                    "
+                >
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="22"
+                         height="22"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor"
+                         style="color:var(--color-primary);">
+
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+
+                    </svg>
+
+                    <div>
+
+                        <div
+                            style="
+                                font-weight:600;
+                                margin-bottom:.25rem;
+                            "
+                        >
+                            Recomendación
+                        </div>
+
+                        <div
+                            style="
+                                font-size:.875rem;
+                                color:var(--color-text-muted);
+                            "
+                        >
+                            Utilice nombres claros y estandarizados para facilitar
+                            la identificación de los materiales utilizados en las joyas.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ACCIONES -->
+
+            <div class="form-actions">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="w-4 h-4"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor">
+
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M5 13l4 4L19 7"/>
+
+                    </svg>
+
+                    Guardar Material
+
+                </button>
+
+                <a
+                    href="{{ url_for('material.index') }}"
+                    class="btn btn-secondary"
+                >
+                    Cancelar
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
 
 </div>
 
 {% endblock %}
+

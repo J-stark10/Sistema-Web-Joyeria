@@ -1,82 +1,233 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}Ajustar Inventario{% endblock %}
+{% block titulo %}Ajustar Inventario{% endblock %}
 
 {% block content %}
 
-<div class="container mt-4">
+<div>
 
-    <h2>Nuevo Ajuste de Inventario</h2>
+    <!-- HEADER -->
 
-    <form method="POST">
+    <div class="page-header">
 
-        <div class="mb-3">
+        <div>
 
-            <label class="form-label">Joya</label>
+            <h1 class="page-title">
+                Ajuste de Inventario
+            </h1>
 
-            <select name="id_joya" class="form-select" required>
-
-                <option value="">Seleccione...</option>
-
-                {% for joya in joyas %}
-                    <option value="{{ joya.id_joya }}">
-                        {{ joya.codigo }} - {{ joya.nombre }}
-                    </option>
-                {% endfor %}
-
-            </select>
+            <p class="page-subtitle">
+                Registre entradas o salidas manuales de stock para mantener el inventario actualizado.
+            </p>
 
         </div>
 
-        <div class="mb-3">
+    </div>
 
-            <label class="form-label">Tipo Ajuste</label>
+    <!-- FORMULARIO -->
 
-            <select name="tipo_ajuste" class="form-select" required>
+    <div class="card card-form">
 
-                <option value="ENTRADA">ENTRADA</option>
-                <option value="SALIDA">SALIDA</option>
+        <form method="POST">
 
-            </select>
+            <!-- INFORMACIÓN DEL AJUSTE -->
 
-        </div>
-
-        <div class="mb-3">
-
-            <label class="form-label">Cantidad</label>
-
-            <input
-                type="number"
-                min="1"
-                name="cantidad"
-                class="form-control"
-                required
+            <div
+                style="
+                    display:grid;
+                    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+                    gap:1rem;
+                "
             >
 
-        </div>
+                <div class="form-group">
 
-        <div class="mb-3">
+                    <label for="id_joya">
+                        Joya
+                    </label>
 
-            <label class="form-label">Motivo</label>
+                    <select
+                        id="id_joya"
+                        name="id_joya"
+                        required
+                    >
 
-            <textarea
-                name="motivo"
-                class="form-control"
-                rows="3"
-                required
-            ></textarea>
+                        <option value="">
+                            Seleccione una joya...
+                        </option>
 
-        </div>
+                        {% for joya in joyas %}
+                        <option value="{{ joya.id_joya }}">
+                            {{ joya.codigo }} - {{ joya.nombre }}
+                        </option>
+                        {% endfor %}
 
-        <button type="submit" class="btn btn-success">
-            Guardar
-        </button>
+                    </select>
 
-        <a href="{{ url_for('inventario.index') }}" class="btn btn-secondary">
-            Cancelar
-        </a>
+                </div>
 
-    </form>
+                <div class="form-group">
+
+                    <label for="tipo_ajuste">
+                        Tipo de Ajuste
+                    </label>
+
+                    <select
+                        id="tipo_ajuste"
+                        name="tipo_ajuste"
+                        required
+                    >
+
+                        <option value="ENTRADA">
+                            Entrada de Inventario
+                        </option>
+
+                        <option value="SALIDA">
+                            Salida de Inventario
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="cantidad">
+                        Cantidad
+                    </label>
+
+                    <input
+                        type="number"
+                        id="cantidad"
+                        name="cantidad"
+                        min="1"
+                        placeholder="Ingrese cantidad"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <!-- MOTIVO -->
+
+            <div class="form-group">
+
+                <label for="motivo">
+                    Motivo del Ajuste
+                </label>
+
+                <textarea
+                    id="motivo"
+                    name="motivo"
+                    rows="4"
+                    placeholder="Describa el motivo del ajuste realizado..."
+                    required
+                ></textarea>
+
+            </div>
+
+            <!-- INFORMACIÓN -->
+
+            <div
+                class="card"
+                style="
+                    margin-top:1rem;
+                    margin-bottom:1.5rem;
+                    background:var(--color-surface-secondary);
+                    border:1px solid var(--color-border);
+                "
+            >
+
+                <div
+                    style="
+                        display:flex;
+                        align-items:flex-start;
+                        gap:.75rem;
+                    "
+                >
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="22"
+                         height="22"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor"
+                         style="color:var(--color-primary);">
+
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+
+                    </svg>
+
+                    <div>
+
+                        <div
+                            style="
+                                font-weight:600;
+                                margin-bottom:.25rem;
+                            "
+                        >
+                            Importante
+                        </div>
+
+                        <div
+                            style="
+                                font-size:.875rem;
+                                color:var(--color-text-muted);
+                            "
+                        >
+                            Los ajustes modifican directamente el stock de la joya seleccionada.
+                            Utilice esta operación únicamente para correcciones, pérdidas,
+                            inventarios físicos o regularizaciones administrativas.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- BOTONES -->
+
+            <div class="form-actions">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="w-4 h-4"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor">
+
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M5 13l4 4L19 7"/>
+
+                    </svg>
+
+                    Registrar Ajuste
+
+                </button>
+
+                <a
+                    href="{{ url_for('inventario.index') }}"
+                    class="btn btn-secondary"
+                >
+                    Cancelar
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
 
 </div>
 

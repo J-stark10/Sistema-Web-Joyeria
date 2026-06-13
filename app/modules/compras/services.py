@@ -77,6 +77,7 @@ class CompraService:
 
             db.session.add(detalle)
             joya.stock_actual += cantidad
+            joya.precio_compra = precio
             total_compra += subtotal
 
         compra.total_compra = total_compra

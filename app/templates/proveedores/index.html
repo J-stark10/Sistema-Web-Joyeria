@@ -2,78 +2,379 @@
 
 {% block titulo %}Proveedores{% endblock %}
 
-{% block page_title %}Proveedores{% endblock %}
-
-{% block page_sub %}
-Gestión de proveedores registrados
-{% endblock %}
-
 {% block content %}
 
-<div class="card">
+<!-- HEADER -->
 
-    <div class="card-header">
-        <div class="card-title">Listado de proveedores</div>
+<div class="page-header">
 
-        <a href="{{ url_for('proveedor.crear') }}" class="btn btn-primary">
-            Nuevo Proveedor
-        </a>
+    <div>
+
+        <h1 class="page-title">
+            Proveedores
+        </h1>
+
+        <p class="page-subtitle">
+            Gestión de proveedores registrados en el sistema.
+        </p>
+
     </div>
 
-    <table>
+    <a
+        href="{{ url_for('proveedor.crear') }}"
+        class="btn btn-primary"
+    >
+
+        <svg xmlns="http://www.w3.org/2000/svg"
+             class="w-4 h-4"
+             fill="none"
+             viewBox="0 0 24 24"
+             stroke="currentColor">
+
+            <path stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"/>
+
+        </svg>
+
+        Nuevo Proveedor
+
+    </a>
+
+</div>
+
+<!-- KPI -->
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+
+    <div class="kpi-card">
+
+        <div class="text-3xl font-semibold">
+            {{ proveedores|length }}
+        </div>
+
+        <div class="text-sm mt-1"
+             style="color:var(--color-text-muted);">
+
+            Total proveedores
+
+        </div>
+
+    </div>
+
+    <div class="kpi-card">
+
+        <div class="text-3xl font-semibold"
+             style="color:var(--color-success);">
+
+            {{ proveedores|selectattr('activo')|list|length }}
+
+        </div>
+
+        <div class="text-sm mt-1"
+             style="color:var(--color-text-muted);">
+
+            Proveedores activos
+
+        </div>
+
+    </div>
+
+    <div class="kpi-card">
+
+        <div class="text-3xl font-semibold"
+             style="color:var(--color-text-subtle);">
+
+            {{ proveedores|rejectattr('activo')|list|length }}
+
+        </div>
+
+        <div class="text-sm mt-1"
+             style="color:var(--color-text-muted);">
+
+            Proveedores inactivos
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FILTROS -->
+
+<div class="card mb-6">
+
+    <div class="flex flex-col lg:flex-row gap-3">
+
+        <div class="flex-1">
+
+            <input
+                type="text"
+                id="filtro-proveedor"
+                placeholder="Buscar razón social, NIT, teléfono o correo..."
+                oninput="filtrarProveedores()"
+            >
+
+        </div>
+
+        <select
+            id="filtro-estado"
+            style="max-width:220px;"
+            onchange="filtrarProveedores()"
+        >
+
+            <option value="">
+                Todos los estados
+            </option>
+
+            <option value="activo">
+                Activo
+            </option>
+
+            <option value="inactivo">
+                Inactivo
+            </option>
+
+        </select>
+
+    </div>
+
+</div>
+
+<!-- TABLA -->
+
+<div class="table-wrapper">
+
+    <table
+        class="data-table"
+        id="tabla-proveedores"
+    >
+
         <thead>
+
             <tr>
-                <th>Razón Social</th>
+
+                <th>Proveedor</th>
                 <th>NIT</th>
                 <th>Teléfono</th>
                 <th>Correo</th>
                 <th>Estado</th>
                 <th>Acciones</th>
+
             </tr>
+
         </thead>
 
         <tbody>
 
-            {% for proveedor in proveedores %}
+            {% for proveedor in proveedores|sort(attribute='id_proveedor', reverse=True) %}
+
+            <tr
+
+                data-proveedor="
+                    {{ proveedor.nombre_razon_social }}
+                    {{ proveedor.nit }}
+                    {{ proveedor.telefono }}
+                    {{ proveedor.correo or '' }}
+                "
+
+                data-estado="{{ 'activo' if proveedor.activo else 'inactivo' }}"
+
+            >
+
+                <!-- PROVEEDOR -->
+
+                <td>
+
+                    <div class="flex items-center gap-3">
+
+                        <div
+                            class="avatar-initials"
+                            style="
+                                width:36px;
+                                height:36px;
+                            "
+                        >
+
+                            {{ proveedor.nombre_razon_social[:2]|upper }}
+
+                        </div>
+
+                        <div>
+
+                            <div class="font-medium">
+
+                                {{ proveedor.nombre_razon_social }}
+
+                            </div>
+
+                            <div
+                                class="text-xs"
+                                style="color:var(--color-text-muted);"
+                            >
+
+                                ID #{{ proveedor.id_proveedor }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </td>
+
+                <!-- NIT -->
+
+                <td
+                    style="
+                        color:var(--color-text-muted);
+                        font-size:0.8125rem;
+                    "
+                >
+
+                    {{ proveedor.nit }}
+
+                </td>
+
+                <!-- TELEFONO -->
+
+                <td
+                    style="
+                        color:var(--color-text-muted);
+                        font-size:0.8125rem;
+                    "
+                >
+
+                    {{ proveedor.telefono or '-' }}
+
+                </td>
+
+                <!-- CORREO -->
+
+                <td
+                    style="
+                        color:var(--color-text-muted);
+                        font-size:0.8125rem;
+                    "
+                >
+
+                    {{ proveedor.correo or '-' }}
+
+                </td>
+
+                <!-- ESTADO -->
+
+                <td>
+
+                    {% if proveedor.activo %}
+
+                    <span class="badge badge-success">
+                        Activo
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge badge-neutral">
+                        Inactivo
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+                <!-- ACCIONES -->
+
+                <td>
+
+                    <div class="flex items-center gap-2">
+
+                        <a
+                            href="{{ url_for('proveedor.editar', id_proveedor=proveedor.id_proveedor) }}"
+                            class="btn btn-ghost btn-sm"
+                        >
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="w-4 h-4"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor">
+
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="1.5"
+                                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+
+                            </svg>
+
+                            Editar
+
+                        </a>
+
+                        {% if proveedor.activo %}
+
+                        <a
+                            href="{{ url_for('proveedor.desactivar', id_proveedor=proveedor.id_proveedor) }}"
+                            class="btn btn-ghost btn-sm"
+                            style="color:var(--color-warning-text);"
+                            onclick="return confirm('¿Desactivar proveedor {{ proveedor.nombre_razon_social }}?')"
+                        >
+
+                            Desactivar
+
+                        </a>
+
+                        {% else %}
+
+                        <a
+                            href="{{ url_for('proveedor.activar', id_proveedor=proveedor.id_proveedor) }}"
+                            class="btn btn-ghost btn-sm"
+                            style="color:var(--color-success);"
+                        >
+
+                            Activar
+
+                        </a>
+
+                        {% endif %}
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+            {% else %}
 
             <tr>
 
-                <td>{{ proveedor.nombre_razon_social }}</td>
+                <td colspan="6">
 
-                <td>{{ proveedor.nit }}</td>
+                    <div class="empty-state">
 
-                <td>{{ proveedor.telefono }}</td>
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="empty-state-icon"
+                             fill="none"
+                             viewBox="0 0 24 24"
+                             stroke="currentColor">
 
-                <td>{{ proveedor.correo or '-' }}</td>
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="1.5"
+                                  d="M20 8l-8-4-8 4m16 0v8l-8 4m8-12l-8 4m0 8l-8-4V8m8 12V12"/>
 
-                <td>
-                    {% if proveedor.activo %}
-                        <span class="badge badge-success">Activo</span>
-                    {% else %}
-                        <span class="badge badge-danger">Inactivo</span>
-                    {% endif %}
-                </td>
+                        </svg>
 
-                <td>
+                        <p style="font-weight:500;margin-bottom:.25rem;">
+                            No existen proveedores registrados
+                        </p>
 
-                    <a href="{{ url_for('proveedor.editar', id_proveedor=proveedor.id_proveedor) }}">
-                        Editar
-                    </a>
+                        <p style="font-size:.875rem;">
+                            Cree el primer proveedor utilizando el botón
+                            "Nuevo Proveedor".
+                        </p>
 
-                    {% if proveedor.activo %}
-
-                    <a href="{{ url_for('proveedor.desactivar', id_proveedor=proveedor.id_proveedor) }}"
-                       onclick="return confirm('¿Desactivar proveedor?')">
-                        Desactivar
-                    </a>
-
-                    {% else %}
-
-                    <a href="{{ url_for('proveedor.activar', id_proveedor=proveedor.id_proveedor) }}">
-                        Activar
-                    </a>
-
-                    {% endif %}
+                    </div>
 
                 </td>
 
@@ -86,5 +387,48 @@ Gestión de proveedores registrados
     </table>
 
 </div>
+
+
+{% endblock %}
+
+{% block extra_scripts %}
+
+<script>
+
+function filtrarProveedores() {
+
+    const texto =
+        document.getElementById('filtro-proveedor')
+        .value
+        .toLowerCase();
+
+    const estado =
+        document.getElementById('filtro-estado')
+        .value;
+
+    document.querySelectorAll(
+        '#tabla-proveedores tbody tr[data-proveedor]'
+    ).forEach(function(row) {
+
+        const coincideTexto =
+            row.dataset.proveedor
+                .toLowerCase()
+                .includes(texto);
+
+        const coincideEstado =
+            !estado ||
+            row.dataset.estado === estado;
+
+        row.style.display =
+            coincideTexto &&
+            coincideEstado
+            ? ''
+            : 'none';
+
+    });
+
+}
+
+</script>
 
 {% endblock %}
