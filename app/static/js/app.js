@@ -1,6 +1,69 @@
 /* ============================================================
    Joyería El Illimani — App JS
    ============================================================ */
+document.addEventListener('DOMContentLoaded', function () {
+
+    const sidebarCollapsed =
+        localStorage.getItem('sidebar') === 'collapsed';
+
+    document.querySelectorAll('[id^="submenu-"]').forEach(function(submenu){
+
+        const btn =
+            document.querySelector(
+                `[onclick*="${submenu.id}"]`
+            );
+
+        const chevron =
+            btn?.querySelector('.submenu-chevron');
+
+        // Si el sidebar está cerrado
+        if(sidebarCollapsed){
+
+            submenu.style.maxHeight = '0';
+
+            if(chevron){
+                chevron.style.transform = 'rotate(0deg)';
+            }
+
+            return;
+        }
+
+        // Sidebar abierto → restaurar estado
+        const state = localStorage.getItem(submenu.id);
+
+        if(state === 'open'){
+
+            submenu.style.maxHeight =
+                submenu.scrollHeight + 'px';
+
+            if(chevron){
+                chevron.style.transform =
+                    'rotate(180deg)';
+            }
+
+        } else {
+
+            submenu.style.maxHeight = '0';
+
+            if(chevron){
+                chevron.style.transform =
+                    'rotate(0deg)';
+            }
+        }
+    });
+
+});
+
+
+
+
+
+
+
+
+
+
+
 
 /* ── Tema ── */
 (function () {
@@ -125,30 +188,28 @@ function confirmDelete(form, message) {
 
 
 function toggleSubmenu(id, btn) {
-  if (sidebarCollapsed) {
-    toggleSidebar(); // expande el sidebar primero
-    // pequeño delay para que la animación termine antes de abrir el submenú
-    setTimeout(function () {
-      openSubmenu(id, btn);
-    }, 250);
-    return;
-  }
-
   const submenu = document.getElementById(id);
   const chevron = btn.querySelector('.submenu-chevron');
-  const isOpen  = submenu.style.maxHeight !== '0px' && submenu.style.maxHeight !== '';
+
+  const isOpen =
+    submenu.style.maxHeight &&
+    submenu.style.maxHeight !== '0px';
 
   if (isOpen) {
     submenu.style.maxHeight = '0';
-    chevron && chevron.style.setProperty('transform', 'rotate(0deg)');
+    chevron.style.transform = 'rotate(0deg)';
+    localStorage.setItem(id, 'closed');
   } else {
-    openSubmenu(id, btn);
+    submenu.classList.add('submenu-open');
+    chevron.style.transform = 'rotate(180deg)';
+    localStorage.setItem(id, 'open');
   }
 }
 
 function openSubmenu(id, btn) {
   const submenu = document.getElementById(id);
   const chevron = btn.querySelector('.submenu-chevron');
-  submenu.style.maxHeight = submenu.scrollHeight + 'px';
+  submenu.classList.add('submenu-open');
   chevron && chevron.style.setProperty('transform', 'rotate(180deg)');
 }
+
