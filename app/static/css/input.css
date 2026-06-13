@@ -808,3 +808,6 @@ input:focus, textarea:focus, select:focus {
 
 
 
+.submenu-open {
+    max-height: 500px !important;
+}
