@@ -25,30 +25,32 @@ from reportlab.graphics import renderPDF
 
 
 # ──────────────────────────────────────────────
-#  PALETA  —  Joyería El Illimani
+#  PALETA  —  Joyería El Illimani (Estilo Formal: Azul Marino, Slate, Gris)
 # ──────────────────────────────────────────────
-BRAND_400   = colors.HexColor("#d4a82a")   # dorado principal
-BRAND_100   = colors.HexColor("#faf3d0")   # dorado muy claro
-BRAND_900   = colors.HexColor("#3d2804")   # dorado muy oscuro
+BRAND_400   = colors.HexColor("#1e3a8a")   # azul marino principal
+BRAND_100   = colors.HexColor("#eff6ff")   # azul muy claro
+BRAND_900   = colors.HexColor("#1e293b")   # pizarra oscuro
 
 SLATE_0     = colors.HexColor("#ffffff")
-SLATE_50    = colors.HexColor("#f5f4f1")
-SLATE_100   = colors.HexColor("#eae9e4")
-SLATE_200   = colors.HexColor("#d4d2cb")
-SLATE_500   = colors.HexColor("#6b6860")
-SLATE_700   = colors.HexColor("#3a3935")
-SLATE_900   = colors.HexColor("#161512")
+SLATE_50    = colors.HexColor("#f8fafc")
+SLATE_100   = colors.HexColor("#f1f5f9")
+SLATE_200   = colors.HexColor("#e2e8f0")
+SLATE_500   = colors.HexColor("#64748b")
+SLATE_700   = colors.HexColor("#334155")
+SLATE_900   = colors.HexColor("#0f172a")
 
-GREEN_500   = colors.HexColor("#1f6b3a")   # verde sobrio (positivo)
-GREEN_100   = colors.HexColor("#dcfce7")
-GREEN_900   = colors.HexColor("#052e16")
+# Colores formales de estado (sin usar verde ni amarillo/ámbar)
+STATE_INFO_BG   = colors.HexColor("#f1f5f9") # Fondo neutral
+STATE_INFO_TXT  = colors.HexColor("#475569") # Texto neutral oscuro (para valores normales/positivos)
 
 RED_500     = colors.HexColor("#9f3a3a")   # rojo sobrio (alerta)
 RED_100     = colors.HexColor("#fee2e2")
 RED_900     = colors.HexColor("#450a0a")
 
-AMBER_500   = colors.HexColor("#a8761a")   # ámbar sobrio
-AMBER_100   = colors.HexColor("#fef3c7")
+# Reemplazo de ámbar/amarillo por azul/pizarra formal
+AMBER_500   = colors.HexColor("#475569")   # Gris pizarra formal
+AMBER_100   = colors.HexColor("#f1f5f9")
+
 
 
 # ──────────────────────────────────────────────
@@ -231,7 +233,7 @@ def _estilos():
             "kpi_value_green",
             fontName=FONT_TITLE,
             fontSize=14,
-            textColor=colors.HexColor("#1f6b3a"),
+            textColor=BRAND_400,
             leading=17,
         ),
         "kpi_value_red": ParagraphStyle(
@@ -615,14 +617,14 @@ class PDFGenerator:
                 "stock_cell",
                 fontName=FONT_BOLD,
                 fontSize=8,
-                textColor=RED_500 if stock_bajo else GREEN_500,
+                textColor=RED_500 if stock_bajo else STATE_INFO_TXT,
                 alignment=TA_CENTER,
             )
             valor_style = ParagraphStyle(
                 "valor_cell",
                 fontName=FONT_BOLD,
                 fontSize=8,
-                textColor=GREEN_500,
+                textColor=BRAND_400,
                 alignment=TA_RIGHT,
             )
 
@@ -712,7 +714,7 @@ class PDFGenerator:
                 (item["utilidad"] / item["venta_total"] * 100)
                 if item["venta_total"] > 0 else 0
             )
-            margen_color = GREEN_500 if margen >= 20 else AMBER_500
+            margen_color = BRAND_400 if margen >= 20 else STATE_INFO_TXT
             margen_style = ParagraphStyle(
                 "margen_cell",
                 fontName=FONT_BOLD,
