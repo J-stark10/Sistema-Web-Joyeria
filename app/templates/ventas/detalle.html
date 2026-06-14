@@ -1,482 +1,108 @@
-{% extends "base.html" %}
-
-{% block titulo %}
-Detalle de Venta
-{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Venta #{{ venta.id_venta }}{%
+endblock %} {% block content %}
 
 <div>
-
-    <!-- ===================================== -->
-    <!-- HEADER -->
-    <!-- ===================================== -->
-
-    <div class="page-header">
-
-        <div>
-
-            <div class="flex items-center gap-3 mb-2">
-
-                <span class="badge badge-primary">
-                    Venta #{{ venta.id_venta }}
-                </span>
-
-                {% if venta.estado == 'COMPLETADA' %}
-
-                <span class="badge badge-success">
-                    COMPLETADA
-                </span>
-
-                {% else %}
-
-                <span class="badge badge-danger">
-                    ANULADA
-                </span>
-
-                {% endif %}
-
-            </div>
-
-            <h1 class="page-title">
-                Detalle de Venta
-            </h1>
-
-            <p class="page-subtitle">
-                Información completa de la transacción registrada.
-            </p>
-
-        </div>
-
-        <div>
-
-            {% if venta.estado == 'COMPLETADA' %}
-
-            <a
-                href="{{ url_for('venta.anular', id_venta=venta.id_venta) }}"
-                class="btn btn-danger"
-                onclick="return confirm('¿Desea anular esta venta?')"
-            >
-                Anular Venta
-            </a>
-
-            {% endif %}
-
-        </div>
-
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Venta #{{ venta.id_venta }}</h1>
+      <p class="page-subtitle">Detalle de la venta registrada.</p>
     </div>
-
-    <!-- ===================================== -->
-    <!-- KPIs -->
-    <!-- ===================================== -->
-
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-
-        <div class="kpi-card">
-
-            <div class="text-sm"
-                 style="color:var(--color-text-muted);">
-                Total Venta
-            </div>
-
-            <div class="text-3xl font-semibold"
-                 style="color:var(--color-success);">
-
-                Bs. {{ "%.2f"|format(venta.total_venta) }}
-
-            </div>
-
-        </div>
-
-        <div class="kpi-card">
-
-            <div class="text-sm"
-                 style="color:var(--color-text-muted);">
-                Productos
-            </div>
-
-            <div class="text-3xl font-semibold">
-
-                {{ venta.detalles|length }}
-
-            </div>
-
-        </div>
-
-        <div class="kpi-card">
-
-            <div class="text-sm"
-                 style="color:var(--color-text-muted);">
-                Fecha
-            </div>
-
-            <div class="font-semibold">
-
-                {{ venta.fecha_venta.strftime('%d/%m/%Y') }}
-
-            </div>
-
-        </div>
-
-        <div class="kpi-card">
-
-            <div class="text-sm"
-                 style="color:var(--color-text-muted);">
-                Hora
-            </div>
-
-            <div class="font-semibold">
-
-                {{ venta.fecha_venta.strftime('%H:%M') }}
-
-            </div>
-
-        </div>
-
+    <div class="flex gap-2">
+      <a href="{{ url_for('venta.index') }}" class="btn btn-ghost">Volver</a>
+      {% if venta.estado == 'COMPLETADA' %}
+      <a
+        href="{{ url_for('venta.anular', id_venta=venta.id_venta) }}"
+        class="btn btn-danger"
+        onclick="return confirm('¿Desea anular esta venta?');"
+        >Anular</a
+      >
+      {% endif %}
     </div>
-
-    <!-- ===================================== -->
-    <!-- CLIENTE + VENDEDOR -->
-    <!-- ===================================== -->
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-
-      <!-- CLIENTE -->
-
-      <div class="card">
-
-          <div class="card-header">
-              <div class="card-title">
-                  Cliente
-              </div>
-          </div>
-
-          <div class="flex items-center gap-4 mb-5">
-
-              <div class="avatar-initials"
-                  style="
-                      width:64px;
-                      height:64px;
-                      font-size:1.25rem;
-                  ">
-                  {{ venta.cliente.nombre[:1] }}
-              </div>
-
-              <div>
-
-                  <div
-                      style="
-                      font-size:1.1rem;
-                      font-weight:700;
-                      ">
-                      {{ venta.cliente.nombre }}
-                  </div>
-
-                  <div
-                      style="
-                      color:var(--color-text-muted);
-                      ">
-                      Cliente registrado
-                  </div>
-
-              </div>
-
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-
-              <div class="kpi-card">
-
-                  <div class="text-sm text-muted">
-                      CI / NIT
-                  </div>
-
-                  <div class="font-semibold">
-                      {{ venta.cliente.ci_nit }}
-                  </div>
-
-              </div>
-
-              <div class="kpi-card">
-
-                  <div class="text-sm text-muted">
-                      Teléfono
-                  </div>
-
-                  <div class="font-semibold">
-                      {{ venta.cliente.telefono or 'Sin registro' }}
-                  </div>
-
-              </div>
-
-          </div>
-
-          <div
-              class="mt-4 p-4 rounded-lg"
-              style="
-              background:var(--color-surface);
-              border:1px solid var(--color-border);
-              "
-          >
-
-              <div class="text-sm text-muted mb-1">
-                  Dirección
-              </div>
-
-              <div>
-                  {{ venta.cliente.direccion or 'Sin dirección registrada' }}
-              </div>
-
-          </div>
-
-      </div>
-
-      <!-- VENTA -->
-
-      <div class="card">
-
-          <div class="card-header">
-
-              <div class="card-title">
-                  Resumen de Venta
-              </div>
-
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-
-              <div class="kpi-card">
-
-                  <div class="text-sm text-muted">
-                      Venta #
-                  </div>
-
-                  <div class="text-2xl font-bold">
-                      {{ venta.id_venta }}
-                  </div>
-
-              </div>
-
-              <div class="kpi-card">
-
-                  <div class="text-sm text-muted">
-                      Estado
-                  </div>
-
-                  <div class="mt-2">
-
-                      {% if venta.estado == 'COMPLETADA' %}
-
-                      <span class="badge badge-success">
-                          COMPLETADA
-                      </span>
-
-                      {% else %}
-
-                      <span class="badge badge-danger">
-                          ANULADA
-                      </span>
-
-                      {% endif %}
-
-                  </div>
-
-              </div>
-
-              <div class="kpi-card">
-
-                  <div class="text-sm text-muted">
-                      Fecha
-                  </div>
-
-                  <div class="font-semibold">
-                      {{ venta.fecha_venta.strftime('%d/%m/%Y') }}
-                  </div>
-
-              </div>
-
-              <div class="kpi-card">
-
-                  <div class="text-sm text-muted">
-                      Hora
-                  </div>
-
-                  <div class="font-semibold">
-                      {{ venta.fecha_venta.strftime('%H:%M') }}
-                  </div>
-
-              </div>
-
-          </div>
-
-          <div
-              class="mt-4 p-5 rounded-xl"
-              style="
-              background:linear-gradient(
-                  135deg,
-                  rgba(59,130,246,.08),
-                  rgba(59,130,246,.02)
-              );
-              border:1px solid rgba(59,130,246,.2);
-              "
-          >
-
-              <div
-                  style="
-                  color:var(--color-text-muted);
-                  font-size:.85rem;
-                  "
-              >
-                  Vendedor Responsable
-              </div>
-
-              <div
-                  style="
-                  font-size:1.1rem;
-                  font-weight:700;
-                  "
-              >
-                  {{ venta.usuario.nombre_usuario }}
-              </div>
-
-          </div>
-
-      </div>
-
   </div>
 
-    <!-- ===================================== -->
-    <!-- PRODUCTOS -->
-    <!-- ===================================== -->
-
-    <div class="card">
-
-        <div class="card-header">
-
-            <div class="card-title">
-                Productos Vendidos
-            </div>
-
-        </div>
-
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <div class="lg:col-span-2">
+      <div class="card">
         <div class="table-wrapper">
-
-            <table class="data-table">
-
-                <thead>
-
-                    <tr>
-
-                        <th>#</th>
-                        <th>Código</th>
-                        <th>Joya</th>
-                        <th>Cantidad</th>
-                        <th>Precio Unit.</th>
-                        <th>Subtotal</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    {% for detalle in venta.detalles %}
-
-                    <tr>
-
-                        <td>
-                            {{ loop.index }}
-                        </td>
-
-                        <td>
-                            <span class="badge badge-secondary">
-                                {{ detalle.joya.codigo }}
-                            </span>
-                        </td>
-
-                        <td>
-
-                            <div style="font-weight:600;">
-                                {{ detalle.joya.nombre }}
-                            </div>
-
-                        </td>
-
-                        <td>
-
-                            {{ detalle.cantidad }}
-
-                        </td>
-
-                        <td>
-
-                            Bs. {{ "%.2f"|format(detalle.precio_unit_venta) }}
-
-                        </td>
-
-                        <td>
-
-                            <strong>
-
-                                Bs. {{ "%.2f"|format(detalle.subtotal) }}
-
-                            </strong>
-
-                        </td>
-
-                    </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
-
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Joya</th>
+                <th>Cantidad</th>
+                <th>Precio Venta</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for detalle in venta.detalles %}
+              <tr>
+                <td>
+                  <div style="font-weight: 600">
+                    {{ detalle.joya.codigo }} — {{ detalle.joya.nombre }}
+                  </div>
+                </td>
+                <td class="font-semibold">{{ detalle.cantidad }}</td>
+                <td style="color: var(--color-text-muted)">
+                  Bs. {{ "%.2f"|format(detalle.precio_unit_venta) }}
+                </td>
+                <td class="font-semibold">
+                  Bs. {{ "%.2f"|format(detalle.subtotal) }}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
-
+      </div>
     </div>
 
-    <!-- ===================================== -->
-    <!-- RESUMEN FINAL -->
-    <!-- ===================================== -->
-
-    <div class="card mt-6">
-
-        <div class="flex justify-between items-center">
-
-            <div>
-
-                <div class="text-sm"
-                     style="color:var(--color-text-muted);">
-
-                    Importe Total de la Venta
-
-                </div>
-
-                <div class="text-3xl font-bold"
-                     style="color:var(--color-success);">
-
-                    Bs. {{ "%.2f"|format(venta.total_venta) }}
-
-                </div>
-
-            </div>
-
-            <div>
-
-                <a
-                    href="{{ url_for('venta.index') }}"
-                    class="btn btn-secondary"
-                >
-                    Volver
-                </a>
-
-            </div>
-
+    <div>
+      <div class="card">
+        <div class="text-sm" style="color: var(--color-text-muted)">
+          Cliente
         </div>
-
+        <div style="font-weight: 600">
+          {{ venta.cliente.nombre if venta.cliente else 'Venta General' }}
+        </div>
+        {% if venta.cliente %}
+        <div class="mt-3 text-sm" style="color: var(--color-text-muted)">
+          CI/NIT
+        </div>
+        <div>{{ venta.cliente.ci_nit }}</div>
+        <div class="mt-3 text-sm" style="color: var(--color-text-muted)">
+          Teléfono
+        </div>
+        <div>{{ venta.cliente.telefono }}</div>
+        <div class="mt-3 text-sm" style="color: var(--color-text-muted)">
+          Dirección
+        </div>
+        <div>{{ venta.cliente.direccion }}</div>
+        {% endif %}
+        <div class="mt-3 text-sm" style="color: var(--color-text-muted)">
+          Usuario
+        </div>
+        <div>{{ venta.usuario.nombre_usuario }}</div>
+        <div class="mt-3 text-sm" style="color: var(--color-text-muted)">
+          Fecha
+        </div>
+        <div>{{ venta.fecha_venta.strftime('%d/%m/%Y %H:%M') }}</div>
+        <div class="mt-3 text-sm" style="color: var(--color-text-muted)">
+          Estado
+        </div>
+        <div class="mt-1">
+          {% if venta.estado == 'COMPLETADA' %}<span class="badge badge-success"
+            >Completada</span
+          >{% else %}<span class="badge badge-danger">Anulada</span>{% endif %}
+        </div>
+        <div class="mt-6 text-sm" style="color: var(--color-text-muted)">
+          Total
+        </div>
+        <div class="text-2xl font-semibold">
+          Bs. {{ "%.2f"|format(venta.total_venta) }}
+        </div>
+      </div>
     </div>
+  </div>
 
+  {% endblock %}
 </div>
-
-{% endblock %}

@@ -1,269 +1,96 @@
-{% extends 'base.html' %}
+{% extends "base.html" %} {% block title %}Historial — {{ joya.nombre }}{%
+endblock %} {% block content %}
 
-{% block titulo %}Historial de Inventario{% endblock %}
+<div class="breadcrumb">
+  <a href="{{ url_for('inventario.index') }}">Inventario</a>
+  <span class="breadcrumb-sep">/</span>
+  <span class="breadcrumb-current">{{ joya.codigo }} — {{ joya.nombre }}</span>
+</div>
 
-{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{{ joya.nombre }}</h1>
+    <p class="page-subtitle">
+      Código: {{ joya.codigo }} · Historial de movimientos de inventario.
+    </p>
+  </div>
+  <a href="{{ url_for('inventario.ajustar') }}" class="btn btn-primary"
+    >Nuevo Ajuste</a
+  >
+</div>
 
-<div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+  <div class="kpi-card">
+    <div class="text-3xl font-semibold" style="color: var(--color-primary)">
+      {{ joya.stock_actual }}
+    </div>
+    <div class="text-sm mt-1" style="color: var(--color-text-muted)">
+      Stock actual
+    </div>
+  </div>
+  <div class="kpi-card">
+    <div class="text-3xl font-semibold">
+      {{ ajustes|selectattr('tipo_ajuste','equalto','ENTRADA')|list|length }}
+    </div>
+    <div class="text-sm mt-1" style="color: var(--color-text-muted)">
+      Entradas
+    </div>
+  </div>
+  <div class="kpi-card">
+    <div class="text-3xl font-semibold">
+      {{ ajustes|selectattr('tipo_ajuste','equalto','SALIDA')|list|length }}
+    </div>
+    <div class="text-sm mt-1" style="color: var(--color-text-muted)">
+      Salidas
+    </div>
+  </div>
+</div>
 
-    <!-- HEADER -->
-
-    <div class="page-header">
-
-        <div>
-
-            <h1 class="page-title">
-                Historial de Inventario
-            </h1>
-
-            <p class="page-subtitle">
-                Movimientos y ajustes registrados para la joya seleccionada.
+<div class="table-wrapper">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Tipo</th>
+        <th>Cantidad</th>
+        <th>Usuario</th>
+        <th>Motivo</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ajuste in ajustes %}
+      <tr>
+        <td style="color: var(--color-text-muted); font-size: 0.8125rem">
+          {{ ajuste.fecha_ajuste.strftime('%d/%m/%Y %H:%M') }}
+        </td>
+        <td>
+          {% if ajuste.tipo_ajuste == 'ENTRADA' %}
+          <span class="badge badge-success">↑ Entrada</span>
+          {% else %}
+          <span class="badge badge-danger">↓ Salida</span>
+          {% endif %}
+        </td>
+        <td class="font-semibold">{{ ajuste.cantidad_ajuste }}</td>
+        <td style="color: var(--color-text-muted); font-size: 0.8125rem">
+          {{ ajuste.usuario.nombre_usuario }}
+        </td>
+        <td style="color: var(--color-text-muted); font-size: 0.8125rem">
+          {{ ajuste.motivo }}
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="5">
+          <div class="empty-state">
+            <p style="font-weight: 500">
+              Sin movimientos registrados para esta joya.
             </p>
-
-        </div>
-
-        <a href="{{ url_for('inventario.index') }}"
-           class="btn btn-secondary">
-
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 class="w-4 h-4"
-                 fill="none"
-                 viewBox="0 0 24 24"
-                 stroke="currentColor">
-
-                <path stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15 19l-7-7 7-7"/>
-
-            </svg>
-
-            Volver
-
-        </a>
-
-    </div>
-
-    <!-- RESUMEN -->
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-
-        <div class="kpi-card">
-
-            <div class="text-sm"
-                 style="color:var(--color-text-muted);margin-bottom:.5rem;">
-
-                Código
-
-            </div>
-
-            <div class="text-xl font-semibold">
-                {{ joya.codigo }}
-            </div>
-
-        </div>
-
-        <div class="kpi-card">
-
-            <div class="text-sm"
-                 style="color:var(--color-text-muted);margin-bottom:.5rem;">
-
-                Joya
-
-            </div>
-
-            <div class="text-xl font-semibold">
-                {{ joya.nombre }}
-            </div>
-
-        </div>
-
-        <div class="kpi-card">
-
-            <div class="text-sm"
-                 style="color:var(--color-text-muted);margin-bottom:.5rem;">
-
-                Stock Actual
-
-            </div>
-
-            <div class="text-3xl font-semibold
-                {% if joya.stock_actual <= joya.stock_minimo %}
-                    text-danger
-                {% endif %}
-            ">
-
-                {{ joya.stock_actual }}
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- INFORMACIÓN -->
-
-    <div class="card"
-         style="
-            margin-bottom:1.5rem;
-            background:var(--color-surface-secondary);
-            border:1px solid var(--color-border);
-         ">
-
-        <div
-            style="
-                display:flex;
-                align-items:flex-start;
-                gap:.75rem;
-            "
-        >
-
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 width="22"
-                 height="22"
-                 fill="none"
-                 viewBox="0 0 24 24"
-                 stroke="currentColor"
-                 style="color:var(--color-primary);">
-
-                <path stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-
-            </svg>
-
-            <div>
-
-                <div
-                    style="
-                        font-weight:600;
-                        margin-bottom:.25rem;
-                    "
-                >
-                    Información del Inventario
-                </div>
-
-                <div
-                    style="
-                        font-size:.875rem;
-                        color:var(--color-text-muted);
-                    "
-                >
-                    Este historial muestra todas las entradas y salidas registradas para esta joya.
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- TABLA -->
-
-    <div class="table-wrapper">
-
-        <table class="data-table">
-
-            <thead>
-
-                <tr>
-
-                    <th>Fecha</th>
-                    <th>Tipo</th>
-                    <th>Cantidad</th>
-                    <th>Usuario</th>
-                    <th>Motivo</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                {% for ajuste in ajustes %}
-
-                <tr>
-
-                    <td>
-                        {{ ajuste.fecha_ajuste.strftime('%d/%m/%Y %H:%M') }}
-                    </td>
-
-                    <td>
-
-                        {% if ajuste.tipo_ajuste == 'ENTRADA' %}
-
-                            <span class="badge badge-success">
-                                ENTRADA
-                            </span>
-
-                        {% else %}
-
-                            <span class="badge badge-danger">
-                                SALIDA
-                            </span>
-
-                        {% endif %}
-
-                    </td>
-
-                    <td>
-                        {{ ajuste.cantidad_ajuste }}
-                    </td>
-
-                    <td>
-                        {{ ajuste.usuario.nombre_usuario }}
-                    </td>
-
-                    <td>
-                        {{ ajuste.motivo }}
-                    </td>
-
-                </tr>
-
-                {% else %}
-
-                <tr>
-
-                    <td colspan="5">
-
-                        <div class="empty-state">
-
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                 class="empty-state-icon"
-                                 fill="none"
-                                 viewBox="0 0 24 24"
-                                 stroke="currentColor">
-
-                                <path stroke-linecap="round"
-                                      stroke-linejoin="round"
-                                      stroke-width="1.5"
-                                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-
-                            </svg>
-
-                            <p style="font-weight:600;margin-bottom:.25rem;">
-                                No existen movimientos registrados
-                            </p>
-
-                            <p style="font-size:.875rem;color:var(--color-text-muted);">
-                                Esta joya todavía no tiene ajustes de inventario registrados.
-                            </p>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    </div>
-
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 
 {% endblock %}

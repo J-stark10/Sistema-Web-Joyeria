@@ -1,11 +1,7 @@
-{% extends "base.html" %}
-
-{% block titulo %}Ventas{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Ventas{% endblock %} {% block content
+%}
 
 <div>
-
   <!-- ── Header ── -->
   <div class="page-header">
     <div>
@@ -16,15 +12,19 @@
     </div>
 
     <a href="{{ url_for('venta.crear') }}" class="btn btn-primary">
-      <svg xmlns="http://www.w3.org/2000/svg"
-           class="w-4 h-4"
-           fill="none"
-           viewBox="0 0 24 24"
-           stroke="currentColor">
-        <path stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 4v16m8-8H4" />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-4 h-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 4v16m8-8H4"
+        />
       </svg>
       Nueva Venta
     </a>
@@ -32,94 +32,69 @@
 
   <!-- ── KPIs ── -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-
     <div class="kpi-card">
-      <div class="text-3xl font-semibold">
-        {{ ventas|length }}
-      </div>
-      <div class="text-sm mt-1"
-           style="color:var(--color-text-muted);">
+      <div class="text-3xl font-semibold">{{ ventas|length }}</div>
+      <div class="text-sm mt-1" style="color: var(--color-text-muted)">
         Total ventas
       </div>
     </div>
 
     <div class="kpi-card">
-      <div class="text-3xl font-semibold"
-           style="color:var(--color-success);">
+      <div class="text-3xl font-semibold" style="color: var(--color-success)">
         {{ ventas|selectattr('estado','equalto','COMPLETADA')|list|length }}
       </div>
-      <div class="text-sm mt-1"
-           style="color:var(--color-text-muted);">
+      <div class="text-sm mt-1" style="color: var(--color-text-muted)">
         Completadas
       </div>
     </div>
 
     <div class="kpi-card">
-      <div class="text-3xl font-semibold"
-           style="color:var(--color-danger);">
+      <div class="text-3xl font-semibold" style="color: var(--color-danger)">
         {{ ventas|selectattr('estado','equalto','ANULADA')|list|length }}
       </div>
-      <div class="text-sm mt-1"
-           style="color:var(--color-text-muted);">
+      <div class="text-sm mt-1" style="color: var(--color-text-muted)">
         Anuladas
       </div>
     </div>
 
     <div class="kpi-card">
-      <div class="text-3xl font-semibold"
-           style="color:var(--color-warning);">
-        Bs. {{
-            (
-                ventas
-                | selectattr('estado','equalto','COMPLETADA')
-                | map(attribute='total_venta')
-                | sum
-            )|round(2)
-            }}
+      <div class="text-3xl font-semibold" style="color: var(--color-warning)">
+        Bs. {{ ventas|sum(attribute='total_venta')|round(2) }}
       </div>
-      <div class="text-sm mt-1"
-           style="color:var(--color-text-muted);">
+      <div class="text-sm mt-1" style="color: var(--color-text-muted)">
         Monto total vendido
       </div>
     </div>
-
   </div>
 
   <!-- ── Filtros ── -->
   <div class="card mb-6">
-
     <div class="flex flex-col lg:flex-row gap-3">
-
       <div class="flex-1">
         <input
           type="text"
           id="filtro-venta"
           placeholder="Buscar cliente, usuario o ID..."
           oninput="filtrarTabla()"
-        >
+        />
       </div>
 
       <select
         id="filtro-estado"
-        style="max-width:220px;"
+        style="max-width: 220px"
         onchange="filtrarTabla()"
       >
         <option value="">Todos los estados</option>
         <option value="COMPLETADA">Completada</option>
         <option value="ANULADA">Anulada</option>
       </select>
-
     </div>
-
   </div>
 
   <!-- ── Tabla ── -->
   <div class="table-wrapper">
-
     <table class="data-table" id="tabla-ventas">
-
       <thead>
-
         <tr>
           <th>Venta</th>
           <th>Cliente</th>
@@ -129,11 +104,9 @@
           <th>Estado</th>
           <th>Acciones</th>
         </tr>
-
       </thead>
 
       <tbody>
-
         {% for venta in ventas %}
 
         <tr
@@ -144,116 +117,87 @@
           "
           data-estado="{{ venta.estado }}"
         >
-
           <!-- Venta -->
           <td>
-
             <div class="flex items-center gap-3">
-
-              <div class="avatar-initials"
-                   style="width:36px;height:36px;">
+              <div class="avatar-initials" style="width: 36px; height: 36px">
                 #{{ venta.id_venta }}
               </div>
 
               <div>
+                <div class="font-medium">Venta #{{ venta.id_venta }}</div>
 
-                <div class="font-medium">
-                  Venta #{{ venta.id_venta }}
-                </div>
-
-                <div class="text-xs"
-                     style="color:var(--color-text-muted);">
+                <div class="text-xs" style="color: var(--color-text-muted)">
                   Registro del sistema
                 </div>
-
               </div>
-
             </div>
-
           </td>
 
           <!-- Cliente -->
           <td>
-
-            {% if venta.cliente %}
-              {{ venta.cliente.nombre }}
-            {% else %}
-              <span style="color:var(--color-text-muted);">
-                Cliente General
-              </span>
+            {% if venta.cliente %} {{ venta.cliente.nombre }} {% else %}
+            <span style="color: var(--color-text-muted)">
+              Cliente General
+            </span>
             {% endif %}
-
           </td>
 
           <!-- Usuario -->
           <td>
-
-            <span style="color:var(--color-text-muted);">
+            <span style="color: var(--color-text-muted)">
               {{ venta.usuario.nombre_usuario }}
             </span>
-
           </td>
 
           <!-- Fecha -->
           <td>
-
-            <span style="color:var(--color-text-muted);font-size:0.8125rem;">
+            <span style="color: var(--color-text-muted); font-size: 0.8125rem">
               {{ venta.fecha_venta }}
             </span>
-
           </td>
 
           <!-- Total -->
           <td>
-
             <span class="font-semibold">
               Bs. {{ "%.2f"|format(venta.total_venta) }}
             </span>
-
           </td>
 
           <!-- Estado -->
           <td>
-
             {% if venta.estado == 'COMPLETADA' %}
-              <span class="badge badge-success">
-                Completada
-              </span>
+            <span class="badge badge-success"> Completada </span>
             {% elif venta.estado == 'ANULADA' %}
-              <span class="badge badge-danger">
-                Anulada
-              </span>
+            <span class="badge badge-danger"> Anulada </span>
             {% else %}
-              <span class="badge badge-warning">
-                {{ venta.estado }}
-              </span>
+            <span class="badge badge-warning"> {{ venta.estado }} </span>
             {% endif %}
-
           </td>
 
           <!-- Acciones -->
           <td>
-
             <div class="flex items-center gap-2">
-
               <a
                 href="{{ url_for('venta.detalle', id_venta=venta.id_venta) }}"
                 class="btn btn-ghost btn-sm"
               >
-
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     class="w-4 h-4"
-                     fill="none"
-                     viewBox="0 0 24 24"
-                     stroke="currentColor">
-                  <path stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.5"
-                        d="M15 12H9m12 0A9 9 0 113 12a9 9 0 0118 0z"/>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M15 12H9m12 0A9 9 0 113 12a9 9 0 0118 0z"
+                  />
                 </svg>
 
                 Ver
-
               </a>
 
               {% if venta.estado != 'ANULADA' %}
@@ -261,110 +205,87 @@
               <a
                 href="{{ url_for('venta.anular', id_venta=venta.id_venta) }}"
                 class="btn btn-ghost btn-sm"
-                style="color:var(--color-danger);"
-                onclick="return confirm('¿Desea anular esta venta?')"
+                style="color: var(--color-danger)"
+                onclick="return confirm('¿Desea anular esta venta?');"
               >
-
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     class="w-4 h-4"
-                     fill="none"
-                     viewBox="0 0 24 24"
-                     stroke="currentColor">
-                  <path stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.5"
-                        d="M18.364 5.636L5.636 18.364m0-12.728l12.728 12.728"/>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M18.364 5.636L5.636 18.364m0-12.728l12.728 12.728"
+                  />
                 </svg>
 
                 Anular
-
               </a>
 
               {% endif %}
-
             </div>
-
           </td>
-
         </tr>
 
         {% else %}
 
         <tr>
-
           <td colspan="7">
-
             <div class="empty-state">
-
-              <svg xmlns="http://www.w3.org/2000/svg"
-                   class="empty-state-icon"
-                   fill="none"
-                   viewBox="0 0 24 24"
-                   stroke="currentColor">
-                <path stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="1.5"
-                      d="M3 7h18M5 7l1 12h12l1-12M9 11h6"/>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="empty-state-icon"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M3 7h18M5 7l1 12h12l1-12M9 11h6"
+                />
               </svg>
 
-              <p style="font-weight:500;margin-bottom:0.25rem;">
+              <p style="font-weight: 500; margin-bottom: 0.25rem">
                 No existen ventas registradas
               </p>
 
-              <p style="font-size:0.875rem;">
+              <p style="font-size: 0.875rem">
                 Realiza la primera venta utilizando el botón "Nueva Venta".
               </p>
-
             </div>
-
           </td>
-
         </tr>
 
         {% endfor %}
-
       </tbody>
-
     </table>
-
   </div>
-
 </div>
 
-{% endblock %}
-
-
-{% block extra_scripts %}
+{% endblock %} {% block extra_scripts %}
 <script>
+  function filtrarTabla() {
+    const texto = document.getElementById("filtro-venta").value.toLowerCase();
 
-function filtrarTabla() {
+    const estado = document.getElementById("filtro-estado").value;
 
-    const texto =
-        document.getElementById('filtro-venta')
-        .value
-        .toLowerCase();
+    document
+      .querySelectorAll("#tabla-ventas tbody tr[data-busqueda]")
+      .forEach(function (row) {
+        const coincideTexto = row.dataset.busqueda
+          .toLowerCase()
+          .includes(texto);
 
-    const estado =
-        document.getElementById('filtro-estado')
-        .value;
+        const coincideEstado = !estado || row.dataset.estado === estado;
 
-    document.querySelectorAll(
-        '#tabla-ventas tbody tr[data-busqueda]'
-    ).forEach(function(row) {
-
-        const coincideTexto =
-            row.dataset.busqueda.toLowerCase().includes(texto);
-
-        const coincideEstado =
-            !estado || row.dataset.estado === estado;
-
-        row.style.display =
-            coincideTexto && coincideEstado
-            ? ''
-            : 'none';
-    });
-
-}
-
+        row.style.display = coincideTexto && coincideEstado ? "" : "none";
+      });
+  }
 </script>
 {% endblock %}

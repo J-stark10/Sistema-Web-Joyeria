@@ -1,183 +1,95 @@
-{% extends 'base.html' %}
+{% extends "base.html" %} {% block title %}Stock Bajo{% endblock %} {% block
+content %}
 
-{% block titulo %}Stock Bajo{% endblock %}
+<div class="breadcrumb">
+  <a href="{{ url_for('inventario.index') }}">Inventario</a>
+  <span class="breadcrumb-sep">/</span>
+  <span class="breadcrumb-current">Stock Bajo</span>
+</div>
 
-{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Joyas con Stock Bajo</h1>
+    <p class="page-subtitle">
+      Productos cuyo stock actual está por debajo del mínimo definido.
+    </p>
+  </div>
+  <a href="{{ url_for('inventario.ajustar') }}" class="btn btn-primary"
+    >Nuevo Ajuste</a
+  >
+</div>
 
-<div>
+{% if joyas %}
+<div class="alert alert-warning mb-6">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="w-4 h-4 shrink-0"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
+  </svg>
+  <span
+    >{{ joyas|length }} producto(s) con stock por debajo del mínimo. Considera
+    registrar una compra.</span
+  >
+</div>
+{% endif %}
 
-    <!-- HEADER -->
-
-    <div class="page-header">
-
-        <div>
-
-            <h1 class="page-title">
-                Stock Bajo
-            </h1>
-
-            <p class="page-subtitle">
-                Joyas que han alcanzado o están por debajo del stock mínimo configurado.
+<div class="table-wrapper">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Nombre</th>
+        <th>Stock Actual</th>
+        <th>Stock Mínimo</th>
+        <th>Diferencia</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for joya in joyas %}
+      <tr style="background: var(--color-danger-bg)">
+        <td style="font-size: 0.8125rem; color: var(--color-text-muted)">
+          {{ joya.codigo }}
+        </td>
+        <td>
+          <a
+            href="{{ url_for('inventario.historial', id_joya=joya.id_joya) }}"
+            style="
+              color: var(--color-primary);
+              font-weight: 500;
+              text-decoration: none;
+            "
+            >{{ joya.nombre }}</a
+          >
+        </td>
+        <td><span class="badge badge-danger">{{ joya.stock_actual }}</span></td>
+        <td style="color: var(--color-text-muted)">{{ joya.stock_minimo }}</td>
+        <td style="color: var(--color-danger-text); font-weight: 500">
+          −{{ joya.stock_minimo - joya.stock_actual }}
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="5">
+          <div class="empty-state">
+            <p style="font-weight: 500">Sin productos en stock bajo.</p>
+            <p style="font-size: 0.875rem">
+              Todos los productos están sobre el mínimo definido.
             </p>
-
-        </div>
-
-        <a href="{{ url_for('inventario.index') }}"
-           class="btn btn-secondary">
-
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 class="w-4 h-4"
-                 fill="none"
-                 viewBox="0 0 24 24"
-                 stroke="currentColor">
-
-                <path stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15 19l-7-7 7-7"/>
-
-            </svg>
-
-            Volver
-
-        </a>
-
-    </div>
-
-    <!-- KPI -->
-
-    <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mb-6">
-
-        <div class="kpi-card">
-
-            <div class="text-3xl font-semibold"
-                 style="color:var(--color-danger);">
-
-                {{ joyas|length }}
-
-            </div>
-
-            <div class="text-sm mt-1"
-                 style="color:var(--color-text-muted);">
-
-                Joyas con stock bajo
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- TABLA -->
-
-    <div class="table-wrapper">
-
-        <table class="data-table">
-
-            <thead>
-
-                <tr>
-
-                    <th>Código</th>
-                    <th>Joya</th>
-                    <th>Stock Actual</th>
-                    <th>Stock Mínimo</th>
-                    <th>Estado</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                {% for joya in joyas %}
-
-                <tr>
-
-                    <td>
-                        {{ joya.codigo }}
-                    </td>
-
-                    <td>
-
-                        <a href="{{ url_for('inventario.historial', id_joya=joya.id_joya) }}"
-                           style="
-                                color:var(--color-primary);
-                                font-weight:500;
-                                text-decoration:none;
-                           ">
-
-                            {{ joya.nombre }}
-
-                        </a>
-
-                    </td>
-
-                    <td>
-
-                        <span class="badge badge-danger">
-                            {{ joya.stock_actual }}
-                        </span>
-
-                    </td>
-
-                    <td>
-                        {{ joya.stock_minimo }}
-                    </td>
-
-                    <td>
-
-                        <span class="badge badge-danger">
-                            Requiere Reposición
-                        </span>
-
-                    </td>
-
-                </tr>
-
-                {% else %}
-
-                <tr>
-
-                    <td colspan="5">
-
-                        <div class="empty-state">
-
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                 class="empty-state-icon"
-                                 fill="none"
-                                 viewBox="0 0 24 24"
-                                 stroke="currentColor">
-
-                                <path stroke-linecap="round"
-                                      stroke-linejoin="round"
-                                      stroke-width="1.5"
-                                      d="M9 12l2 2 4-4m5-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-
-                            </svg>
-
-                            <p style="font-weight:600;margin-bottom:.25rem;">
-                                No existen joyas con stock bajo
-                            </p>
-
-                            <p style="font-size:.875rem;color:var(--color-text-muted);">
-                                Todo el inventario se encuentra dentro de los niveles mínimos establecidos.
-                            </p>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    </div>
-
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 
 {% endblock %}

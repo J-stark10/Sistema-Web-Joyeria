@@ -1,626 +1,94 @@
-{% extends "base.html" %}
-
-{% block titulo %}
-Detalle Compra
-{% endblock %}
-
-{% block content %}
-
-<div>
-
-    <!-- ===================================== -->
-    <!-- HEADER -->
-    <!-- ===================================== -->
-
-    <div class="page-header">
-
-        <div>
-
-            <div class="flex items-center gap-3 mb-2">
-
-                <span class="badge badge-primary">
-                    Compra #{{ compra.id_compra }}
-                </span>
-
-                {% if compra.estado == 'COMPLETADA' %}
-
-                <span class="badge badge-success">
-                    COMPLETADA
-                </span>
-
-                {% else %}
-
-                <span class="badge badge-danger">
-                    ANULADA
-                </span>
-
-                {% endif %}
-
-            </div>
-
-            <h1 class="page-title">
-                Detalle de Compra
-            </h1>
-
-            <p class="page-subtitle">
-                Información completa de la compra registrada en el sistema.
-            </p>
-
-        </div>
-
-        <div>
-
-            {% if compra.estado == 'COMPLETADA' %}
-
-            <a
-                href="{{ url_for('compra.anular', id_compra=compra.id_compra) }}"
-                class="btn btn-danger"
-                onclick="return confirm('¿Desea anular esta compra?')"
-            >
-                Anular Compra
-            </a>
-
-            {% endif %}
-
-        </div>
-
-    </div>
-
-    <!-- ===================================== -->
-    <!-- KPIs -->
-    <!-- ===================================== -->
-
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-
-        <div class="kpi-card">
-
-            <div
-                class="text-sm"
-                style="color:var(--color-text-muted);"
-            >
-                Total Compra
-            </div>
-
-            <div
-                class="text-3xl font-semibold"
-                style="color:var(--color-primary);"
-            >
-                Bs. {{ "%.2f"|format(compra.total_compra) }}
-            </div>
-
-        </div>
-
-        <div class="kpi-card">
-
-            <div
-                class="text-sm"
-                style="color:var(--color-text-muted);"
-            >
-                Productos
-            </div>
-
-            <div class="text-3xl font-semibold">
-                {{ compra.detalles|length }}
-            </div>
-
-        </div>
-
-        <div class="kpi-card">
-
-            <div
-                class="text-sm"
-                style="color:var(--color-text-muted);"
-            >
-                Fecha
-            </div>
-
-            <div class="font-semibold">
-                {{ compra.fecha_compra.strftime('%d/%m/%Y') }}
-            </div>
-
-        </div>
-
-        <div class="kpi-card">
-
-            <div
-                class="text-sm"
-                style="color:var(--color-text-muted);"
-            >
-                Hora
-            </div>
-
-            <div class="font-semibold">
-                {{ compra.fecha_compra.strftime('%H:%M') }}
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- ===================================== -->
-    <!-- PROVEEDOR + RESUMEN -->
-    <!-- ===================================== -->
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-
-        <!-- PROVEEDOR -->
-
-        <div class="card">
-
-            <div class="card-header">
-
-                <div class="card-title">
-                    Proveedor
-                </div>
-
-            </div>
-
-            <div class="flex items-center gap-4 mb-5">
-
-                <div
-                    class="avatar-initials"
-                    style="
-                        width:64px;
-                        height:64px;
-                        font-size:1.25rem;
-                    "
-                >
-                    {{ compra.proveedor.nombre_razon_social[:1] }}
-                </div>
-
-                <div>
-
-                    <div
-                        style="
-                            font-size:1.1rem;
-                            font-weight:700;
-                        "
-                    >
-                        {{ compra.proveedor.nombre_razon_social }}
-                    </div>
-
-                    <div
-                        style="
-                            color:var(--color-text-muted);
-                        "
-                    >
-                        Proveedor registrado
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                <div class="kpi-card">
-
-                    <div
-                        class="text-sm"
-                        style="color:var(--color-text-muted);"
-                    >
-                        NIT
-                    </div>
-
-                    <div class="font-semibold">
-                        {{ compra.proveedor.nit }}
-                    </div>
-
-                </div>
-
-                <div class="kpi-card">
-
-                    <div
-                        class="text-sm"
-                        style="color:var(--color-text-muted);"
-                    >
-                        Teléfono
-                    </div>
-
-                    <div class="font-semibold">
-                        {{ compra.proveedor.telefono or 'No registrado' }}
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div
-                class="mt-4 p-4 rounded-lg"
-                style="
-                    background:var(--color-surface);
-                    border:1px solid var(--color-border);
-                "
-            >
-
-                <div
-                    class="text-sm mb-1"
-                    style="color:var(--color-text-muted);"
-                >
-                    Correo Electrónico
-                </div>
-
-                <div>
-                    {{ compra.proveedor.correo or 'No registrado' }}
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- RESUMEN COMPRA -->
-
-        <div class="card">
-
-            <div class="card-header">
-
-                <div class="card-title">
-                    Resumen de Compra
-                </div>
-
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-
-                <div class="kpi-card">
-
-                    <div
-                        class="text-sm"
-                        style="color:var(--color-text-muted);"
-                    >
-                        Compra #
-                    </div>
-
-                    <div class="text-2xl font-bold">
-                        {{ compra.id_compra }}
-                    </div>
-
-                </div>
-
-                <div class="kpi-card">
-
-                    <div
-                        class="text-sm"
-                        style="color:var(--color-text-muted);"
-                    >
-                        Estado
-                    </div>
-
-                    <div class="mt-2">
-
-                        {% if compra.estado == 'COMPLETADA' %}
-
-                        <span class="badge badge-success">
-                            COMPLETADA
-                        </span>
-
-                        {% else %}
-
-                        <span class="badge badge-danger">
-                            ANULADA
-                        </span>
-
-                        {% endif %}
-
-                    </div>
-
-                </div>
-
-                <div class="kpi-card">
-
-                    <div
-                        class="text-sm"
-                        style="color:var(--color-text-muted);"
-                    >
-                        Fecha
-                    </div>
-
-                    <div class="font-semibold">
-                        {{ compra.fecha_compra.strftime('%d/%m/%Y') }}
-                    </div>
-
-                </div>
-
-                <div class="kpi-card">
-
-                    <div
-                        class="text-sm"
-                        style="color:var(--color-text-muted);"
-                    >
-                        Hora
-                    </div>
-
-                    <div class="font-semibold">
-                        {{ compra.fecha_compra.strftime('%H:%M') }}
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div
-                class="mt-4 p-5 rounded-xl"
-                style="
-                    background:linear-gradient(
-                        135deg,
-                        rgba(59,130,246,.08),
-                        rgba(59,130,246,.02)
-                    );
-                    border:1px solid rgba(59,130,246,.2);
-                "
-            >
-
-                <div
-                    style="
-                        color:var(--color-text-muted);
-                        font-size:.85rem;
-                    "
-                >
-                    Usuario Responsable
-                </div>
-
-                <div
-                    style="
-                        font-size:1.1rem;
-                        font-weight:700;
-                    "
-                >
-                    {{ compra.usuario.nombre_usuario }}
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- ===================================== -->
-    <!-- PRODUCTOS -->
-    <!-- ===================================== -->
-
-    <div class="card">
-
-        <div class="card-header">
-
-            <div class="card-title">
-                Productos Comprados
-            </div>
-
-        </div>
-
-        <div class="table-wrapper">
-
-            <table class="data-table">
-
-                <thead>
-
-                    <tr>
-
-                        <th>#</th>
-                        <th>Código</th>
-                        <th>Producto</th>
-                        <th>Cantidad</th>
-                        <th>Precio Compra</th>
-                        <th>Subtotal</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    {% for detalle in compra.detalles %}
-
-                    <tr>
-
-                        <td>
-                            {{ loop.index }}
-                        </td>
-
-                        <td>
-
-                            <span class="badge badge-secondary">
-                                {{ detalle.joya.codigo }}
-                            </span>
-
-                        </td>
-
-                        <td>
-
-                            <div style="font-weight:600;">
-                                {{ detalle.joya.nombre }}
-                            </div>
-
-                            {% if detalle.joya.categoria %}
-
-                            <div
-                                style="
-                                    font-size:.8rem;
-                                    color:var(--color-text-muted);
-                                "
-                            >
-                                {{ detalle.joya.categoria.nombre_categoria }}
-                            </div>
-
-                            {% endif %}
-
-                        </td>
-
-                        <td>
-                            {{ detalle.cantidad }}
-                        </td>
-
-                        <td>
-                            Bs. {{ "%.2f"|format(detalle.precio_unit_compra) }}
-                        </td>
-
-                        <td>
-
-                            <strong>
-                                Bs. {{ "%.2f"|format(detalle.subtotal) }}
-                            </strong>
-
-                        </td>
-
-                    </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </div>
-
-    <!-- ===================================== -->
-    <!-- RESUMEN FINANCIERO -->
-    <!-- ===================================== -->
-
-    <div class="card mt-6">
-
-        <div class="card-header">
-
-            <div class="card-title">
-                Resumen Financiero
-            </div>
-
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-            <div class="kpi-card">
-
-                <div
-                    class="text-sm"
-                    style="color:var(--color-text-muted);"
-                >
-                    Productos Distintos
-                </div>
-
-                <div class="text-2xl font-semibold">
-                    {{ compra.detalles|length }}
-                </div>
-
-            </div>
-
-            <div class="kpi-card">
-
-                <div
-                    class="text-sm"
-                    style="color:var(--color-text-muted);"
-                >
-                    Unidades Compradas
-                </div>
-
-                <div class="text-2xl font-semibold">
-
-                    {% set total_unidades = namespace(value=0) %}
-
-                    {% for detalle in compra.detalles %}
-                        {% set total_unidades.value = total_unidades.value + detalle.cantidad %}
-                    {% endfor %}
-
-                    {{ total_unidades.value }}
-
-                </div>
-
-            </div>
-
-            <div class="kpi-card">
-
-                <div
-                    class="text-sm"
-                    style="color:var(--color-text-muted);"
-                >
-                    Total Compra
-                </div>
-
-                <div
-                    class="text-2xl font-bold"
-                    style="color:var(--color-primary);"
-                >
-                    Bs. {{ "%.2f"|format(compra.total_compra) }}
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- ===================================== -->
-    <!-- IMPACTO INVENTARIO -->
-    <!-- ===================================== -->
-
-    <div class="card mt-6">
-
-        <div class="flex items-center gap-4">
-
-            <div class="avatar-initials">
-                ✓
-            </div>
-
-            <div>
-
-                <div
-                    style="
-                        font-weight:600;
-                        margin-bottom:.25rem;
-                    "
-                >
-                    Inventario Actualizado
-                </div>
-
-                <div
-                    style="
-                        color:var(--color-text-muted);
-                        font-size:.9rem;
-                    "
-                >
-                    Esta compra incrementó el stock de
-                    <strong>{{ compra.detalles|length }}</strong>
-                    productos y registró
-                    <strong>{{ total_unidades.value }}</strong>
-                    unidades en inventario.
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- ===================================== -->
-    <!-- ACCIONES -->
-    <!-- ===================================== -->
-
-    <div
-        class="flex justify-between items-center mt-6"
+{% extends "base.html" %} {% block title %}Compra #{{ compra.id_compra }}{%
+endblock %} {% block content %}
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Compra #{{ compra.id_compra }}</h1>
+    <p class="page-subtitle">Detalle y resumen de la compra.</p>
+  </div>
+  <div class="flex gap-2">
+    <a href="{{ url_for('compra.index') }}" class="btn btn-ghost">Volver</a>
+    {% if compra.estado == 'COMPLETADA' %}
+    <a
+      href="{{ url_for('compra.anular', id_compra=compra.id_compra) }}"
+      class="btn btn-danger"
+      onclick="return confirm('¿Desea anular esta compra?');"
+      >Anular</a
     >
+    {% endif %}
+  </div>
+</div>
 
-        <a
-            href="{{ url_for('compra.index') }}"
-            class="btn btn-secondary"
-        >
-            Volver
-        </a>
-
-        {% if compra.estado == 'COMPLETADA' %}
-
-        <a
-            href="{{ url_for('compra.anular', id_compra=compra.id_compra) }}"
-            class="btn btn-danger"
-            onclick="return confirm('¿Desea anular esta compra?')"
-        >
-            Anular Compra
-        </a>
-
-        {% endif %}
-
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+  <!-- Columna izquierda: tabla de ítems (2/3) -->
+  <div class="lg:col-span-2">
+    <div class="card">
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Joya</th>
+              <th>Cantidad</th>
+              <th>Precio Unit.</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for detalle in compra.detalles %}
+            <tr>
+              <td>
+                <div style="font-weight: 600">
+                  {{ detalle.joya.codigo }} — {{ detalle.joya.nombre }}
+                </div>
+              </td>
+              <td class="font-semibold">{{ detalle.cantidad }}</td>
+              <td style="color: var(--color-text-muted)">
+                Bs. {{ "%.2f"|format(detalle.precio_unit_compra) }}
+              </td>
+              <td class="font-semibold">
+                Bs. {{ "%.2f"|format(detalle.subtotal) }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
 
+  <!-- Columna derecha: resumen -->
+  <div>
+    <div class="card">
+      <div class="text-sm" style="color: var(--color-text-muted)">
+        Proveedor
+      </div>
+      <div style="font-weight: 600">
+        {{ compra.proveedor.nombre_razon_social }}
+      </div>
+      <div class="mt-3 text-sm" style="color: var(--color-text-muted)">
+        Fecha
+      </div>
+      <div>{{ compra.fecha_compra.strftime('%d/%m/%Y %H:%M') }}</div>
+      <div class="mt-3 text-sm" style="color: var(--color-text-muted)">
+        Usuario
+      </div>
+      <div>{{ compra.usuario.nombre_usuario }}</div>
+      <div class="mt-3 text-sm" style="color: var(--color-text-muted)">
+        Estado
+      </div>
+      <div class="mt-1">
+        {% if compra.estado == 'COMPLETADA' %}<span class="badge badge-success"
+          >Completada</span
+        >{% else %}<span class="badge badge-danger">Anulada</span>{% endif %}
+      </div>
+      <div class="mt-6 text-sm" style="color: var(--color-text-muted)">
+        Total
+      </div>
+      <div class="text-2xl font-semibold">
+        Bs. {{ "%.2f"|format(compra.total_compra) }}
+      </div>
+    </div>
+  </div>
 </div>
 
 {% endblock %}
