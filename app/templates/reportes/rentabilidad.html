@@ -174,7 +174,7 @@
             <div class="text-2xl font-semibold"
                  style="color:var(--color-success);">
 
-                Bs. {{ utilidad_total }}
+                Bs. {{ "%.2f"|format(utilidad_total) }}
 
             </div>
 
@@ -269,7 +269,7 @@
                         <td>
 
                             <span class="badge badge-success">
-                                Bs. {{ item.utilidad }}
+                                Bs. {{ "%.2f"|format(item.utilidad) }}
                             </span>
 
                         </td>

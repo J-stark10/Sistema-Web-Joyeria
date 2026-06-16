@@ -1,14 +1,20 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from app.modules.usuarios.services import UsuarioService
 
+from app.auth.decorators import roles_required
+from flask_login import login_required
+
 usuario_bp = Blueprint('usuario', __name__, url_prefix='/usuarios')
 
 @usuario_bp.route("/")
+@login_required
+@roles_required('ADMIN')
 def index():
     usuarios = UsuarioService.listar_usuarios()
     return render_template("usuarios/index.html",usuarios=usuarios)
 
 @usuario_bp.route("/crear", methods=["GET", "POST"])
+@roles_required('ADMIN')
 def crear():
     if request.method == "POST":
         try:
@@ -26,6 +32,8 @@ def crear():
     return render_template("usuarios/crear.html")
 
 @usuario_bp.route("/editar/<int:id_usuario>", methods=["GET", "POST"])
+@login_required
+@roles_required('ADMIN')
 def editar(id_usuario):
 
     try:
@@ -62,6 +70,8 @@ def editar(id_usuario):
     return render_template("usuarios/editar.html", usuario=usuario)
 
 @usuario_bp.route("/password/<int:id_usuario>",methods=["GET", "POST"])
+@login_required
+@roles_required('ADMIN')
 def cambiar_password(id_usuario):
     try:
         usuario = UsuarioService.obtener_usuario(id_usuario)
@@ -81,6 +91,8 @@ def cambiar_password(id_usuario):
     return render_template("usuarios/cambiar_password.html",usuario=usuario)
 
 @usuario_bp.route("/desactivar/<int:id_usuario>")
+@login_required
+@roles_required('ADMIN')
 def desactivar(id_usuario):
     try:
         UsuarioService.desactivar_usuario(id_usuario)
@@ -93,6 +105,8 @@ def desactivar(id_usuario):
 
 
 @usuario_bp.route("/activar/<int:id_usuario>")
+@login_required
+@roles_required('ADMIN')
 def activar(id_usuario):
     try:
         UsuarioService.activar_usuario(id_usuario)
@@ -109,6 +123,7 @@ from flask_login import login_required, current_user
 
 @usuario_bp.route("/perfil", methods=["GET", "POST"])
 @login_required
+@roles_required('ADMIN','VENDEDOR')
 def perfil():
 
     if request.method == "POST":

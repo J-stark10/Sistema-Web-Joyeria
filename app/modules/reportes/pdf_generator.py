@@ -27,31 +27,35 @@ from reportlab.graphics import renderPDF
 # ──────────────────────────────────────────────
 #  PALETA  —  Joyería El Illimani (Estilo Formal: Azul Marino, Slate, Gris)
 # ──────────────────────────────────────────────
-BRAND_400   = colors.HexColor("#1e3a8a")   # azul marino principal
-BRAND_100   = colors.HexColor("#eff6ff")   # azul muy claro
-BRAND_900   = colors.HexColor("#1e293b")   # pizarra oscuro
+BRAND_400 = colors.HexColor("#b9852b")  # oro antiguo
+BRAND_100 = colors.HexColor("#fbf4e6")  # marfil dorado
+BRAND_900 = colors.HexColor("#2b2118")  # marrón tinta
 
-SLATE_0     = colors.HexColor("#ffffff")
-SLATE_50    = colors.HexColor("#f8fafc")
-SLATE_100   = colors.HexColor("#f1f5f9")
-SLATE_200   = colors.HexColor("#e2e8f0")
-SLATE_500   = colors.HexColor("#64748b")
-SLATE_700   = colors.HexColor("#334155")
-SLATE_900   = colors.HexColor("#0f172a")
+INK_900 = colors.HexColor("#17202a")
+INK_800 = colors.HexColor("#243241")
+INK_700 = colors.HexColor("#34495e")
 
 # Colores formales de estado (sin usar verde ni amarillo/ámbar)
-STATE_INFO_BG   = colors.HexColor("#f1f5f9") # Fondo neutral
-STATE_INFO_TXT  = colors.HexColor("#475569") # Texto neutral oscuro (para valores normales/positivos)
+SLATE_0 = colors.HexColor("#ffffff")
+SLATE_50 = colors.HexColor("#f8faf7")
+SLATE_100 = colors.HexColor("#eef1f3")
+SLATE_200 = colors.HexColor("#d8dee4")
+SLATE_500 = colors.HexColor("#687586")
+SLATE_700 = colors.HexColor("#354152")
+SLATE_900 = INK_900
 
-RED_500     = colors.HexColor("#9f3a3a")   # rojo sobrio (alerta)
-RED_100     = colors.HexColor("#fee2e2")
-RED_900     = colors.HexColor("#450a0a")
+STATE_INFO_BG = colors.HexColor("#edf7f2")
+STATE_INFO_TXT = colors.HexColor("#196c4b")
 
 # Reemplazo de ámbar/amarillo por azul/pizarra formal
-AMBER_500   = colors.HexColor("#475569")   # Gris pizarra formal
-AMBER_100   = colors.HexColor("#f1f5f9")
+RED_500 = colors.HexColor("#a14343")
+RED_100 = colors.HexColor("#faeaea")
+RED_900 = colors.HexColor("#6f2323")
 
+AMBER_500 = BRAND_400
+AMBER_100 = BRAND_100
 
+GREEN_500 = colors.HexColor("#196c4b")
 
 # ──────────────────────────────────────────────
 #  REGISTRO DE FUENTES DE MARCA

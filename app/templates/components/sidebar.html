@@ -47,6 +47,7 @@
         <span class="sidebar-label">Joyas</span>
       </a>
 
+      {% if current_user.es_admin %}
       <a href="{{ url_for('categoria.index') }}"
          class="nav-item {{ 'active' if request.blueprint == 'categoria' else '' }}">
         <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -54,7 +55,9 @@
         </svg>
         <span class="sidebar-label">Categorías</span>
       </a>
+      {% endif %}
 
+      {% if current_user.es_admin %}
       <a href="{{ url_for('material.index') }}"
          class="nav-item {{ 'active' if request.blueprint == 'material' else '' }}">
         <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none"
@@ -65,7 +68,9 @@
         </svg>
         <span class="sidebar-label">Materiales</span>
       </a>
+      {% endif %}
 
+      {% if current_user.es_admin %}
       <a href="{{ url_for('inventario.index') }}"
          class="nav-item {{ 'active' if request.blueprint == 'inventario' else '' }}">
         <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none"
@@ -76,6 +81,7 @@
         </svg>
         <span class="sidebar-label">Ajuste Inventario</span>
       </a>
+      {% endif %}
     </div>
 
     <!-- ── Comercial ── -->
@@ -102,6 +108,7 @@
         <span class="sidebar-label">Ventas</span>
       </a>
 
+      {% if current_user.es_admin %}
       <a href="{{ url_for('compra.index') }}"
          class="nav-item {{ 'active' if request.blueprint == 'compra' else '' }}">
         <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none"
@@ -112,6 +119,7 @@
         </svg>
         <span class="sidebar-label">Compras</span>
       </a>
+      {% endif %}
 
       <a href="{{ url_for('cliente.index') }}"
          class="nav-item {{ 'active' if request.blueprint == 'cliente' else '' }}">
@@ -122,6 +130,7 @@
       </a>
     </div>
 
+    {% if current_user.es_admin %}
     <!-- ── Administración ── -->
     <div style="margin-bottom:0.25rem;">
       <p class="sidebar-section-title" style="
@@ -151,6 +160,7 @@
         <span class="sidebar-label">Proveedores</span>
       </a>
     </div>
+    {% endif %}
 
     <!-- ── Análisis ── -->
     <div style="margin-bottom:0.25rem;">
@@ -196,6 +206,7 @@
         <!-- Línea guía izquierda + indent -->
         <div style="margin-left:1.375rem; border-left:1px solid var(--color-border); padding-left:0.25rem;">
 
+          {% if current_user.es_admin %}
           <a href="{{ url_for('reporte.inventario') }}"
             class="nav-item {{ 'active' if request.endpoint == 'reporte.inventario' else '' }}"
             style="margin-left:0; margin-right:0.5rem; font-size:0.8125rem;">
@@ -207,7 +218,9 @@
             </svg>
             <span class="sidebar-label">Reporte de Inventario</span>
           </a>
+          {% endif %}
 
+          {% if current_user.es_admin %}
           <a href="{{ url_for('reporte.rentabilidad')}}"
             class="nav-item {{ 'active' if request.endpoint == 'reporte.rentabilidad' else '' }}"
             style="margin-left:0; margin-right:0.5rem; font-size:0.8125rem;">
@@ -219,6 +232,7 @@
             </svg>
             <span class="sidebar-label">Reporte de Rentabilidad</span>
           </a>
+          {% endif %}
 
           <a href="{{ url_for('reporte.ventas')}}"
             class="nav-item {{ 'active' if request.endpoint == 'reporte.ventas' else '' }}"

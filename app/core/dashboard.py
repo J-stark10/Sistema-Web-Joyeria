@@ -1,11 +1,10 @@
 from datetime import date, timedelta
-
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, jsonify, url_for
 from flask_login import login_required
-
 from sqlalchemy import func, extract
 
 from app.extensions import db
+from app.auth.decorators import roles_required
 
 from app.modules.ventas.models import Venta, DetalleVenta
 from app.modules.compras.models import Compra
@@ -13,11 +12,7 @@ from app.modules.joyas.models import Joya
 from app.modules.clientes.models import Cliente
 from app.modules.proveedores.models import Proveedor
 
-dashboard_bp = Blueprint(
-    "dashboard",
-    __name__,
-    url_prefix="/"
-)
+dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/")
 
 
 def _pct_change(actual, anterior):
@@ -30,6 +25,7 @@ def _pct_change(actual, anterior):
 
 @dashboard_bp.route("/")
 @login_required
+@roles_required('ADMIN','VENDEDOR')
 def index():
 
     hoy = date.today()
@@ -269,3 +265,52 @@ def index():
         ultimas_ventas=ultimas_ventas,
         ventas_ayer_cero=ventas_ayer_cero
     )
+
+
+
+@dashboard_bp.route("/buscar-global")
+@login_required
+def buscar_global():
+
+    q = request.args.get("q", "").strip()
+
+    if not q:
+        return jsonify([])
+
+    resultados = []
+
+    joyas = (
+        Joya.query
+        .filter(Joya.nombre.ilike(f"%{q}%"))
+        .limit(5)
+        .all()
+    )
+
+    for joya in joyas:
+        resultados.append({
+            "tipo": "Joya",
+            "texto": joya.nombre,
+            "url": url_for(
+                "joya.editar",
+                id_joya=joya.id_joya
+            )
+        })
+
+    clientes = (
+        Cliente.query
+        .filter(Cliente.nombre.ilike(f"%{q}%"))
+        .limit(5)
+        .all()
+    )
+
+    for cliente in clientes:
+        resultados.append({
+            "tipo": "Cliente",
+            "texto": cliente.nombre,
+            "url": url_for(
+                "cliente.editar",
+                id_cliente=cliente.id_cliente
+            )
+        })
+
+    return jsonify(resultados)

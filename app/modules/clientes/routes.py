@@ -1,14 +1,20 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask_login import login_required
+from app.auth.decorators import roles_required
 from app.modules.clientes.services import ClienteService
 
 cliente_bp = Blueprint('cliente', __name__, url_prefix='/clientes')
 
 @cliente_bp.route("/")
+@login_required
+@roles_required('ADMIN','VENDEDOR')
 def index():
     clientes = ClienteService.listar_clientes()
     return render_template("clientes/index.html", clientes=clientes)
 
 @cliente_bp.route("/crear", methods=["GET", "POST"])
+@login_required
+@roles_required('ADMIN','VENDEDOR')
 def crear():
     if request.method == "POST":
         try:
@@ -26,8 +32,9 @@ def crear():
 
     return render_template("clientes/crear.html")
 
-
 @cliente_bp.route("/editar/<int:id_cliente>", methods=["GET", "POST"])
+@login_required
+@roles_required('ADMIN','VENDEDOR')
 def editar(id_cliente):
     try:
         cliente = ClienteService.obtener_cliente(id_cliente)
@@ -55,6 +62,8 @@ def editar(id_cliente):
 
 
 @cliente_bp.route("/desactivar/<int:id_cliente>")
+@login_required
+@roles_required('ADMIN','VENDEDOR')
 def desactivar(id_cliente):
     try:
         ClienteService.desactivar_cliente(id_cliente)
@@ -67,6 +76,8 @@ def desactivar(id_cliente):
 
 
 @cliente_bp.route("/activar/<int:id_cliente>")
+@login_required
+@roles_required('ADMIN','VENDEDOR')
 def activar(id_cliente):
     try:
         ClienteService.activar_cliente(id_cliente)

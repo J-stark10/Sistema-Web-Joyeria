@@ -72,8 +72,7 @@
         </tr>
       </thead>
       <tbody>
-
-        {% for cliente in clientes %}
+        {% for cliente in clientes|sort(attribute='id_cliente', reverse=True) %}
         <tr
           data-nombre="{{ (cliente.nombre ~ ' ' ~ cliente.ci_nit) | lower }}"
           data-estado="{{ 'activo' if cliente.activo else 'inactivo' }}"
@@ -196,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function () {
   pgClientes = new Paginator({
     tableId:     'tabla-clientes',
     paginatorId: 'pg-clientes',
-    pageSize:    10,
+    pageSize:    6,
   });
 });
 
