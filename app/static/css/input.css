@@ -918,3 +918,109 @@ input:focus, textarea:focus, select:focus {
 .hidden {
   display: none;
 }
+
+
+/* =========================================================
+   PAGINATION CONTROLS
+   ========================================================= */
+
+.pagination-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  padding: 0.75rem 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.pg-info {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.pg-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.pg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1.5px solid var(--color-border-strong);
+  background: var(--color-surface-elevated);
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
+  line-height: 1;
+}
+
+.pg-btn:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.pg-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.pg-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.pg-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  background: transparent;
+  border-color: var(--color-border-subtle);
+}
+
+.pg-btn-active {
+  background: var(--color-primary) !important;
+  color: var(--slate-950) !important;
+  border-color: var(--color-primary) !important;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 35%, transparent), 0 3px 8px rgba(0,0,0,0.3) !important;
+  transform: translateY(-1px);
+}
+
+.pg-btn-active:hover {
+  background: var(--color-primary-hover) !important;
+  border-color: var(--color-primary-hover) !important;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 35%, transparent), 0 4px 14px rgba(0,0,0,0.35) !important;
+}
+
+.pg-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: var(--color-text-subtle);
+  font-size: 1rem;
+  font-weight: 600;
+  user-select: none;
+  letter-spacing: 1px;
+}
+
+.pg-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}

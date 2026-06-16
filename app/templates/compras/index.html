@@ -205,6 +205,7 @@
                     "
 
                     data-estado="{{ compra.estado }}"
+                    data-page-row
 
                 >
 
@@ -420,6 +421,9 @@
 
     </div>
 
+    <!-- Paginación -->
+    <div id="pg-compras" class="pagination-wrapper"></div>
+
 </div>
 
 {% endblock %}
@@ -427,6 +431,16 @@
 {% block extra_scripts %}
 
 <script>
+
+let pgCompras;
+
+document.addEventListener('DOMContentLoaded', function () {
+    pgCompras = new Paginator({
+        tableId:     'tabla-compras',
+        paginatorId: 'pg-compras',
+        pageSize:    10,
+    });
+});
 
 function filtrarCompras() {
 
@@ -440,7 +454,7 @@ function filtrarCompras() {
         .value;
 
     document.querySelectorAll(
-        '#tabla-compras tbody tr[data-busqueda]'
+        '#tabla-compras tbody tr[data-page-row]'
     ).forEach(function(row) {
 
         const coincideTexto =
@@ -459,6 +473,8 @@ function filtrarCompras() {
             : 'none';
 
     });
+
+    if (pgCompras) pgCompras.refresh();
 
 }
 

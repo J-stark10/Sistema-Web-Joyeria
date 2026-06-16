@@ -131,6 +131,7 @@
 
             <tr
                 data-categoria="{{ categoria.nombre_categoria|lower }}"
+                data-page-row
             >
 
                 <td>
@@ -292,12 +293,25 @@
 
 </div>
 
+<!-- Paginación -->
+<div id="pg-categorias" class="pagination-wrapper"></div>
+
 
 {% endblock %}
 
 {% block extra_scripts %}
 
 <script>
+
+let pgCategorias;
+
+document.addEventListener('DOMContentLoaded', function () {
+    pgCategorias = new Paginator({
+        tableId:     'tabla-categorias',
+        paginatorId: 'pg-categorias',
+        pageSize:    10,
+    });
+});
 
 function filtrarCategorias() {
 
@@ -307,7 +321,7 @@ function filtrarCategorias() {
         .toLowerCase();
 
     document.querySelectorAll(
-        '#tabla-categorias tbody tr[data-categoria]'
+        '#tabla-categorias tbody tr[data-page-row]'
     ).forEach(function(row) {
 
         const coincide =
@@ -317,6 +331,8 @@ function filtrarCategorias() {
             coincide ? '' : 'none';
 
     });
+
+    if (pgCategorias) pgCategorias.refresh();
 
 }
 
