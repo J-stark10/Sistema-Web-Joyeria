@@ -62,3 +62,5 @@ Thumbs.db
 .vscode/
 .idea/
 .aider*
+
+extra.py
