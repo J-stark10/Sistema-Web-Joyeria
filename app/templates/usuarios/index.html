@@ -188,6 +188,7 @@
                     data-usuario="{{ usuario.nombre_usuario|lower }}"
                     data-rol="{{ usuario.rol }}"
                     data-estado="{{ 'activo' if usuario.activo else 'inactivo' }}"
+                    data-page-row
 
                 >
 
@@ -380,6 +381,9 @@
 
     </div>
 
+    <!-- Paginación -->
+    <div id="pg-usuarios" class="pagination-wrapper"></div>
+
 </div>
 
 {% endblock %}
@@ -387,6 +391,16 @@
 {% block extra_scripts %}
 
 <script>
+
+let pgUsuarios;
+
+document.addEventListener('DOMContentLoaded', function () {
+    pgUsuarios = new Paginator({
+        tableId:     'tabla-usuarios',
+        paginatorId: 'pg-usuarios',
+        pageSize:    10,
+    });
+});
 
 function filtrarUsuarios() {
 
@@ -404,7 +418,7 @@ function filtrarUsuarios() {
         .value;
 
     document.querySelectorAll(
-        '#tabla-usuarios tbody tr[data-usuario]'
+        '#tabla-usuarios tbody tr[data-page-row]'
     ).forEach(function(row) {
 
         const coincideTexto =
@@ -424,6 +438,8 @@ function filtrarUsuarios() {
             : 'none';
 
     });
+
+    if (pgUsuarios) pgUsuarios.refresh();
 
 }
 

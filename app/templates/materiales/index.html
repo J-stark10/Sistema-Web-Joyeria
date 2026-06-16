@@ -133,6 +133,7 @@
 
                 <tr
                     data-material="{{ material.nombre_material|lower }}"
+                    data-page-row
                 >
 
                     <!-- ID -->
@@ -306,11 +307,24 @@
 
 </div>
 
+    <!-- Paginación -->
+    <div id="pg-materiales" class="pagination-wrapper"></div>
+
 {% endblock %}
 
 {% block extra_scripts %}
 
 <script>
+
+let pgMateriales;
+
+document.addEventListener('DOMContentLoaded', function () {
+    pgMateriales = new Paginator({
+        tableId:     'tabla-materiales',
+        paginatorId: 'pg-materiales',
+        pageSize:    10,
+    });
+});
 
 function filtrarMateriales() {
 
@@ -320,7 +334,7 @@ function filtrarMateriales() {
         .toLowerCase();
 
     document.querySelectorAll(
-        '#tabla-materiales tbody tr[data-material]'
+        '#tabla-materiales tbody tr[data-page-row]'
     ).forEach(function(row) {
 
         const coincide =
@@ -330,6 +344,8 @@ function filtrarMateriales() {
             coincide ? '' : 'none';
 
     });
+
+    if (pgMateriales) pgMateriales.refresh();
 
 }
 
