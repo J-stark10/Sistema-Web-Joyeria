@@ -20,52 +20,25 @@
 </head>
 
 <body>
-  <div class="layout-wrapper" id="app">
+    
+    {% include 'components/modal.html' %}
 
-    <!-- ══════════════════════ NAVBAR ══════════════════════ -->
+    <div class="layout-wrapper" id="app">
+
     {% include 'components/navbar.html' %}
 
     <div class="layout-body">
 
-      <!-- ══════════════════════ SIDEBAR ══════════════════════ -->
       {% include 'components/sidebar.html' %}
 
-      <!-- ══════════════════════ CONTENIDO ══════════════════════ -->
       <main class="layout-main">
         <div class="p-6 lg:p-8 max-w-screen-2xl mx-auto">
-
-          <!-- Alertas flash -->
-          {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-              <div class="mb-6 space-y-2">
-                {% for category, message in messages %}
-                  <div class="alert alert-{{ 'success' if category == 'success' else 'danger' if category == 'error' else category }}" x-data="{ open: true }" x-show="open">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      {% if category == 'success' %}
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                      {% else %}
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      {% endif %}
-                    </svg>
-                    <span class="flex-1">{{ message }}</span>
-                    <button @click="open = false" class="btn-icon" style="width:20px;height:20px;padding:0;border:none;">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </div>
-                {% endfor %}
-              </div>
-            {% endif %}
-          {% endwith %}
-
           {% block content %}{% endblock %}
         </div>
       </main>
 
     </div>
 
-    <!-- Overlay móvil sidebar -->
     <div
       class="fixed inset-0 bg-black/50 z-30 lg:hidden"
       id="sidebar-overlay"
@@ -73,17 +46,71 @@
       onclick="closeSidebar()"
     ></div>
 
-  </div><!-- /layout-wrapper -->
+  </div>
 
+  <div
+      class="fixed top-5 right-5 z-[9999] space-y-3 w-96"
+  >
+      {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+              {% for category, message in messages %}
+
+              <div
+                  x-data="{show:true}"
+                  x-init="setTimeout(() => show=false, 4000)"
+                  x-show="show"
+                  x-transition
+                  class="
+                      flex items-start gap-3
+                      rounded-xl
+                      px-4 py-3
+                      shadow-xl
+                      border
+                      backdrop-blur
+                  "
+
+                  {% if category == 'success' %}
+                      style="background:#052e16;border-color:#166534;color:#86efac"
+                  {% elif category == 'danger' %}
+                      style="background:#450a0a;border-color:#991b1b;color:#fca5a5"
+                  {% elif category == 'warning' %}
+                      style="background:#451a03;border-color:#92400e;color:#fcd34d"
+                  {% else %}
+                      style="background:#172554;border-color:#1d4ed8;color:#93c5fd"
+                  {% endif %}
+              >
+
+                  <div class="flex-1">
+                      {{ message }}
+                  </div>
+
+                  <button
+                      @click="show=false"
+                      class="opacity-70 hover:opacity-100"
+                  >
+                      ✕
+                  </button>
+
+              </div>
+
+              {% endfor %}
+          {% endif %}
+      {% endwith %}
+  </div>
+
+  
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
+  
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
-
+  
   <!-- App JS -->
   <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-
+  
+  <!-- Modal JS -->
+  <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
+  
   {% block extra_scripts %}{% endblock %}
 </body>
 </html>

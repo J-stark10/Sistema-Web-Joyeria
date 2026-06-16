@@ -2,65 +2,292 @@
 
 {% block titulo %}Editar Proveedor{% endblock %}
 
-{% block page_title %}Editar Proveedor{% endblock %}
-
-{% block page_sub %}
-Modificar información del proveedor
-{% endblock %}
-
 {% block content %}
 
-<div class="card">
+<div>
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h1 class="page-title">
+                Editar Proveedor
+            </h1>
+
+            <p class="page-subtitle">
+                Modifique la información registrada del proveedor.
+            </p>
+
+        </div>
+
+    </div>
 
     <form method="POST">
 
-        <div class="form-group">
-            <label>Razón Social</label>
-            <input type="text"
-                   name="nombre_razon_social"
-                   value="{{ proveedor.nombre_razon_social }}"
-                   required>
+        <!-- INFORMACIÓN EMPRESARIAL -->
+
+        <div class="card mb-6">
+
+            <div class="card-header">
+
+                <div class="card-title">
+
+                    Información Empresarial
+
+                </div>
+
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                <div class="form-group">
+
+                    <label>
+                        Razón Social
+                    </label>
+
+                    <div class="form-help">
+                        Nombre legal o comercial del proveedor
+                    </div>
+
+                    <input
+                        type="text"
+                        name="nombre_razon_social"
+                        value="{{ proveedor.nombre_razon_social }}"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        NIT
+                    </label>
+
+                    <div class="form-help">
+                        Número de Identificación Tributaria
+                    </div>
+
+                    <input
+                        type="text"
+                        name="nit"
+                        value="{{ proveedor.nit }}"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="form-group">
-            <label>NIT</label>
-            <input type="text"
-                   name="nit"
-                   value="{{ proveedor.nit }}"
-                   required>
+        <!-- INFORMACIÓN DE CONTACTO -->
+
+        <div class="card mb-6">
+
+            <div class="card-header">
+
+                <div class="card-title">
+
+                    Información de Contacto
+
+                </div>
+
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                <div class="form-group">
+
+                    <label>
+                        Teléfono
+                    </label>
+
+                    <div class="form-help">
+                        Número principal de contacto
+                    </div>
+
+                    <input
+                        type="text"
+                        name="telefono"
+                        value="{{ proveedor.telefono }}"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Correo Electrónico
+                    </label>
+
+                    <div class="form-help">
+                        Correo para comunicación comercial
+                    </div>
+
+                    <input
+                        type="email"
+                        name="correo"
+                        value="{{ proveedor.correo or '' }}"
+                    >
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="form-group">
-            <label>Teléfono</label>
-            <input type="text"
-                   name="telefono"
-                   value="{{ proveedor.telefono }}"
-                   required>
+        <!-- ESTADO -->
+
+        <div class="card mb-6">
+
+            <div class="card-header">
+                <div class="card-title">
+                    Estado del Proveedor
+                </div>
+            </div>
+
+            <div
+                style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    flex-wrap:wrap;
+                    gap:1rem;
+                "
+            >
+
+                <div>
+
+                    <div class="font-medium">
+
+                        {% if proveedor.activo %}
+                            Proveedor Activo
+                        {% else %}
+                            Proveedor Inactivo
+                        {% endif %}
+
+                    </div>
+
+                    <div
+                        class="text-sm"
+                        style="color:var(--color-text-muted);"
+                    >
+
+                        {% if proveedor.activo %}
+                            El proveedor está habilitado para procesos de compra y abastecimiento.
+                        {% else %}
+                            El proveedor está deshabilitado y no aparecerá en compras.
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                <label
+                    style="
+                        display:flex;
+                        align-items:center;
+                        gap:.75rem;
+                        cursor:pointer;
+                    "
+                >
+
+                    <input
+                        type="checkbox"
+                        name="activo"
+                        {% if proveedor.activo %}
+                        checked
+                        {% endif %}
+                    >
+
+                    <span>Activo</span>
+
+                </label>
+
+            </div>
+
         </div>
 
-        <div class="form-group">
-            <label>Correo</label>
-            <input type="email"
-                   name="correo"
-                   value="{{ proveedor.correo or '' }}">
+       <!-- RECOMENDACIÓN -->
+
+        <div class="card mb-6">
+
+            <div class="flex items-center gap-3">
+
+                <div class="avatar-initials">
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor">
+
+                        <path stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+
+                    </svg>
+
+                </div>
+
+                <div>
+
+                    <div class="font-medium">
+                        Recomendación
+                    </div>
+
+                    <div
+                        class="text-sm"
+                        style="color:var(--color-text-muted);"
+                    >
+                        Revise periódicamente los datos del proveedor para evitar problemas en pedidos, facturación y seguimiento de compras.
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="form-group">
-            <label>
-                <input type="checkbox"
-                       name="activo"
-                       {% if proveedor.activo %}checked{% endif %}>
-                Proveedor activo
-            </label>
-        </div>
+        <!-- BOTONES -->
 
-        <button type="submit">
-            Actualizar
+        <div class="form-actions">
+
+            <a
+                href="{{ url_for('proveedor.index') }}"
+                class="btn btn-ghost"
+            >
+                Cancelar
+            </a>
+
+        <button
+        type="submit"
+        class="btn btn-primary"
+        >
+
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="w-4 h-4"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor">
+
+                <path stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"/>
+
+            </svg>
+            Actualizar Proovedor
         </button>
 
-        <a href="{{ url_for('proveedor.index') }}">
-            Cancelar
-        </a>
+        </div>
 
     </form>
 

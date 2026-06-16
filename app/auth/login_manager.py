@@ -1,4 +1,5 @@
 from flask_login import LoginManager
+from app.modules.usuarios.services import UsuarioService
 
 login_manager = LoginManager()
 

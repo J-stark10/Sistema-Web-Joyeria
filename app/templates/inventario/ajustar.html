@@ -1,169 +1,254 @@
-{% extends "base.html" %} {% block title %}Ajuste de Inventario{% endblock %} {%
-block content %}
 
-<div class="breadcrumb">
-  <a href="{{ url_for('inventario.index') }}">Inventario</a>
-  <span class="breadcrumb-sep">/</span>
-  <span class="breadcrumb-current">Nuevo Ajuste</span>
-</div>
+{% extends "base.html" %}
 
-<div style="max-width: 520px; margin: 0 auto">
-  <div class="card">
-    <div class="page-header" style="margin-bottom: 1.5rem">
-      <div>
-        <h2 class="page-title">Ajuste de Stock</h2>
-        <p class="page-subtitle">
-          Registra una entrada o salida manual de inventario.
-        </p>
-      </div>
+{% block titulo %}Ajustar Inventario{% endblock %}
+
+{% block content %}
+
+<div>
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h1 class="page-title">
+                Ajuste de Inventario
+            </h1>
+
+            <p class="page-subtitle">
+                Registre entradas o salidas manuales de stock para mantener el inventario actualizado.
+            </p>
+
+        </div>
+
     </div>
 
     <form method="POST">
-      <div class="form-group">
-        <label class="form-label">Joya</label>
-        <select name="id_joya" required>
-          <option value="">Seleccione una joya</option>
-          {% for joya in joyas %}
-          <option value="{{ joya.id_joya }}">
-            {{ joya.codigo }} — {{ joya.nombre }} (stock: {{ joya.stock_actual
-            }})
-          </option>
-          {% endfor %}
-        </select>
-      </div>
 
-      <div class="form-group">
-        <label class="form-label">Tipo de ajuste</label>
-        <div class="grid grid-cols-2 gap-3 mt-1">
-          <label style="cursor: pointer">
-            <input
-              type="radio"
-              name="tipo_ajuste"
-              value="ENTRADA"
-              required
-              style="display: none"
-              id="radio-entrada"
-            />
-            <div
-              id="btn-entrada"
-              onclick="seleccionarTipo('ENTRADA')"
-              style="
-                border: 1px solid var(--color-border);
-                border-radius: var(--radius-md);
-                padding: 0.75rem 1rem;
-                text-align: center;
-                cursor: pointer;
-                transition: all var(--transition);
-                background: var(--color-surface-hover);
-              "
-            >
-              <div style="font-size: 1.25rem; margin-bottom: 0.25rem">↑</div>
-              <div
-                style="
-                  font-weight: 500;
-                  font-size: 0.875rem;
-                  color: var(--color-success);
-                "
-              >
-                Entrada
-              </div>
-              <div style="font-size: 0.75rem; color: var(--color-text-muted)">
-                Agregar stock
-              </div>
+        <!-- INFORMACIÓN DEL AJUSTE -->
+
+        <div class="card mb-6">
+
+            <div class="card-header">
+                <div class="card-title">
+                    Información del Ajuste
+                </div>
             </div>
-          </label>
-          <label style="cursor: pointer">
-            <input
-              type="radio"
-              name="tipo_ajuste"
-              value="SALIDA"
-              style="display: none"
-              id="radio-salida"
-            />
-            <div
-              id="btn-salida"
-              onclick="seleccionarTipo('SALIDA')"
-              style="
-                border: 1px solid var(--color-border);
-                border-radius: var(--radius-md);
-                padding: 0.75rem 1rem;
-                text-align: center;
-                cursor: pointer;
-                transition: all var(--transition);
-                background: var(--color-surface-hover);
-              "
-            >
-              <div style="font-size: 1.25rem; margin-bottom: 0.25rem">↓</div>
-              <div
-                style="
-                  font-weight: 500;
-                  font-size: 0.875rem;
-                  color: var(--color-danger);
-                "
-              >
-                Salida
-              </div>
-              <div style="font-size: 0.75rem; color: var(--color-text-muted)">
-                Reducir stock
-              </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+                <div class="form-group">
+
+                    <label>
+                        Joya
+                    </label>
+
+                    <div class="form-help">
+                        Seleccione la joya a modificar
+                    </div>
+
+                    <select
+                        id="id_joya"
+                        name="id_joya"
+                        required
+                    >
+
+                        <option value="">
+                            Seleccione una joya...
+                        </option>
+
+                        {% for joya in joyas %}
+
+                        <option value="{{ joya.id_joya }}">
+                            {{ joya.codigo }} - {{ joya.nombre }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Tipo de Ajuste
+                    </label>
+
+                    <div class="form-help">
+                        Defina si el stock aumentará o disminuirá
+                    </div>
+
+                    <select
+                        id="tipo_ajuste"
+                        name="tipo_ajuste"
+                        required
+                    >
+
+                        <option value="ENTRADA">
+                            Entrada de Inventario
+                        </option>
+
+                        <option value="SALIDA">
+                            Salida de Inventario
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Cantidad
+                    </label>
+
+                    <div class="form-help">
+                        Cantidad de unidades
+                    </div>
+
+                    <input
+                        type="number"
+                        id="cantidad"
+                        name="cantidad"
+                        min="1"
+                        placeholder="0"
+                        required
+                    >
+
+                </div>
+
             </div>
-          </label>
+
         </div>
-      </div>
 
-      <div class="form-group">
-        <label class="form-label">Cantidad</label>
-        <input
-          type="number"
-          name="cantidad"
-          min="1"
-          required
-          placeholder="Ej: 5"
-        />
-      </div>
+        <!-- MOTIVO -->
 
-      <div class="form-group">
-        <label class="form-label">Motivo</label>
-        <input
-          type="text"
-          name="motivo"
-          required
-          placeholder="Ej: Corrección de conteo físico"
-        />
-        <p class="form-hint">Describe brevemente el motivo del ajuste.</p>
-      </div>
+        <div class="card mb-6">
 
-      <div class="flex gap-3 justify-end" style="margin-top: 1.5rem">
-        <a href="{{ url_for('inventario.index') }}" class="btn btn-ghost"
-          >Cancelar</a
-        >
-        <button type="submit" class="btn btn-primary">Registrar Ajuste</button>
-      </div>
+            <div class="card-header">
+                <div class="card-title">
+                    Motivo del Ajuste
+                </div>
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    Descripción
+                </label>
+
+                <div class="form-help">
+                    Explique la razón del movimiento de inventario
+                </div>
+
+                <textarea
+                    name="motivo"
+                    rows="5"
+                    placeholder="Ejemplo: Corrección por inventario físico, producto dañado, devolución, reposición de stock..."
+                    required
+                ></textarea>
+
+            </div>
+
+        </div>
+
+        <!-- INFORMACIÓN -->
+
+        <div class="card mb-6">
+
+            <div
+                style="
+                    display:flex;
+                    gap:1rem;
+                    align-items:flex-start;
+                "
+            >
+
+                <div class="avatar-initials">
+
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                    </svg>
+
+                </div>
+
+                <div>
+
+                    <div class="font-medium">
+                        Recomendación
+                    </div>
+
+                    <div
+                        style="
+                            color:var(--color-text-muted);
+                            font-size:.875rem;
+                        "
+                    >
+                        Los ajustes modifican directamente el inventario.
+                        Utilice esta función únicamente para correcciones,
+                        pérdidas, inventarios físicos o regularizaciones
+                        administrativas.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- BOTONES -->
+
+        <div class="form-actions">
+            <a
+                href="{{ url_for('inventario.index') }}"
+                class="btn btn-ghost"
+            >
+                Cancelar
+            </a>
+            
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 13l4 4L19 7"
+                    />
+                </svg>
+
+                Registrar Ajuste
+
+            </button>
+        </div>
+
     </form>
-  </div>
+
 </div>
 
-{% endblock %} {% block extra_scripts %}
-<script>
-  function seleccionarTipo(tipo) {
-    document.getElementById("radio-entrada").checked = tipo === "ENTRADA";
-    document.getElementById("radio-salida").checked = tipo === "SALIDA";
-
-    const entrada = document.getElementById("btn-entrada");
-    const salida = document.getElementById("btn-salida");
-
-    entrada.style.borderColor =
-      tipo === "ENTRADA" ? "var(--color-success)" : "var(--color-border)";
-    entrada.style.background =
-      tipo === "ENTRADA"
-        ? "var(--color-success-bg)"
-        : "var(--color-surface-hover)";
-    salida.style.borderColor =
-      tipo === "SALIDA" ? "var(--color-danger)" : "var(--color-border)";
-    salida.style.background =
-      tipo === "SALIDA"
-        ? "var(--color-danger-bg)"
-        : "var(--color-surface-hover)";
-  }
-</script>
 {% endblock %}
+

@@ -1,94 +1,375 @@
-{% extends "base.html" %} {% block title %}Inventario — Ajustes{% endblock %} {%
-block content %}
+{% extends 'base.html' %}
+
+{% block titulo %}Inventario{% endblock %}
+
+{% block content %}
 
 <div>
-  <div class="page-header">
-    <div>
-      <h1 class="page-title">Ajustes de Inventario</h1>
-      <p class="page-subtitle">
-        Historial de entradas y salidas manuales de stock.
-      </p>
-    </div>
-    <div class="flex gap-2">
-      <a href="{{ url_for('inventario.stock_bajo') }}" class="btn btn-ghost"
-        >Stock bajo</a
-      >
-      <a href="{{ url_for('inventario.ajustar') }}" class="btn btn-primary"
-        >Nuevo Ajuste</a
-      >
-    </div>
-  </div>
 
-  <div class="table-wrapper">
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>Fecha</th>
-          <th>Joya</th>
-          <th>Tipo</th>
-          <th>Cantidad</th>
-          <th>Usuario</th>
-          <th>Motivo</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for ajuste in ajustes %}
-        <tr>
-          <td style="color: var(--color-text-muted); font-size: 0.8125rem">
-            {{ ajuste.fecha_ajuste.strftime('%d/%m/%Y %H:%M') }}
-          </td>
-          <td>
-            <a
-              href="{{ url_for('inventario.historial', id_joya=ajuste.id_joya) }}"
-              style="
-                color: var(--color-primary);
-                font-weight: 500;
-                text-decoration: none;
-              "
-              >{{ ajuste.joya.nombre }}</a
-            >
-          </td>
-          <td>
-            {% if ajuste.tipo_ajuste == 'ENTRADA' %}
-            <span class="badge badge-success">↑ Entrada</span>
-            {% else %}
-            <span class="badge badge-danger">↓ Salida</span>
-            {% endif %}
-          </td>
-          <td class="font-semibold">{{ ajuste.cantidad_ajuste }}</td>
-          <td style="color: var(--color-text-muted); font-size: 0.8125rem">
-            {{ ajuste.usuario.nombre_usuario }}
-          </td>
-          <td
-            style="
-              color: var(--color-text-muted);
-              font-size: 0.8125rem;
-              max-width: 200px;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-            "
-          >
-            {{ ajuste.motivo }}
-          </td>
-        </tr>
-        {% else %}
-        <tr>
-          <td colspan="6">
-            <div class="empty-state">
-              <p style="font-weight: 500; margin-bottom: 0.25rem">
-                Sin ajustes registrados
-              </p>
-              <p style="font-size: 0.875rem">
-                Usa "Nuevo Ajuste" para registrar entradas o salidas de stock.
-              </p>
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h1 class="page-title">
+                Inventario
+            </h1>
+
+            <p class="page-subtitle">
+                Historial de movimientos y ajustes realizados en el inventario.
+            </p>
+
+        </div>
+
+        <div class="flex items-center gap-2">
+
+            <a href="{{ url_for('inventario.stock_bajo') }}"
+               class="btn btn-ghost">
+
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     class="w-4 h-4"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke="currentColor">
+
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M12 9v2m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.34 16c-.77 1.33.19 3 1.73 3z"/>
+
+                </svg>
+
+                Stock Bajo
+
+            </a>
+
+            <a href="{{ url_for('inventario.ajustar') }}"
+               class="btn btn-primary">
+
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     class="w-4 h-4"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke="currentColor">
+
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M12 4v16m8-8H4"/>
+
+                </svg>
+
+                Nuevo Ajuste
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- KPIs -->
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+
+        <div class="kpi-card">
+
+            <div class="text-3xl font-semibold">
+                {{ ajustes|length }}
             </div>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+
+            <div class="text-sm mt-1"
+                 style="color:var(--color-text-muted);">
+                Total movimientos
+            </div>
+
+        </div>
+
+        <div class="kpi-card">
+
+            <div class="text-3xl font-semibold"
+                 style="color:var(--color-success);">
+
+                {{ ajustes
+                    |selectattr('tipo_ajuste','equalto','ENTRADA')
+                    |list
+                    |length }}
+
+            </div>
+
+            <div class="text-sm mt-1"
+                 style="color:var(--color-text-muted);">
+                Entradas
+            </div>
+
+        </div>
+
+        <div class="kpi-card">
+
+            <div class="text-3xl font-semibold"
+                 style="color:var(--color-danger);">
+
+                {{ ajustes
+                    |selectattr('tipo_ajuste','equalto','SALIDA')
+                    |list
+                    |length }}
+
+            </div>
+
+            <div class="text-sm mt-1"
+                 style="color:var(--color-text-muted);">
+                Salidas
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FILTROS -->
+
+    <div class="card mb-6">
+
+        <div class="flex flex-col lg:flex-row gap-3">
+
+            <div class="flex-1">
+
+                <input
+                    type="text"
+                    id="filtro-joya"
+                    placeholder="Buscar joya..."
+                    oninput="filtrarInventario()"
+                >
+
+            </div>
+
+            <select
+                id="filtro-tipo"
+                style="max-width:220px;"
+                onchange="filtrarInventario()"
+            >
+
+                <option value="">
+                    Todos los movimientos
+                </option>
+
+                <option value="ENTRADA">
+                    Entradas
+                </option>
+
+                <option value="SALIDA">
+                    Salidas
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+    <!-- TABLA -->
+
+    <div class="table-wrapper">
+
+        <table
+            class="data-table"
+            id="tabla-inventario"
+        >
+
+            <thead>
+
+                <tr>
+
+                    <th>Fecha</th>
+                    <th>Joya</th>
+                    <th>Tipo</th>
+                    <th>Cantidad</th>
+                    <th>Usuario</th>
+                    <th>Motivo</th>
+                    <th>Acciones</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for ajuste in ajustes %}
+
+                <tr
+                    data-joya="{{ ajuste.joya.nombre|lower }}"
+                    data-tipo="{{ ajuste.tipo_ajuste }}"
+                >
+
+                    <td style="white-space:nowrap;">
+                        {{ ajuste.fecha_ajuste.strftime('%d/%m/%Y %H:%M') }}
+                    </td>
+
+                    <td>
+
+                        <div class="flex items-center gap-3">
+
+                            <div
+                                class="avatar-initials"
+                                style="width:36px;height:36px;"
+                            >
+
+                                {{ ajuste.joya.nombre[:2]|upper }}
+
+                            </div>
+
+                            <span class="font-medium">
+                                {{ ajuste.joya.nombre }}
+                            </span>
+
+                        </div>
+
+                    </td>
+
+                    <td>
+
+                        {% if ajuste.tipo_ajuste == 'ENTRADA' %}
+
+                        <span class="badge badge-success">
+                            ENTRADA
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge badge-danger">
+                            SALIDA
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+                        {{ ajuste.cantidad_ajuste }}
+                    </td>
+
+                    <td>
+                        {{ ajuste.usuario.nombre_usuario }}
+                    </td>
+
+                    <td
+                        style="
+                            max-width:250px;
+                            overflow:hidden;
+                            text-overflow:ellipsis;
+                        "
+                    >
+                        {{ ajuste.motivo }}
+                    </td>
+
+                    <td>
+
+                        <a
+                            href="{{ url_for('inventario.historial', id_joya=ajuste.id_joya) }}"
+                            class="btn btn-ghost btn-sm"
+                        >
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="w-4 h-4"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor">
+
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M9 17v-2a4 4 0 014-4h8m0 0l-3-3m3 3l-3 3"/>
+
+                            </svg>
+
+                            Historial
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="7">
+
+                        <div class="empty-state">
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="empty-state-icon"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor">
+
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="1.5"
+                                      d="M20 13V7a2 2 0 00-2-2h-3V3H9v2H6a2 2 0 00-2 2v6m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0H4"/>
+
+                            </svg>
+
+                            <p style="font-weight:600;margin-bottom:.25rem;">
+                                No existen movimientos registrados
+                            </p>
+
+                            <p style="font-size:.875rem;color:var(--color-text-muted);">
+                                Los ajustes de inventario aparecerán aquí.
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
 </div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+
+<script>
+
+function filtrarInventario() {
+
+    const joya =
+        document.getElementById('filtro-joya')
+        .value
+        .toLowerCase();
+
+    const tipo =
+        document.getElementById('filtro-tipo')
+        .value;
+
+    document.querySelectorAll(
+        '#tabla-inventario tbody tr[data-joya]'
+    ).forEach(function(row){
+
+        const matchJoya =
+            row.dataset.joya.includes(joya);
+
+        const matchTipo =
+            !tipo || row.dataset.tipo === tipo;
+
+        row.style.display =
+            (matchJoya && matchTipo)
+            ? ''
+            : 'none';
+
+    });
+
+}
+
+</script>
 
 {% endblock %}

@@ -89,7 +89,7 @@ def editar(id_joya):
 def desactivar(id_joya):
     try:
         JoyaService.desactivar_joya(id_joya)
-        flash("Joya desactivada correctamente.", "warning")
+        flash("Joya desactivada correctamente.", "success")
 
     except ValueError as e:
         flash(str(e), "danger")

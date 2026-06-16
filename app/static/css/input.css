@@ -406,7 +406,7 @@ input:focus, textarea:focus, select:focus {
 .alert-info    { background: var(--color-info-bg);    color: var(--color-info-text);    border-color: var(--color-info);    }
 
 /* ── Modal ── */
-.modal-backdrop {
+/* .modal-backdrop {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
@@ -442,7 +442,7 @@ input:focus, textarea:focus, select:focus {
   align-items: center;
   justify-content: flex-end;
   gap: 0.5rem;
-}
+} */
 
 /* ── Form ── */
 .form-group { margin-bottom: 1.25rem; }
@@ -627,92 +627,66 @@ input:focus, textarea:focus, select:focus {
    ========================================================== */
 
 
-.sales-page{
+.sales-layout{
     display:grid;
-    grid-template-columns: 3fr 1fr;
-    gap:1.5rem;
-}
-
-.sales-main{
-    display:flex;
-    flex-direction:column;
+    grid-template-columns:2fr 340px;
     gap:1.5rem;
 }
 
 .sales-sidebar{
     position:sticky;
     top:1rem;
-    height:max-content;
 }
 
-.catalog-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-    gap:1rem;
-}
-
-.product-card{
-    border:1px solid var(--color-border);
-    border-radius:12px;
-    padding:1rem;
-    background:var(--color-surface);
-}
-
-.product-code{
-    font-size:.8rem;
-    color:var(--color-text-muted);
-}
-
-.product-name{
-    font-weight:600;
-    margin:.5rem 0;
-}
-
-.product-stock{
-    font-size:.875rem;
-}
-
-.product-price{
-    font-size:1.25rem;
-    font-weight:700;
-    margin:1rem 0;
-}
-
-.customer-card{
+.client-preview{
     display:flex;
-    gap:1rem;
-    margin-top:1rem;
+    flex-direction:column;
+    gap:.75rem;
 }
 
-.customer-name{
-    font-weight:600;
+.client-item{
+    padding:.75rem;
+    border:1px solid var(--color-border);
+    border-radius:var(--radius-md);
 }
 
-.customer-meta{
+.client-label{
+    font-size:.75rem;
     color:var(--color-text-muted);
-    font-size:.875rem;
+    margin-bottom:.25rem;
 }
 
-.summary-total{
-    font-size:2.5rem;
-    font-weight:700;
+.client-value{
+    font-weight:500;
+}
+
+.sales-summary{
     text-align:center;
+}
+
+.sales-summary-total{
+    font-size:2rem;
+    font-weight:700;
     color:var(--color-primary);
 }
 
-.summary-label{
-    text-align:center;
+.sales-summary-meta{
+    margin-top:.5rem;
     color:var(--color-text-muted);
-    margin-bottom:.5rem;
+    font-size:.875rem;
 }
 
-.summary-row{
-    display:flex;
-    justify-content:space-between;
-    margin:.75rem 0;
+@media (max-width:1024px){
+
+    .sales-layout{
+        grid-template-columns:1fr;
+    }
+
+    .sales-sidebar{
+        position:static;
+    }
+
 }
-
-
 
 
 
@@ -810,4 +784,137 @@ input:focus, textarea:focus, select:focus {
 
 .submenu-open {
     max-height: 500px !important;
+}
+
+
+
+
+
+@keyframes progress {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0%;
+    }
+}
+
+.animate-progress {
+    animation: progress 5s linear forwards;
+}
+
+
+
+
+
+
+/* =========================
+   BACKDROP (más suave)
+========================= */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+
+  /* fondo más suave (no cambia percepción del tema) */
+  background: rgba(0, 0, 0, 0.35);
+
+  /* blur más ligero */
+  backdrop-filter: blur(4px);
+
+  /* mejora compatibilidad visual */
+  -webkit-backdrop-filter: blur(4px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 1rem;
+}
+
+/* =========================
+   MODAL CONTAINER
+========================= */
+.modal {
+  width: 100%;
+  max-width: 460px;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.35);
+  overflow: hidden;
+  transform-origin: center;
+}
+
+/* animación elegante */
+.modal-animate {
+  transform: translateY(10px) scale(0.96);
+  opacity: 0;
+  transition: all 0.18s ease;
+}
+
+.modal-backdrop:not(.hidden) .modal-animate {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+/* =========================
+   HEADER
+========================= */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+#modal-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+
+/* close button moderno */
+.modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.modal-close:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+/* =========================
+   BODY
+========================= */
+.modal-body {
+  padding: 1.25rem;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+/* =========================
+   FOOTER
+========================= */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--color-border);
+}
+
+
+.hidden {
+  display: none;
 }

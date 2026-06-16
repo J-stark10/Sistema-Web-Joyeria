@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
-
 from app.modules.usuarios.services import UsuarioService
 
 usuario_bp = Blueprint('usuario', __name__, url_prefix='/usuarios')
@@ -26,15 +25,18 @@ def crear():
 
     return render_template("usuarios/crear.html")
 
-@usuario_bp.route( "/editar/<int:id_usuario>", methods=["GET", "POST"])
+@usuario_bp.route("/editar/<int:id_usuario>", methods=["GET", "POST"])
 def editar(id_usuario):
-    usuario = UsuarioService.obtener_usuario( id_usuario)
 
-    if not usuario:
-        flash( "Usuario no encontrado.","danger")
-        return redirect( url_for("usuario.index"))
+    try:
+        usuario = UsuarioService.obtener_usuario(id_usuario)
+
+    except ValueError as e:
+        flash(str(e), "danger")
+        return redirect(url_for("usuario.index"))
 
     if request.method == "POST":
+
         try:
             UsuarioService.actualizar_usuario(
                 id_usuario=id_usuario,
@@ -43,21 +45,29 @@ def editar(id_usuario):
                 activo="activo" in request.form
             )
 
-            flash("Usuario actualizado correctamente.","success")
+            password = request.form.get("password")
+
+            if password and password.strip():
+                UsuarioService.cambiar_password(
+                    id_usuario,
+                    password
+                )
+
+            flash("Usuario actualizado correctamente.", "success")
             return redirect(url_for("usuario.index"))
 
         except ValueError as e:
-            flash(str(e),"danger")
+            flash(str(e), "danger")
 
-    return render_template("usuarios/editar.html",usuario=usuario)
+    return render_template("usuarios/editar.html", usuario=usuario)
 
 @usuario_bp.route("/password/<int:id_usuario>",methods=["GET", "POST"])
 def cambiar_password(id_usuario):
-    usuario = UsuarioService.obtener_usuario(id_usuario)
-
-    if not usuario:
-        flash("Usuario no encontrado.","danger")
-        return redirect( url_for("usuario.index"))
+    try:
+        usuario = UsuarioService.obtener_usuario(id_usuario)
+    except ValueError as e:
+        flash(str(e), "danger")
+        return redirect(url_for("usuario.index"))
 
     if request.method == "POST":
         password = request.form["password"]
@@ -70,7 +80,7 @@ def cambiar_password(id_usuario):
 
     return render_template("usuarios/cambiar_password.html",usuario=usuario)
 
-@usuario_bp.route("/desactivar/<int:id_usuario>", methods=["POST"])
+@usuario_bp.route("/desactivar/<int:id_usuario>")
 def desactivar(id_usuario):
     try:
         UsuarioService.desactivar_usuario(id_usuario)
@@ -82,7 +92,7 @@ def desactivar(id_usuario):
     return redirect(url_for("usuario.index"))
 
 
-@usuario_bp.route("/activar/<int:id_usuario>", methods=["POST"])
+@usuario_bp.route("/activar/<int:id_usuario>")
 def activar(id_usuario):
     try:
         UsuarioService.activar_usuario(id_usuario)
@@ -93,10 +103,61 @@ def activar(id_usuario):
 
     return redirect(url_for("usuario.index"))
 
-@usuario_bp.route("/perfil")
-def perfil():
-    return render_template('/usuarios/perfil.html')
 
-@usuario_bp.route("/configuracion")
-def configuracion():
-    return render_template('/usuarios/configuracion.html')
+
+from flask_login import login_required, current_user
+
+@usuario_bp.route("/perfil", methods=["GET", "POST"])
+@login_required
+def perfil():
+
+    if request.method == "POST":
+
+        password_actual = request.form.get("password_actual", "").strip()
+        password_nueva = request.form.get("password_nueva", "").strip()
+        password_confirmacion = request.form.get("password_confirmacion", "").strip()
+
+        try:
+
+            if not password_actual:
+                raise ValueError(
+                    "Debe ingresar su contraseña actual."
+                )
+
+            if not password_nueva:
+                raise ValueError(
+                    "Debe ingresar una nueva contraseña."
+                )
+
+            if password_nueva != password_confirmacion:
+                raise ValueError(
+                    "La confirmación de contraseña no coincide."
+                )
+
+            if not current_user.check_password(password_actual):
+                raise ValueError(
+                    "La contraseña actual es incorrecta."
+                )
+
+            if len(password_nueva) < 6:
+                raise ValueError(
+                    "La nueva contraseña debe tener al menos 6 caracteres."
+                )
+
+            current_user.update_password(password_nueva)
+
+            flash(
+                "La contraseña fue actualizada correctamente.",
+                "success"
+            )
+
+            return redirect(
+                url_for("usuario.perfil")
+            )
+
+        except ValueError as e:
+            flash(str(e), "danger")
+
+    return render_template(
+        "usuarios/perfil.html"
+    )
