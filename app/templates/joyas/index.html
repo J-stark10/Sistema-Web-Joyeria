@@ -365,25 +365,36 @@
 
                             {% if joya.activo %}
 
-                            <a
-                                href="{{ url_for('joya.desactivar', id_joya=joya.id_joya) }}"
-                                class="btn btn-ghost btn-sm"
-                                style="color:var(--color-warning-text);"
-                                onclick="return confirm('¿Desactivar joya {{ joya.nombre }}?')"
-                            >
-
+                            <a href="#"
+                            class="btn btn-ghost btn-sm"
+                            style="color:var(--color-warning-text);"
+                            onclick="openConfirmModal({
+                                    title: 'Desactivar joya',
+                                    message: '¿Deseas desactivar la joya {{ joya.nombre }}?',
+                                    type: 'danger',
+                                    confirmUrl: '{{ url_for("joya.desactivar", id_joya=joya.id_joya) }}'
+                            }); return false;">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                            </svg>
                                 Desactivar
 
                             </a>
 
                             {% else %}
 
-                            <a
-                                href="{{ url_for('joya.activar', id_joya=joya.id_joya) }}"
-                                class="btn btn-ghost btn-sm"
-                                style="color:var(--color-success);"
-                            >
-
+                            <a href="#"
+                            class="btn btn-ghost btn-sm"
+                            style="color:var(--color-success);"
+                            onclick="openConfirmModal({
+                                    title: 'Activar joya',
+                                    message: '¿Deseas activar nuevamente la joya {{ joya.nombre }}?',
+                                    type: 'primary',
+                                    confirmUrl: '{{ url_for("joya.activar", id_joya=joya.id_joya) }}'
+                            }); return false;">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
                                 Activar
 
                             </a>

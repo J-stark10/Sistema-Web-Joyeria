@@ -4,6 +4,9 @@ from app.extensions import *
 
 from app.auth.login_manager import (init_login_manager)
 
+from datetime import datetime, timedelta
+from flask import session, redirect, url_for, flash
+from flask_login import current_user, logout_user
 
 def create_app(config_name="default"):
     app = Flask(__name__)
@@ -40,5 +43,29 @@ def create_app(config_name="default"):
     app.register_blueprint(venta_bp)
     app.register_blueprint(inventario_bp)
     app.register_blueprint(reporte_bp)
+
+    @app.before_request
+    def verificar_inactividad():
+
+        if not current_user.is_authenticated:
+            return
+
+        ahora = datetime.utcnow()
+
+        ultima_actividad = session.get("ultima_actividad")
+
+        if ultima_actividad:
+
+            ultima_actividad = datetime.fromisoformat(ultima_actividad)
+
+            if ahora - ultima_actividad > timedelta(minutes=30):
+
+                logout_user()
+                session.clear()
+                flash("La sesión expiró por inactividad.","warning")
+
+                return redirect(url_for("auth.login"))
+
+        session["ultima_actividad"] = ahora.isoformat()
 
     return app

@@ -17,7 +17,7 @@ def crear():
                 nombre_categoria=request.form["nombre_categoria"]
             )
 
-            flash("Categoría creada correctamente.", "success")
+            flash("Categoria registrada correctamente.", "success")
             return redirect(url_for("categoria.index"))
 
         except ValueError as e:
@@ -41,7 +41,7 @@ def editar(id_categoria):
                 id_categoria=id_categoria,
                 nombre_categoria=request.form["nombre_categoria"]
             )
-            flash("Categoría actualizada correctamente.", "success")
+            flash("Categoria actualizada correctamente.", "success")
             return redirect(url_for("categoria.index"))
 
         except ValueError as e:
@@ -53,7 +53,7 @@ def editar(id_categoria):
 def eliminar(id_categoria):
     try:
         CategoriaService.eliminar_categoria(id_categoria)
-        flash("Categoría eliminada correctamente.", "warning")
+        flash("Categoria eliminada correctamente.", "success")
 
     except ValueError as e:
         flash(str(e), "danger")

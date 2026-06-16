@@ -69,9 +69,40 @@ def detalle(id_compra):
 def anular(id_compra):
     try:
         CompraService.anular_compra(id_compra)
-        flash("Compra anulada correctamente.", "warning")
+        flash("Compra anulada correctamente.", "success")
 
     except ValueError as e:
         flash(str(e), "danger")
 
     return redirect(url_for("compra.index"))
+
+
+from flask import jsonify
+from sqlalchemy import or_
+
+@compra_bp.route("/buscar-joya")
+def buscar_joya():
+
+    q = request.args.get("q", "").strip()
+
+    if not q:
+        return jsonify([])
+
+    joyas = Joya.query.filter(
+        Joya.activo == True,
+        or_(
+            Joya.codigo.ilike(f"%{q}%"),
+            Joya.nombre.ilike(f"%{q}%")
+        )
+    ).limit(10).all()
+
+    return jsonify([
+        {
+            "id": j.id_joya,
+            "codigo": j.codigo,
+            "nombre": j.nombre,
+            "stock": j.stock_actual,
+            "precio": float(j.precio_compra or 0)
+        }
+        for j in joyas
+    ])

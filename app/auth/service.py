@@ -1,11 +1,13 @@
-from app.modules.usuarios.models import Usuario
-from werkzeug.security import check_password_hash
+from app.modules.usuarios.services import UsuarioService
 
 class AuthService:
 
     @staticmethod
     def autenticar(nombre_usuario, password):
-        usuario = Usuario.get_by_username(nombre_usuario.strip())
+
+        usuario = UsuarioService.obtener_por_username(
+            nombre_usuario.strip()
+        )
 
         if not usuario:
             return None
@@ -13,7 +15,7 @@ class AuthService:
         if not usuario.activo:
             return "INACTIVO"
 
-        if not check_password_hash(usuario.contrasena_hash, password):
+        if not usuario.check_password(password):
             return None
 
         return usuario

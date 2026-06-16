@@ -116,14 +116,14 @@
           />
         {% else %}
           <div class="avatar-initials" style="width:30px;height:30px;font-size:0.6875rem;">
-            {{ current_user.nombre[:2].upper() if current_user.nombre else 'US' }}
+            {{ current_user.nombre_usuario[:2].upper() if current_user.nombre_usuario else 'US' }}
           </div>
         {% endif %}
 
         <!-- Info usuario (oculto en sidebar colapsado no aplica aquí) -->
         <div style="text-align:left;min-width:0;line-height:1.25;" class="hidden sm:block">
           <p style="font-size:0.8125rem;font-weight:500;color:var(--color-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;">
-            {{ current_user.nombre | truncate(16, True, '') if current_user.nombre else 'Usuario' }}
+            {{ current_user.nombre_usuario | truncate(16, True, '') if current_user.nombre_usuario else 'Usuario' }}
           </p>
           <p style="font-size:0.6875rem;color:var(--color-text-muted);white-space:nowrap;">
             {% if current_user.rol == 'admin' %}
@@ -187,14 +187,6 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
           Mi perfil
-        </a>
-
-        <a href="{{ url_for('usuario.configuracion') }}" class="dropdown-item">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-          Configuración
         </a>
 
         <div class="dropdown-divider"></div>

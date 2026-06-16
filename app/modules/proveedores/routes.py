@@ -60,7 +60,7 @@ def editar(id_proveedor):
 def desactivar(id_proveedor):
     try:
         ProveedorService.desactivar_proveedor(id_proveedor)
-        flash("Proveedor desactivado.", "warning")
+        flash("Proveedor desactivado correctamente.", "success")
 
     except ValueError as e:
         flash(str(e), "danger")
@@ -71,7 +71,7 @@ def desactivar(id_proveedor):
 def activar(id_proveedor):
     try:
         ProveedorService.activar_proveedor(id_proveedor)
-        flash("Proveedor activado.", "success")
+        flash("Proveedor activado correctamente.", "success")
 
     except ValueError as e:
         flash(str(e), "danger")

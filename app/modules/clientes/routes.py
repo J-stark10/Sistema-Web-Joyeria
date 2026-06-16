@@ -8,7 +8,6 @@ def index():
     clientes = ClienteService.listar_clientes()
     return render_template("clientes/index.html", clientes=clientes)
 
-
 @cliente_bp.route("/crear", methods=["GET", "POST"])
 def crear():
     if request.method == "POST":
@@ -30,11 +29,10 @@ def crear():
 
 @cliente_bp.route("/editar/<int:id_cliente>", methods=["GET", "POST"])
 def editar(id_cliente):
-
-    cliente = ClienteService.obtener_cliente(id_cliente)
-
-    if not cliente:
-        flash("Cliente no encontrado.", "danger")
+    try:
+        cliente = ClienteService.obtener_cliente(id_cliente)
+    except ValueError as e:
+        flash(str(e), "danger")
         return redirect(url_for("cliente.index"))
 
     if request.method == "POST":
@@ -58,10 +56,9 @@ def editar(id_cliente):
 
 @cliente_bp.route("/desactivar/<int:id_cliente>")
 def desactivar(id_cliente):
-
     try:
         ClienteService.desactivar_cliente(id_cliente)
-        flash("Cliente desactivado.", "warning")
+        flash("Cliente desactivado correctamente.", "success")
 
     except ValueError as e:
         flash(str(e), "danger")
@@ -71,10 +68,9 @@ def desactivar(id_cliente):
 
 @cliente_bp.route("/activar/<int:id_cliente>")
 def activar(id_cliente):
-
     try:
         ClienteService.activar_cliente(id_cliente)
-        flash("Cliente activado.", "success")
+        flash("Cliente activado correctamente.", "success")
 
     except ValueError as e:
         flash(str(e), "danger")

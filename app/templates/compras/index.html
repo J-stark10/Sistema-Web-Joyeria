@@ -340,10 +340,15 @@
                             {% if compra.estado == 'COMPLETADA' %}
 
                             <a
-                                href="{{ url_for('compra.anular', id_compra=compra.id_compra) }}"
+                                href="#"
                                 class="btn btn-ghost btn-sm"
                                 style="color:var(--color-danger);"
-                                onclick="return confirm('¿Desea anular esta compra?')"
+                                onclick="openConfirmModal({
+                                    title: 'Anular compra',
+                                    message: '¿Deseas anular la compra #{{ compra.id_compra }}? Esta acción no podrá revertirse y afectará el inventario.',
+                                    confirmUrl: '{{ url_for('compra.anular', id_compra=compra.id_compra) }}',
+                                    type: 'danger'
+                                }); return false;"
                             >
 
                                 <svg xmlns="http://www.w3.org/2000/svg"

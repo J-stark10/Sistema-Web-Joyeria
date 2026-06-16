@@ -1,4 +1,5 @@
 from app.extensions import db
+from sqlalchemy import func
 
 class Joya(db.Model):
     __tablename__ = 'joya'
@@ -24,10 +25,7 @@ class Joya(db.Model):
     ajustes = db.relationship('AjusteInventario', backref='joya', lazy=True)
     categoria = db.relationship('Categoria', back_populates='joyas', lazy=True)
 
-    # ==========================
     # PROPIEDADES
-    # ==========================
-
     @property
     def stock_bajo(self):
         return self.stock_actual <= self.stock_minimo
@@ -47,10 +45,7 @@ class Joya(db.Model):
 
         return (self.margen_utilidad / float(self.precio_venta)) * 100
 
-    # ==========================
     # CRUD
-    # ==========================
-
     def save(self):
         db.session.add(self)
         db.session.commit()
@@ -69,10 +64,10 @@ class Joya(db.Model):
     ):
 
         if codigo is not None:
-            self.codigo = codigo
+            self.codigo = codigo.strip()
 
         if nombre is not None:
-            self.nombre = nombre
+            self.nombre = nombre.strip()
 
         if id_categoria is not None:
             self.id_categoria = id_categoria
@@ -106,21 +101,30 @@ class Joya(db.Model):
         db.session.commit()
 
     def aumentar_stock(self, cantidad):
+        if cantidad < 0:
+            raise ValueError("La cantidad a incrementar no puede ser negativa.")
+
         self.stock_actual += cantidad
         db.session.commit()
 
     def disminuir_stock(self, cantidad):
+        if cantidad < 0:
+            raise ValueError("La cantidad a descontar no puede ser negativa.")
+
+        if cantidad > self.stock_actual:
+            raise ValueError("La cantidad excede el stock disponible.")
+
         self.stock_actual -= cantidad
         db.session.commit()
 
-    def actualizar_stock(self,nuevo_stock):
+    def actualizar_stock(self, nuevo_stock):
+        if nuevo_stock < 0:
+            raise ValueError("El stock no puede ser negativo.")
+
         self.stock_actual = nuevo_stock
         db.session.commit()
 
-    # ==========================
     # CONSULTAS
-    # ==========================
-
     @staticmethod
     def get_all():
         return Joya.query.order_by(Joya.nombre).all()
@@ -135,15 +139,12 @@ class Joya(db.Model):
 
     @staticmethod
     def get_by_codigo(codigo):
-        return Joya.query.filter_by(codigo=codigo).first()
+        return Joya.query.filter(func.lower(Joya.codigo) == codigo.lower()).first()
     
     @staticmethod
     def get_stock_bajo():
         return Joya.query.filter(Joya.stock_actual <= Joya.stock_minimo, Joya.activo == True).all()
 
-    # ==========================
     # REPRESENTACIÓN
-    # ==========================
-
     def __repr__(self):
         return f'<Joya {self.codigo} | {self.nombre} | Stock: {self.stock_actual}>'
