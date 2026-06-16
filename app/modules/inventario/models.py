@@ -1,4 +1,8 @@
 from app.extensions import db
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+BOLIVIA_TZ = ZoneInfo("America/La_Paz")
 
 class AjusteInventario(db.Model):
     __tablename__ = 'ajuste_inventario'
@@ -7,15 +11,12 @@ class AjusteInventario(db.Model):
     id_joya = db.Column(db.Integer, db.ForeignKey('joya.id_joya'), nullable=False)
     id_usuario = db.Column(db.Integer, db.ForeignKey('usuario.id_usuario'), nullable=False)
 
-    fecha_ajuste = db.Column(db.DateTime, server_default=db.func.now())
+    fecha_ajuste = db.Column(db.DateTime, default=lambda: datetime.now(BOLIVIA_TZ))
     cantidad_ajuste = db.Column(db.Integer, nullable=False)
     motivo = db.Column(db.Text)
     tipo_ajuste = db.Column(db.String(20), nullable=False)
 
-    # ==========================
     # CRUD
-    # ==========================
-
     def save(self):
         db.session.add(self)
         db.session.commit()
@@ -32,9 +33,6 @@ class AjusteInventario(db.Model):
     def get_by_joya(id_joya):
         return AjusteInventario.query.filter_by(id_joya=id_joya).order_by(AjusteInventario.fecha_ajuste.desc()).all()
 
-    # ==========================
     # REPRESENTACIÓN
-    # ==========================
-
     def __repr__(self):
         return f'<AjusteInventario joya#{self.id_joya} | {self.tipo_ajuste} | cant: {self.cantidad_ajuste}>'

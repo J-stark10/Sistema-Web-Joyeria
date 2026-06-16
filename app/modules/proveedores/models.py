@@ -1,4 +1,5 @@
 from app.extensions import db
+from sqlalchemy import func
 
 class Proveedor(db.Model):
     __tablename__ = 'proveedor'
@@ -12,10 +13,7 @@ class Proveedor(db.Model):
 
     compras = db.relationship('Compra', back_populates='proveedor', lazy=True)
 
-    # ==========================
     # CRUD
-    # ==========================
-
     def save(self):
         db.session.add(self)
         db.session.commit()
@@ -23,17 +21,13 @@ class Proveedor(db.Model):
     def update(self, nombre_razon_social=None, nit=None, telefono=None, correo=None, activo=None):
 
         if nombre_razon_social is not None:
-            self.nombre_razon_social = nombre_razon_social
-
+            self.nombre_razon_social = nombre_razon_social.strip()
         if nit is not None:
-            self.nit = nit
-
+            self.nit = nit.strip()
         if telefono is not None:
-            self.telefono = telefono
-
+            self.telefono = telefono.strip()
         if correo is not None:
-            self.correo = correo
-
+            self.correo = correo.strip()
         if activo is not None:
             self.activo = activo
 
@@ -47,10 +41,7 @@ class Proveedor(db.Model):
         self.activo = True
         db.session.commit()
 
-    # ==========================
     # CONSULTAS
-    # ==========================
-
     @staticmethod
     def get_all():
         return Proveedor.query.order_by(Proveedor.nombre_razon_social).all()
@@ -65,11 +56,8 @@ class Proveedor(db.Model):
 
     @staticmethod
     def get_by_nit(nit):
-        return Proveedor.query.filter_by(nit=nit).first()
+        return Proveedor.query.filter(func.lower(Proveedor.nit) == nit.lower()).first()
 
-    # ==========================
     # REPRESENTACIÓN
-    # ==========================
-
     def __repr__(self):
         return f'<Proveedor {self.nombre_razon_social} | NIT: {self.nit}>'

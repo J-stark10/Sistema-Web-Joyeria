@@ -7,7 +7,6 @@
 <div>
 
     <!-- HEADER -->
-
     <div class="page-header">
 
         <div>
@@ -24,21 +23,20 @@
 
     </div>
 
-    <!-- FORMULARIO -->
+    <form method="POST">
 
-    <div class="card card-form">
+        <!-- INFORMACIÓN PERSONAL -->
+        <div class="card mb-6">
 
-        <form method="POST">
+            <div class="card-header">
 
-            <!-- DATOS DEL CLIENTE -->
+                <div class="card-title">
+                    Información Personal
+                </div>
 
-            <div
-                style="
-                    display:grid;
-                    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-                    gap:1rem;
-                "
-            >
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
                 <div class="form-group">
 
@@ -46,12 +44,15 @@
                         Nombre Completo
                     </label>
 
+                    <div class="form-help">
+                        Nombre o razón social del cliente
+                    </div>
+
                     <input
                         id="nombre"
                         type="text"
                         name="nombre"
                         value="{{ cliente.nombre }}"
-                        placeholder="Ej. Juan Pérez"
                         required
                     >
 
@@ -63,16 +64,36 @@
                         CI / NIT
                     </label>
 
+                    <div class="form-help">
+                        Documento de identificación o NIT
+                    </div>
+
                     <input
                         id="ci_nit"
                         type="text"
                         name="ci_nit"
                         value="{{ cliente.ci_nit }}"
-                        placeholder="Ej. 78541236"
                         required
                     >
 
                 </div>
+
+            </div>
+
+        </div>
+
+        <!-- INFORMACIÓN DE CONTACTO -->
+        <div class="card mb-6">
+
+            <div class="card-header">
+
+                <div class="card-title">
+                    Información de Contacto
+                </div>
+
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
                 <div class="form-group">
 
@@ -80,12 +101,15 @@
                         Teléfono
                     </label>
 
+                    <div class="form-help">
+                        Número principal de contacto
+                    </div>
+
                     <input
                         id="telefono"
                         type="text"
                         name="telefono"
                         value="{{ cliente.telefono or '' }}"
-                        placeholder="Ej. 70012345"
                     >
 
                 </div>
@@ -96,185 +120,148 @@
                         Dirección
                     </label>
 
-                    <input
+                    <div class="form-help">
+                        Dirección física del cliente
+                    </div>
+
+                    <textarea
                         id="direccion"
-                        type="text"
                         name="direccion"
-                        value="{{ cliente.direccion or '' }}"
-                        placeholder="Ej. Av. Principal #123"
-                    >
+                        rows="3"
+                    >{{ cliente.direccion or '' }}</textarea>
 
                 </div>
 
             </div>
 
-            <!-- ESTADO -->
+        </div>
 
-            <div
-                class="card"
-                style="
-                    margin-top:1rem;
-                    margin-bottom:1rem;
-                    background:var(--color-surface-secondary);
-                    border:1px solid var(--color-border);
-                "
-            >
+        <!-- ESTADO -->
+        <div class="card mb-6">
 
-                <div
-                    style="
-                        display:flex;
-                        justify-content:space-between;
-                        align-items:center;
-                    "
-                >
+            <div class="card-header">
 
-                    <div>
+                <div class="card-title">
+                    Estado del Cliente
+                </div>
 
-                        <div
-                            style="
-                                font-weight:600;
-                                margin-bottom:.25rem;
-                            "
-                        >
-                            Estado del Cliente
-                        </div>
+            </div>
 
-                        <div
-                            style="
-                                font-size:.875rem;
-                                color:var(--color-text-muted);
-                            "
-                        >
-                            Active o desactive el cliente según corresponda.
-                        </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
 
-                    </div>
+                <div>
 
-                    <label
-                        style="
-                            display:flex;
-                            align-items:center;
-                            gap:.5rem;
-                            cursor:pointer;
-                        "
-                    >
+                    <div class="font-medium">
 
-                        <input
-                            id="activo"
-                            type="checkbox"
-                            name="activo"
-                            {% if cliente.activo %}checked{% endif %}
-                        >
-
-                        <span>
+                        {% if cliente.activo %}
                             Cliente Activo
-                        </span>
+                        {% else %}
+                            Cliente Inactivo
+                        {% endif %}
 
-                    </label>
+                    </div>
+
+                    <div class="text-sm" style="color:var(--color-text-muted);">
+
+                        {% if cliente.activo %}
+                            El cliente está habilitado para operaciones de venta.
+                        {% else %}
+                            El cliente está deshabilitado en el sistema.
+                        {% endif %}
+
+                    </div>
 
                 </div>
 
+                <label style="display:flex; align-items:center; gap:.75rem; cursor:pointer;">
+
+                    <input
+                        type="checkbox"
+                        name="activo"
+                        {% if cliente.activo %}checked{% endif %}
+                    >
+
+                    <span>Activo</span>
+
+                </label>
+
             </div>
 
-            <!-- INFORMACIÓN -->
+        </div>
 
-            <div
-                class="card"
-                style="
-                    margin-bottom:1.5rem;
-                    background:var(--color-surface-secondary);
-                    border:1px solid var(--color-border);
-                "
-            >
+        <!-- RECOMENDACIÓN -->
 
-                <div
-                    style="
-                        display:flex;
-                        align-items:flex-start;
-                        gap:.75rem;
-                    "
-                >
+        <div class="card mb-6">
+
+            <div class="flex items-center gap-3">
+
+                <div class="avatar-initials">
 
                     <svg xmlns="http://www.w3.org/2000/svg"
-                         width="22"
-                         height="22"
-                         fill="none"
-                         viewBox="0 0 24 24"
-                         stroke="currentColor"
-                         style="color:var(--color-primary);">
+                        width="18"
+                        height="18"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor">
 
                         <path stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
 
                     </svg>
 
-                    <div>
+                </div>
 
-                        <div
-                            style="
-                                font-weight:600;
-                                margin-bottom:.25rem;
-                            "
-                        >
-                            Recomendación
-                        </div>
+                <div>
 
-                        <div
-                            style="
-                                font-size:.875rem;
-                                color:var(--color-text-muted);
-                            "
-                        >
-                            Mantenga actualizados los datos de contacto del cliente
-                            para facilitar futuras ventas, cotizaciones y seguimiento.
-                        </div>
+                    <div class="font-medium">
+                        Recomendación
+                    </div>
 
+                    <div
+                        class="text-sm"
+                        style="color:var(--color-text-muted);"
+                    >
+                        Mantenga actualizados los datos del cliente para facilitar la emisión de facturas, ventas y seguimiento comercial.
                     </div>
 
                 </div>
 
             </div>
 
-            <!-- BOTONES -->
+        </div>
 
-            <div class="form-actions">
+        <!-- BOTONES -->
+        <div class="form-actions">
 
-                <button
-                    type="submit"
-                    class="btn btn-primary"
-                >
+            <a href="{{ url_for('cliente.index') }}" class="btn btn-ghost">
+                Cancelar
+            </a>
 
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         class="w-4 h-4"
-                         fill="none"
-                         viewBox="0 0 24 24"
-                         stroke="currentColor">
+            <button
+            type="submit"
+            class="btn btn-primary"
+            >
 
-                        <path stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M5 13l4 4L19 7"/>
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    class="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor">
 
-                    </svg>
+                    <path stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 13l4 4L19 7"/>
 
-                    Actualizar Cliente
+                </svg>
+                Actualizar Joya
+            </button>
 
-                </button>
+        </div>
 
-                <a
-                    href="{{ url_for('cliente.index') }}"
-                    class="btn btn-secondary"
-                >
-                    Cancelar
-                </a>
-
-            </div>
-
-        </form>
-
-    </div>
+    </form>
 
 </div>
 

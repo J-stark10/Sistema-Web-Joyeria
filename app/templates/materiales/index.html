@@ -222,10 +222,15 @@
                             </a>
 
                             <a
-                                href="{{ url_for('material.eliminar', id_material=material.id_material) }}"
+                                href="#"
                                 class="btn btn-ghost btn-sm"
                                 style="color:var(--color-danger);"
-                                onclick="return confirm('¿Eliminar material {{ material.nombre_material }}?')"
+                                onclick="openConfirmModal({
+                                    title: 'Eliminar material',
+                                    message: '¿Deseas eliminar el material {{ material.nombre_material }}? Esta acción no se puede deshacer.',
+                                    confirmUrl: '{{ url_for('material.eliminar', id_material=material.id_material) }}',
+                                    type: 'danger'
+                                }); return false;"
                             >
 
                                 <svg xmlns="http://www.w3.org/2000/svg"

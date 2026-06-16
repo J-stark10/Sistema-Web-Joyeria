@@ -214,10 +214,15 @@
                         </a>
 
                         <a
-                            href="{{ url_for('categoria.eliminar', id_categoria=categoria.id_categoria) }}"
+                            href="#"
                             class="btn btn-ghost btn-sm"
                             style="color:var(--color-danger);"
-                            onclick="return confirm('¿Eliminar categoría {{ categoria.nombre_categoria }}?')"
+                            onclick="openConfirmModal({
+                                title: 'Eliminar categoría',
+                                message: '¿Deseas eliminar la categoría {{ categoria.nombre_categoria }}? Esta acción no se puede deshacer.',
+                                confirmUrl: '{{ url_for('categoria.eliminar', id_categoria=categoria.id_categoria) }}',
+                                type: 'danger'
+                            }); return false;"
                         >
 
                             <svg xmlns="http://www.w3.org/2000/svg"

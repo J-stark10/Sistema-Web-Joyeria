@@ -1,304 +1,134 @@
 {% extends "base.html" %}
 
-{% block titulo %}
-Nueva Compra
-{% endblock %}
-
-{% block page_title %}
-Nueva Compra
-{% endblock %}
-
-{% block page_sub %}
-Registrar ingreso de mercadería al inventario
-{% endblock %}
+{% block titulo %}Nueva Compra{% endblock %}
 
 {% block content %}
 
-<form method="POST">
+<form method="POST" id="compra-form">
 
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+<!-- HEADER -->
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Nueva Compra</h1>
+        <p class="page-subtitle">
+            Registro de ingreso de mercadería al inventario
+        </p>
+    </div>
+</div>
 
-        <!-- CONTENIDO PRINCIPAL -->
-        <div class="xl:col-span-2 space-y-6">
+<!-- ========================= -->
+<!-- LAYOUT STYLE SALES -->
+<!-- ========================= -->
+<div class="sales-layout">
 
-            <!-- DATOS GENERALES -->
-            <div class="card">
+    <!-- ========================= -->
+    <!-- MAIN (70%) -->
+    <!-- ========================= -->
+    <div class="sales-main">
 
-                <div class="card-header">
-                    <div>
-                        <h3 class="card-title">
-                            Información General
-                        </h3>
-                        <p class="text-sm text-muted">
-                            Seleccione el proveedor de la compra
-                        </p>
-                    </div>
+        <!-- PROVEEDOR -->
+        <div class="card mb-6">
+
+            <div class="card-header">
+                <div class="card-title">
+                    Proveedor
                 </div>
-
-                <div class="form-group">
-
-                    <label>
-                        Proveedor
-                    </label>
-
-                    <select name="id_proveedor" required>
-
-                        <option value="">
-                            Seleccione un proveedor
-                        </option>
-
-                        {% for proveedor in proveedores %}
-
-                        <option value="{{ proveedor.id_proveedor }}">
-                            {{ proveedor.nombre_razon_social }}
-                        </option>
-
-                        {% endfor %}
-
-                    </select>
-
-                </div>
-
             </div>
 
-            <!-- DETALLE -->
-            <div class="card">
+            <div class="form-group">
 
-                <div class="card-header flex items-center justify-between">
+                <label>Seleccione proveedor</label>
 
-                    <div>
+                <select name="id_proveedor"
+                        id="id_proveedor"
+                        onchange="mostrarProveedor(this)"
+                        required>
 
-                        <h3 class="card-title">
-                            Detalle de Compra
-                        </h3>
+                    <option value="">Seleccione</option>
 
-                        <p class="text-sm text-muted">
-                            Agregue las joyas adquiridas
-                        </p>
+                    {% for p in proveedores %}
 
-                    </div>
+                    <option value="{{ p.id_proveedor }}"
+                            data-nombre="{{ p.nombre_razon_social }}"
+                            data-nit="{{ p.nit }}"
+                            data-telefono="{{ p.telefono }}"
+                            data-correo="{{ p.correo }}">
 
-                    <button
-                        type="button"
-                        onclick="agregarFila()"
-                        class="btn btn-primary">
+                        {{ p.nombre_razon_social }}
 
-                        + Agregar Joya
+                    </option>
 
-                    </button>
+                    {% endfor %}
 
-                </div>
-
-                <div class="overflow-x-auto">
-
-                    <table id="tabla-detalles">
-
-                        <thead>
-
-                            <tr>
-                                <th>Joya</th>
-                                <th width="100">Stock</th>
-                                <th width="140">Costo Actual</th>
-                                <th width="100">Cantidad</th>
-                                <th width="140">Costo Compra</th>
-                                <th width="140">Subtotal</th>
-                                <th width="100">Acción</th>
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                        <tr>
-
-                            <!-- JOYA -->
-                            <td>
-
-                                <select
-                                    name="id_joya[]"
-                                    required
-                                    onchange="actualizarDatosJoya(this)"
-                                >
-
-                                    <option value="">
-                                        Seleccione
-                                    </option>
-
-                                    {% for joya in joyas %}
-
-                                    <option
-                                        value="{{ joya.id_joya }}"
-                                        data-stock="{{ joya.stock_actual }}"
-                                        data-costo="{{ joya.precio_compra }}"
-                                    >
-                                        {{ joya.codigo }} - {{ joya.nombre }}
-                                    </option>
-
-                                    {% endfor %}
-
-                                </select>
-
-                            </td>
-
-                            <!-- STOCK ACTUAL -->
-                            <td>
-
-                                <input
-                                    type="text"
-                                    class="stock-actual"
-                                    readonly
-                                    value="-"
-                                >
-
-                            </td>
-
-                            <!-- COSTO ACTUAL -->
-                            <td>
-
-                                <input
-                                    type="text"
-                                    class="ultimo-costo"
-                                    readonly
-                                    value="-"
-                                >
-
-                            </td>
-
-                            <!-- CANTIDAD -->
-                            <td>
-
-                                <input
-                                    type="number"
-                                    name="cantidad[]"
-                                    min="1"
-                                    value="1"
-                                    required
-                                    oninput="actualizarTotales()"
-                                >
-
-                            </td>
-
-                            <!-- NUEVO COSTO -->
-                            <td>
-
-                                <input
-                                    type="number"
-                                    name="precio[]"
-                                    step="0.01"
-                                    min="0.01"
-                                    required
-                                    oninput="actualizarTotales()"
-                                >
-
-                            </td>
-
-                            <!-- SUBTOTAL -->
-                            <td>
-
-                                <input
-                                    type="text"
-                                    class="subtotal"
-                                    readonly
-                                    value="0.00"
-                                >
-
-                            </td>
-
-                            <!-- ACCIONES -->
-                            <td>
-
-                                <button
-                                    type="button"
-                                    onclick="eliminarFila(this)"
-                                    class="btn btn-danger"
-                                >
-
-                                    Eliminar
-
-                                </button>
-
-                            </td>
-
-                        </tr>
-
-                        </tbody>
-
-                    </table>
-
-                </div>
+                </select>
 
             </div>
 
         </div>
 
-        <!-- RESUMEN -->
-        <div>
+        <!-- BUSCADOR -->
+        <div class="card mb-6">
 
-            <div class="card sticky top-4">
-
-                <div class="card-header">
-
-                    <h3 class="card-title">
-                        Resumen de Compra
-                    </h3>
-
+            <div class="card-header">
+                <div class="card-title">
+                    Agregar Joyas
                 </div>
+            </div>
 
-                <div class="space-y-4">
+            <div class="form-group">
 
-                    <div>
+                <label>Buscar joya</label>
 
-                        <div class="text-sm text-muted">
-                            Productos agregados
-                        </div>
+                <input type="text"
+                       id="buscar-joya"
+                       placeholder="Ej. ANI-001 o Anillo Oro"
+                       autocomplete="off">
 
-                        <div
-                            id="cantidad-productos"
-                            class="text-2xl font-bold">
+            </div>
 
-                            1
+            <div id="resultados-joyas"
+                 class="search-results"></div>
 
-                        </div>
+        </div>
 
-                    </div>
+        <!-- DETALLE -->
+        <div class="card">
 
-                    <hr>
+            <div class="card-header">
+                <h3 class="card-title">Detalle de Compra</h3>
+            </div>
 
-                    <div>
+            <div class="table-wrapper">
 
-                        <div class="text-sm text-muted">
-                            Total de la compra
-                        </div>
+                <table class="data-table">
 
-                        <div
-                            id="total-compra"
-                            class="text-3xl font-bold">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Joya</th>
+                            <th>Stock</th>
+                            <th>Costo actual</th>
+                            <th>Cant.</th>
+                            <th>Costo compra</th>
+                            <th>Subtotal</th>
+                            <th></th>
+                        </tr>
+                    </thead>
 
-                            Bs 0.00
+                    <tbody id="detalle-body">
 
-                        </div>
+                        <tr id="empty-row">
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <p>No hay productos agregados</p>
+                                    <small>Use el buscador para agregar joyas</small>
+                                </div>
+                            </td>
+                        </tr>
 
-                    </div>
+                    </tbody>
 
-                    <hr>
-
-                    <button
-                        type="submit"
-                        class="btn btn-primary w-full">
-
-                        Registrar Compra
-
-                    </button>
-
-                    <a
-                        href="{{ url_for('compra.index') }}"
-                        class="btn btn-secondary w-full">
-
-                        Cancelar
-
-                    </a>
-
-                </div>
+                </table>
 
             </div>
 
@@ -306,118 +136,323 @@ Registrar ingreso de mercadería al inventario
 
     </div>
 
+    <!-- ========================= -->
+    <!-- SIDEBAR (30%) -->
+    <!-- ========================= -->
+    <div class="sales-sidebar">
+
+        <!-- PROVEEDOR PREVIEW -->
+        <div class="card">
+
+            <div class="card-header">
+                <div class="card-title">
+                    Proveedor seleccionado
+                </div>
+            </div>
+
+            <div class="client-preview">
+
+                <div class="client-item">
+                    <div class="client-label">Nombre</div>
+                    <div id="prov-nombre">—</div>
+                </div>
+
+                <div class="client-item">
+                    <div class="client-label">NIT</div>
+                    <div id="prov-nit">—</div>
+                </div>
+
+                <div class="client-item">
+                    <div class="client-label">Teléfono</div>
+                    <div id="prov-telefono">—</div>
+                </div>
+
+                <div class="client-item">
+                    <div class="client-label">Correo</div>
+                    <div id="prov-correo">—</div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RESUMEN -->
+        <div class="card mt-4">
+            <div class="sales-summary">
+
+                <div class="sales-summary-label">
+                    Total Compra
+                </div>
+
+                <div
+                    id="total-general"
+                    class="sales-summary-total"
+                >
+                    Bs. 0.00
+                </div>
+
+                <div class="sales-summary-meta">
+
+                    <span id="cantidad-items">
+                        0
+                    </span>
+
+                    productos agregados
+
+                </div>
+
+            </div>
+
+            <div
+                style="
+                    display:flex;
+                    flex-direction:column;
+                    gap:.75rem;
+                    margin-top:1.5rem;
+                "
+            >
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                    style="
+                        width:100%;
+                        justify-content:center;
+                    "
+                >
+                    Registrar Compra
+                </button>
+
+                <a
+                    href="{{ url_for('compra.index') }}"
+                    class="btn btn-ghost"
+                    style="
+                        width:100%;
+                        justify-content:center;
+                    "
+                >
+                    Cancelar
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
 </form>
 
+{% endblock %}
+
+
+
+{% block extra_scripts %}
 <script>
 
-function actualizarTotales() {
+let joyasMap = new Map();
 
-    let total = 0;
+// =====================
+// PROVEEDOR PREVIEW
+// =====================
+function mostrarProveedor(select) {
 
-    let filas = document.querySelectorAll(
-        "#tabla-detalles tbody tr"
-    );
+    const opt = select.options[select.selectedIndex];
 
-    filas.forEach(fila => {
-
-        let cantidad = parseFloat(
-            fila.querySelector(
-                'input[name="cantidad[]"]'
-            ).value
-        ) || 0;
-
-        let precio = parseFloat(
-            fila.querySelector(
-                'input[name="precio[]"]'
-            ).value
-        ) || 0;
-
-        let subtotal = cantidad * precio;
-
-        fila.querySelector(".subtotal").value =
-            subtotal.toFixed(2);
-
-        total += subtotal;
-
-    });
-
-    document.getElementById(
-        "cantidad-productos"
-    ).innerText = filas.length;
-
-    document.getElementById(
-        "total-compra"
-    ).innerText = "Bs " + total.toFixed(2);
+    document.getElementById("prov-nombre").innerText = opt.dataset.nombre || "—";
+    document.getElementById("prov-nit").innerText = opt.dataset.nit || "—";
+    document.getElementById("prov-telefono").innerText = opt.dataset.telefono || "—";
+    document.getElementById("prov-correo").innerText = opt.dataset.correo || "—";
 }
 
-function agregarFila() {
 
-    let tabla =
-        document.querySelector(
-            "#tabla-detalles tbody"
-        );
+// =====================
+// BUSCADOR DE JOYAS
+// =====================
+const input = document.getElementById("buscar-joya");
 
-    let fila =
-        tabla.rows[0].cloneNode(true);
+let timeout = null;
 
-    fila.querySelector("select").selectedIndex = 0;
+input.addEventListener("input", async () => {
 
-    fila.querySelector('.stock-actual').value = "-";
-    fila.querySelector('.ultimo-costo').value = "-";
+    clearTimeout(timeout);
 
-    fila.querySelector('input[name="cantidad[]"]').value = 1;
-    fila.querySelector('input[name="precio[]"]').value = "";
+    timeout = setTimeout(async () => {
 
-    fila.querySelector('.subtotal').value = "0.00";
+        const q = input.value.trim();
 
-    tabla.appendChild(fila);
+        if (q.length < 2) {
+            document.getElementById("resultados-joyas").innerHTML = "";
+            return;
+        }
 
-    actualizarTotales();
+        try {
 
+            const res = await fetch(`/compras/buscar-joya?q=${encodeURIComponent(q)}`);
+            const data = await res.json();
+
+            let html = "";
+
+            data.forEach(j => {
+
+                // IMPORTANTE: seguro contra JSON roto
+                const joyaData = JSON.stringify(j).replace(/"/g, "&quot;");
+
+                html += `
+                    <div class="search-item"
+                         style="padding:.6rem; cursor:pointer; border-bottom:1px solid var(--color-border);"
+                         onclick="addJoya(${joyaData})">
+
+                        <strong>${j.codigo}</strong><br>
+                        ${j.nombre}<br>
+                        <small>Stock: ${j.stock} | Bs ${parseFloat(j.precio).toFixed(2)}</small>
+
+                    </div>
+                `;
+            });
+
+            document.getElementById("resultados-joyas").innerHTML = html;
+
+        } catch (err) {
+            console.error("Error buscador:", err);
+        }
+
+    }, 300);
+
+});
+
+
+// =====================
+// AGREGAR JOYA
+// =====================
+function addJoya(j) {
+
+    const id = String(j.id);
+
+    if (joyasMap.has(id)) return;
+
+    joyasMap.set(id, j);
+
+    // quitar empty
+    document.getElementById("empty-row")?.remove();
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+        <td>
+            <span class="badge badge-secondary">${j.codigo}</span>
+            <input type="hidden" name="id_joya[]" value="${j.id}">
+        </td>
+
+        <td style="font-weight:600;">
+            ${j.nombre}
+        </td>
+
+        <td>
+            ${j.stock}
+        </td>
+
+        <td>
+            Bs ${parseFloat(j.precio).toFixed(2)}
+        </td>
+
+        <td>
+            <input type="number"
+                   name="cantidad[]"
+                   value="1"
+                   min="1"
+                   oninput="calc()">
+        </td>
+
+        <td>
+            <input type="number"
+                   name="precio[]"
+                   value="${j.precio}"
+                   step="0.01"
+                   oninput="calc()">
+        </td>
+
+        <td class="subtotal">
+            Bs 0.00
+        </td>
+
+        <td>
+            <button type="button"
+                    class="btn btn-danger btn-sm"
+                    onclick="remove(this, ${j.id})">
+                X
+            </button>
+        </td>
+    `;
+
+    document.getElementById("detalle-body").appendChild(tr);
+
+    input.value = "";
+    document.getElementById("resultados-joyas").innerHTML = "";
+
+    calc();
 }
 
-function eliminarFila(btn) {
 
-    let tabla = document.querySelector(
-        "#tabla-detalles tbody"
-    );
+// =====================
+// ELIMINAR JOYA
+// =====================
+function remove(btn, id) {
 
-    if (tabla.rows.length === 1) {
-
-        alert(
-            "Debe existir al menos una joya."
-        );
-
-        return;
-    }
+    joyasMap.delete(String(id));
 
     btn.closest("tr").remove();
 
-    actualizarTotales();
+    // restaurar empty state
+    if (joyasMap.size === 0) {
+
+        document.getElementById("detalle-body").innerHTML = `
+            <tr id="empty-row">
+                <td colspan="8">
+                    <div class="empty-state">
+                        <p>No hay productos agregados</p>
+                        <small>Use el buscador para agregar joyas</small>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+
+    calc();
 }
 
-document.addEventListener(
-    "DOMContentLoaded",
-    actualizarTotales
-);
 
-function actualizarDatosJoya(select) {
+// =====================
+// CALCULAR TOTAL
+// =====================
+function calc() {
 
-    const option =
-        select.options[select.selectedIndex];
+    let total = 0;
 
-    const fila =
-        select.closest("tr");
+    document.querySelectorAll("#detalle-body tr").forEach(tr => {
 
-    fila.querySelector(".stock-actual").value =
-        option.dataset.stock || "-";
+        const c = tr.querySelector('input[name="cantidad[]"]');
+        const p = tr.querySelector('input[name="precio[]"]');
+        const s = tr.querySelector(".subtotal");
 
-    fila.querySelector(".ultimo-costo").value =
-        option.dataset.costo
-            ? "Bs. " + parseFloat(option.dataset.costo).toFixed(2)
-            : "-";
+        if (!c || !p || !s) return;
 
+        const sub = (parseFloat(c.value) || 0) * (parseFloat(p.value) || 0);
+
+        s.innerText = "Bs " + sub.toFixed(2);
+
+        total += sub;
+    });
+
+    document.getElementById("total-general").innerText =
+        "Bs " + total.toFixed(2);
+
+    document.getElementById("cantidad-items").innerText =
+        joyasMap.size;
 }
+
+
+// init
+document.addEventListener("DOMContentLoaded", calc);
 
 </script>
 

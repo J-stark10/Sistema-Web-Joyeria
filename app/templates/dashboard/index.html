@@ -10,13 +10,13 @@
     <p class="page-subtitle">Resumen general de Joyería El Illimani</p>
   </div>
   <div style="display:flex;gap:0.5rem;align-items:center;">
-    <button class="btn btn-ghost btn-sm">
+    <!-- <button class="btn btn-ghost btn-sm">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
       </svg>
       Exportar
-    </button>
-    <a href="#" class="btn btn-primary btn-sm">
+    </button> -->
+    <a href="{{ url_for('venta.index') }}" class="btn btn-primary">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4" />
       </svg>
@@ -25,10 +25,10 @@
   </div>
 </div>
 
-<!-- KPI Grid -->
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem;">
+<!-- KPI Grid — 5 cards, se adapta sola con auto-fit -->
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem;">
 
-  <!-- Ventas del día -->
+  <!-- 1. Ventas del día -->
   <div class="kpi-card">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;">
       <div class="kpi-icon" style="background:var(--color-primary-muted);">
@@ -36,15 +36,29 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       </div>
-      <span class="badge badge-success">+12%</span>
+      {% if ventas_dia_pct is not none %}
+        {% if ventas_dia_pct > 0 %}
+          <span class="badge badge-success">▲ {{ ventas_dia_pct }}%</span>
+        {% elif ventas_dia_pct < 0 %}
+          <span class="badge badge-danger">▼ {{ ventas_dia_pct | abs }}%</span>
+        {% else %}
+          <span class="badge badge-neutral">Sin cambio</span>
+        {% endif %}
+      {% elif ventas_ayer_cero and ventas_dia > 0 %}
+        <span class="badge badge-success">Primer día</span>
+      {% elif ventas_ayer_cero %}
+        <span class="badge badge-neutral">Sin ventas</span>
+      {% else %}
+        <span class="badge badge-neutral">Sin historial</span>
+      {% endif %}
     </div>
     <p style="font-size:1.75rem;font-weight:600;color:var(--color-text);letter-spacing:-0.03em;line-height:1;">
-      Bs {{ ventas_dia | default('0.00') }}
+      Bs {{ "%.2f"|format(ventas_dia) }}
     </p>
-    <p style="font-size:0.8125rem;color:var(--color-text-muted);margin-top:0.375rem;">Ventas de hoy</p>
+    <p style="font-size:0.8125rem;color:var(--color-text-muted);margin-top:0.375rem;">Ventas de hoy · vs ayer</p>
   </div>
 
-  <!-- Compras del mes -->
+  <!-- 2. Compras del mes -->
   <div class="kpi-card">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;">
       <div class="kpi-icon" style="background:var(--color-info-bg);">
@@ -52,15 +66,23 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
         </svg>
       </div>
-      <span class="badge badge-info">Este mes</span>
+      {% if compras_mes_pct is none %}
+        <span class="badge badge-neutral">Este mes</span>
+      {% elif compras_mes_pct > 0 %}
+        <span class="badge badge-warning">▲ {{ compras_mes_pct }}%</span>
+      {% elif compras_mes_pct < 0 %}
+        <span class="badge badge-success">▼ {{ compras_mes_pct | abs }}%</span>
+      {% else %}
+        <span class="badge badge-neutral">Sin cambio</span>
+      {% endif %}
     </div>
     <p style="font-size:1.75rem;font-weight:600;color:var(--color-text);letter-spacing:-0.03em;line-height:1;">
-      Bs {{ compras_mes | default('0.00') }}
+      Bs {{ "%.2f"|format(compras_mes) }}
     </p>
-    <p style="font-size:0.8125rem;color:var(--color-text-muted);margin-top:0.375rem;">Compras del mes</p>
+    <p style="font-size:0.8125rem;color:var(--color-text-muted);margin-top:0.375rem;">Compras del mes · vs mes anterior</p>
   </div>
 
-  <!-- Clientes -->
+  <!-- 3. Clientes -->
   <div class="kpi-card">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;">
       <div class="kpi-icon" style="background:rgba(139,92,246,0.12);">
@@ -68,15 +90,46 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
         </svg>
       </div>
-      <span class="badge badge-neutral">Total</span>
+      {% if clientes_nuevos_mes > 0 %}
+        <span class="badge badge-success">+{{ clientes_nuevos_mes }} este mes</span>
+      {% else %}
+        <span class="badge badge-neutral">Sin altas</span>
+      {% endif %}
     </div>
     <p style="font-size:1.75rem;font-weight:600;color:var(--color-text);letter-spacing:-0.03em;line-height:1;">
-      {{ total_clientes | default(0) }}
+      {{ total_clientes }}
     </p>
     <p style="font-size:0.8125rem;color:var(--color-text-muted);margin-top:0.375rem;">Clientes registrados</p>
   </div>
 
-  <!-- Stock bajo -->
+  <!-- 5. Joya más vendida del mes -->
+  <div class="kpi-card">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;">
+      <div class="kpi-icon" style="background:rgba(16,185,129,0.12);">
+        <svg xmlns="http://www.w3.org/2000/svg" style="width:20px;height:20px;color:#34d399;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3l14 9-14 9V3z" />
+        </svg>
+      </div>
+      {% if joya_top_nombre %}
+        <span class="badge badge-success">{{ joya_top_vendido }} ud{{ 's' if joya_top_vendido != 1 }}.</span>
+      {% else %}
+        <span class="badge badge-neutral">Sin ventas</span>
+      {% endif %}
+    </div>
+    {% if joya_top_nombre %}
+      <p style="font-size:1rem;font-weight:600;color:var(--color-text);letter-spacing:-0.01em;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">
+        {{ joya_top_nombre }}
+      </p>
+      <p style="font-size:0.8125rem;color:var(--color-text-muted);margin-top:0.375rem;">
+        Top ventas · <span style="font-family:monospace;font-size:0.75rem;">{{ joya_top_codigo }}</span>
+      </p>
+    {% else %}
+      <p style="font-size:1rem;font-weight:600;color:var(--color-text-muted);line-height:1.3;">—</p>
+      <p style="font-size:0.8125rem;color:var(--color-text-muted);margin-top:0.375rem;">Top ventas del mes</p>
+    {% endif %}
+  </div>
+
+  <!-- 4. Stock bajo -->
   <div class="kpi-card" style="border-color:{{ 'var(--color-danger)' if stock_bajo_count > 0 else 'var(--color-border)' }};">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;">
       <div class="kpi-icon" style="background:var(--color-warning-bg);">
@@ -84,33 +137,39 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
         </svg>
       </div>
-      {% if stock_bajo_count | default(0) > 0 %}
-        <span class="badge badge-danger">Atención</span>
+      {% if stock_bajo_count > 0 %}
+        <span class="badge badge-danger">{{ stock_bajo_count }} alerta{{ 's' if stock_bajo_count > 1 }}</span>
       {% else %}
         <span class="badge badge-success">OK</span>
       {% endif %}
     </div>
-    <p style="font-size:1.75rem;font-weight:600;color:{{ 'var(--color-warning-text)' if stock_bajo_count | default(0) > 0 else 'var(--color-text)' }};letter-spacing:-0.03em;line-height:1;">
-      {{ stock_bajo_count | default(0) }}
+    <p style="font-size:1.75rem;font-weight:600;color:{{ 'var(--color-warning-text)' if stock_bajo_count > 0 else 'var(--color-text)' }};letter-spacing:-0.03em;line-height:1;">
+      {{ stock_bajo_count }}
     </p>
     <p style="font-size:0.8125rem;color:var(--color-text-muted);margin-top:0.375rem;">Productos con stock bajo</p>
   </div>
-
 </div>
 
 <!-- Gráfico + Últimas ventas -->
 <div style="display:grid;grid-template-columns:1fr 380px;gap:1.5rem;align-items:start;">
 
-  <!-- Gráfico ventas mensuales -->
+  <!-- Gráfico ventas vs compras -->
   <div class="card" style="padding:1.5rem;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
       <div>
-        <h2 style="font-size:0.9375rem;font-weight:600;color:var(--color-text);margin:0;">Ventas mensuales</h2>
-        <p style="font-size:0.8125rem;color:var(--color-text-muted);margin:0.2rem 0 0;">Últimos 12 meses</p>
+        <h2 style="font-size:0.9375rem;font-weight:600;color:var(--color-text);margin:0;">Ventas vs Compras</h2>
+        <p style="font-size:0.8125rem;color:var(--color-text-muted);margin:0.2rem 0 0;">Evolución mensual del año actual</p>
       </div>
-      <div style="display:flex;gap:0.375rem;">
-        <button class="btn btn-ghost btn-sm" style="font-size:0.75rem;">Año</button>
-        <button class="btn btn-ghost btn-sm" style="font-size:0.75rem;background:var(--color-surface-hover);color:var(--color-text);">Mes</button>
+      <!-- Leyenda -->
+      <div style="display:flex;gap:1rem;align-items:center;">
+        <span style="display:flex;align-items:center;gap:0.35rem;font-size:0.75rem;color:var(--color-text-muted);">
+          <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--chart-ventas-bg, #d4a82a55);border:1.5px solid var(--chart-ventas, #d4a82a);"></span>
+          Ventas
+        </span>
+        <span style="display:flex;align-items:center;gap:0.35rem;font-size:0.75rem;color:var(--color-text-muted);">
+          <span style="display:inline-block;width:22px;height:2px;background:var(--chart-compras, #60a5fa);border-radius:2px;"></span>
+          Compras
+        </span>
       </div>
     </div>
     <div style="position:relative;height:260px;">
@@ -129,7 +188,7 @@
       </div>
     </div>
     <div style="padding:0.5rem 0;">
-      {% for venta in ultimas_ventas | default([]) %}
+      {% for venta in ultimas_ventas %}
         <div style="
           display:flex;align-items:center;gap:0.875rem;
           padding:0.75rem 1.5rem;
@@ -149,9 +208,15 @@
           </div>
           <div style="text-align:right;flex-shrink:0;">
             <p style="font-size:0.8125rem;font-weight:600;color:var(--color-text);margin:0;">Bs {{ "%.2f"|format(venta.total) }}</p>
-            <span class="badge {{ 'badge-success' if venta.estado == 'pagado' else 'badge-warning' }}" style="font-size:0.6875rem;">
-              {{ venta.estado | capitalize }}
-            </span>
+            {% if venta.estado == 'completada' %}
+              <span class="badge badge-success" style="font-size:0.6875rem;">Completada</span>
+            {% elif venta.estado == 'pendiente' %}
+              <span class="badge badge-warning" style="font-size:0.6875rem;">Pendiente</span>
+            {% elif venta.estado == 'cancelada' %}
+              <span class="badge badge-danger" style="font-size:0.6875rem;">Cancelada</span>
+            {% else %}
+              <span class="badge badge-neutral" style="font-size:0.6875rem;">{{ venta.estado | capitalize }}</span>
+            {% endif %}
           </div>
         </div>
       {% else %}
@@ -173,36 +238,72 @@
 {% block extra_scripts %}
 <script>
 (function () {
-  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const isDark      = document.documentElement.getAttribute('data-theme') !== 'light';
   const gridColor   = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)';
   const textColor   = isDark ? '#8a877e' : '#6b6860';
-  const accentColor = getComputedStyle(document.documentElement)
-                        .getPropertyValue('--brand-400').trim() || '#d4a82a';
 
-  const labels = {{ meses_labels | tojson | default('["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"]') }};
-  const data   = {{ ventas_mensuales | tojson | default('[0,0,0,0,0,0,0,0,0,0,0,0]') }};
+  // Colores desde CSS vars con fallbacks
+  const cs          = getComputedStyle(document.documentElement);
+  const gold        = cs.getPropertyValue('--brand-400').trim() || '#d4a82a';
+  const blue        = '#60a5fa';   // compras — azul info, neutral respecto al gold
+
+  const labels         = {{ meses_labels | tojson }};
+  const dataVentas     = {{ ventas_mensuales | tojson }};
+  const dataCompras    = {{ compras_mensuales | tojson }};
+  const mesActual      = new Date().getMonth(); // 0-based
+
+  // Barras de ventas: mes actual más vivo
+  const ventasBg     = dataVentas.map((_, i) => i === mesActual ? gold + '55' : gold + '22');
+  const ventasBorder = dataVentas.map((_, i) => i === mesActual ? gold      : gold + '88');
 
   const ctx = document.getElementById('ventasChart');
   if (!ctx) return;
 
   new Chart(ctx, {
-    type: 'bar',
     data: {
       labels,
-      datasets: [{
-        label: 'Ventas (Bs)',
-        data,
-        backgroundColor: accentColor + '22',
-        borderColor: accentColor,
-        borderWidth: 1.5,
-        borderRadius: 5,
-        borderSkipped: false,
-        hoverBackgroundColor: accentColor + '44',
-      }]
+      datasets: [
+        {
+          // Dataset 1 — Ventas (barras)
+          type: 'bar',
+          label: 'Ventas',
+          data: dataVentas,
+          backgroundColor: ventasBg,
+          borderColor: ventasBorder,
+          borderWidth: 1.5,
+          borderRadius: 5,
+          borderSkipped: false,
+          hoverBackgroundColor: gold + '66',
+          order: 2,
+          yAxisID: 'y',
+        },
+        {
+          // Dataset 2 — Compras (línea)
+          type: 'line',
+          label: 'Compras',
+          data: dataCompras,
+          borderColor: blue,
+          backgroundColor: blue + '18',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          pointBackgroundColor: blue,
+          pointBorderColor: isDark ? '#1e1d1b' : '#ffffff',
+          pointBorderWidth: 1.5,
+          fill: true,
+          tension: 0.35,
+          order: 1,
+          yAxisID: 'y',
+        }
+      ]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',       // tooltip muestra ambos datasets en el mismo hover
+        intersect: false,
+      },
       plugins: {
         legend: { display: false },
         tooltip: {
@@ -214,7 +315,13 @@
           padding: 10,
           cornerRadius: 8,
           callbacks: {
-            label: ctx => ' Bs ' + ctx.parsed.y.toFixed(2)
+            label: ctx => {
+              const prefix = ctx.dataset.label === 'Ventas' ? '▪ Ventas  ' : '▪ Compras ';
+              return prefix + 'Bs ' + ctx.parsed.y.toLocaleString('es-BO', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              });
+            }
           }
         }
       },
@@ -227,10 +334,11 @@
         y: {
           grid: { color: gridColor, drawTicks: false },
           border: { display: false },
+          beginAtZero: true,
           ticks: {
             color: textColor,
             font: { size: 12 },
-            callback: v => 'Bs ' + v.toLocaleString()
+            callback: v => 'Bs ' + v.toLocaleString('es-BO')
           }
         }
       }

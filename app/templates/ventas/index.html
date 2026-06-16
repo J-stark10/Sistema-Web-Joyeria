@@ -258,12 +258,17 @@
 
               {% if venta.estado != 'ANULADA' %}
 
-              <a
-                href="{{ url_for('venta.anular', id_venta=venta.id_venta) }}"
-                class="btn btn-ghost btn-sm"
-                style="color:var(--color-danger);"
-                onclick="return confirm('¿Desea anular esta venta?')"
-              >
+                <a
+                    href="#"
+                    class="btn btn-ghost btn-sm"
+                    style="color:var(--color-danger);"
+                    onclick="openConfirmModal({
+                        title: 'Anular venta',
+                        message: '¿Deseas anular la venta #{{ venta.id_venta }}? Esta acción no podrá revertirse.',
+                        confirmUrl: '{{ url_for('venta.anular', id_venta=venta.id_venta) }}',
+                        type: 'danger'
+                    }); return false;"
+                >
 
                 <svg xmlns="http://www.w3.org/2000/svg"
                      class="w-4 h-4"

@@ -1,4 +1,5 @@
 from app.extensions import db
+from sqlalchemy import func
 
 class Categoria(db.Model):
     __tablename__ = 'categoria'
@@ -8,10 +9,7 @@ class Categoria(db.Model):
 
     joyas = db.relationship('Joya', back_populates='categoria', lazy=True)
 
-    # ==========================
     # CRUD
-    # ==========================
-
     def save(self):
         db.session.add(self)
         db.session.commit()
@@ -19,7 +17,7 @@ class Categoria(db.Model):
     def update(self, nombre_categoria=None):
 
         if nombre_categoria is not None:
-            self.nombre_categoria = nombre_categoria
+            self.nombre_categoria = nombre_categoria.strip()
 
         db.session.commit()
 
@@ -27,10 +25,7 @@ class Categoria(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    # ==========================
     # CONSULTAS
-    # ==========================
-
     @staticmethod
     def get_all():
         return Categoria.query.order_by(Categoria.nombre_categoria).all()
@@ -41,11 +36,8 @@ class Categoria(db.Model):
 
     @staticmethod
     def get_by_nombre(nombre_categoria):
-        return Categoria.query.filter_by(nombre_categoria=nombre_categoria).first()
-
-    # ==========================
+        return Categoria.query.filter(func.lower(Categoria.nombre_categoria) == nombre_categoria.lower()).first()
+    
     # REPRESENTACIÓN
-    # ==========================
-
     def __repr__(self):
         return f'<Categoria {self.nombre_categoria}>'

@@ -1,9 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
-
 from app.modules.materiales.services import MaterialService
 
 material_bp = Blueprint('material', __name__, url_prefix='/materiales')
-
 
 @material_bp.route("/")
 def index():

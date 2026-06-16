@@ -16,59 +16,57 @@ class MaterialService:
 
         return material
 
-    # ==========================
     # CREAR
-    # ==========================
-
     @staticmethod
     def crear_material(nombre_material):
 
-        existente = Material.get_by_nombre(nombre_material.strip())
+        nombre_material = nombre_material.strip()
+
+        if not nombre_material:
+            raise ValueError("El nombre del material es obligatorio.")
+        
+        if len(nombre_material) > 100:
+            raise ValueError("El nombre del material no puede superar los 100 caracteres.")
+
+        existente = Material.get_by_nombre(nombre_material)
 
         if existente:
             raise ValueError("Ya existe un material con ese nombre.")
 
-        material = Material(
-            nombre_material=nombre_material.strip()
-        )
-
+        material = Material(nombre_material=nombre_material)
         material.save()
 
         return material
 
-    # ==========================
     # ACTUALIZAR
-    # ==========================
-
     @staticmethod
     def actualizar_material(id_material, nombre_material):
 
-        material = Material.get_by_id(id_material)
+        material = MaterialService.obtener_material(id_material)
+        nombre_material = nombre_material.strip()
 
-        if not material:
-            raise ValueError("Material no encontrado.")
+        if not nombre_material:
+            raise ValueError("El nombre del material es obligatorio.")
+        
+        if len(nombre_material) > 100:
+            raise ValueError("El nombre del material no puede superar los 100 caracteres.")
 
         existente = Material.get_by_nombre(nombre_material.strip())
 
         if existente and existente.id_material != material.id_material:
             raise ValueError("Ya existe otro material con ese nombre.")
 
-        material.update(
-            nombre_material=nombre_material.strip()
-        )
+        material.update(nombre_material=nombre_material)
 
         return material
 
-    # ==========================
     # ELIMINAR
-    # ==========================
-
     @staticmethod
     def eliminar_material(id_material):
 
-        material = Material.get_by_id(id_material)
+        material = MaterialService.obtener_material(id_material)
 
-        if not material:
-            raise ValueError("Material no encontrado.")
+        if material.joyas:
+            raise ValueError("No es posible eliminar el material porque tiene joyas asociadas.")
 
         material.delete()

@@ -11,6 +11,7 @@
     <div class="page-header">
 
         <div>
+
             <h1 class="page-title">
                 Nueva Venta
             </h1>
@@ -18,221 +19,328 @@
             <p class="page-subtitle">
                 Registre una venta de joyas y genere el detalle de productos.
             </p>
-        </div>
-
-        <div class="sales-summary-card">
-
-            <div class="sales-summary-label">
-                Total Venta
-            </div>
-
-            <div id="total-general" class="sales-summary-total">
-                Bs. 0.00
-            </div>
-
-            <div class="sales-summary-meta">
-                <span id="cantidad-items">0</span>
-                productos agregados
-            </div>
 
         </div>
 
     </div>
 
-    <!-- CLIENTE -->
+    <div class="sales-layout">
 
-    <div class="card mb-6">
+        <!-- ========================================= -->
+        <!-- IZQUIERDA -->
+        <!-- ========================================= -->
 
-        <div class="card-header">
-            <div class="card-title">
-                Información del Cliente
+        <div class="sales-main">
+
+            <!-- BUSCADOR -->
+
+            <div class="card mb-6">
+
+                <div class="card-header">
+
+                    <div class="card-title">
+                        Agregar Joyas
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Buscar por código o nombre
+                    </label>
+
+                    <div class="form-help">
+                        Busque una joya para agregarla al detalle
+                    </div>
+
+                    <input
+                        type="text"
+                        id="buscar-joya"
+                        placeholder="Ej. ANI-001 o Anillo Oro"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+                <div
+                    id="resultados-joyas"
+                    class="search-results"
+                ></div>
+
             </div>
+
+            <!-- DETALLE -->
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div class="card-title">
+                        Detalle de Venta
+                    </div>
+
+                </div>
+
+                <div class="table-wrapper">
+
+                    <table
+                        class="data-table"
+                        id="tabla-detalles"
+                    >
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Código</th>
+                                <th>Producto</th>
+                                <th>Stock</th>
+                                <th>Cantidad</th>
+                                <th>Precio</th>
+                                <th>Subtotal</th>
+                                <th></th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="detalle-body">
+
+                            <tr id="empty-row">
+
+                                <td colspan="7">
+
+                                    <div class="empty-state">
+
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                            class="empty-state-icon"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor">
+
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="1.5"
+                                                d="M12 4l7 4v8l-7 4-7-4V8l7-4z"
+                                            />
+
+                                        </svg>
+
+                                        <p
+                                            style="
+                                                font-weight:600;
+                                                margin-bottom:.25rem;
+                                            "
+                                        >
+                                            No existen productos agregados
+                                        </p>
+
+                                        <p
+                                            style="
+                                                color:var(--color-text-muted);
+                                                font-size:.875rem;
+                                            "
+                                        >
+                                            Utilice el buscador superior para agregar
+                                            joyas a la venta.
+                                        </p>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="form-group">
+        <!-- ========================================= -->
+        <!-- SIDEBAR -->
+        <!-- ========================================= -->
 
-            <label>Cliente</label>
+        <div class="sales-sidebar">
 
-            <select
-                name="id_cliente"
-                id="id_cliente"
-                onchange="mostrarCliente(this)"
-                required
-            >
+            <!-- CLIENTE -->
 
-                <option value="">
-                    Seleccione un cliente
-                </option>
+            <div class="card">
 
-                {% for cliente in clientes %}
+                <div class="card-header">
 
-                <option
-                    value="{{ cliente.id_cliente }}"
-                    data-nombre="{{ cliente.nombre }}"
-                    data-ci="{{ cliente.ci_nit }}"
-                    data-direccion="{{ cliente.direccion or '' }}"
+                    <div class="card-title">
+                        Cliente
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <select
+                        name="id_cliente"
+                        id="id_cliente"
+                        onchange="mostrarCliente(this)"
+                        required
+                    >
+
+                        <option value="">
+                            Seleccione un cliente
+                        </option>
+
+                        {% for cliente in clientes %}
+
+                        <option
+                            value="{{ cliente.id_cliente }}"
+                            data-nombre="{{ cliente.nombre }}"
+                            data-ci="{{ cliente.ci_nit }}"
+                            data-direccion="{{ cliente.direccion or '' }}"
+                        >
+
+                            {{ cliente.nombre }} - {{ cliente.ci_nit }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <div class="client-preview">
+
+                    <div class="client-item">
+
+                        <div class="client-label">
+                            Nombre
+                        </div>
+
+                        <div
+                            id="cliente-nombre"
+                            class="client-value"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+                    <div class="client-item">
+
+                        <div class="client-label">
+                            CI / NIT
+                        </div>
+
+                        <div
+                            id="cliente-ci"
+                            class="client-value"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+                    <div class="client-item">
+
+                        <div class="client-label">
+                            Dirección
+                        </div>
+
+                        <div
+                            id="cliente-direccion"
+                            class="client-value"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <hr
+                    style="
+                        margin:1rem 0;
+                        border:none;
+                        border-top:1px solid var(--color-border);
+                    "
                 >
-                    {{ cliente.nombre }} - {{ cliente.ci_nit }}
-                </option>
 
-                {% endfor %}
+                <!-- RESUMEN -->
 
-            </select>
+                <div class="sales-summary">
 
-        </div>
+                    <div class="sales-summary-label">
+                        Total Venta
+                    </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <div
+                        id="total-general"
+                        class="sales-summary-total"
+                    >
+                        Bs. 0.00
+                    </div>
 
-            <div class="preview-item">
-                <span class="preview-label">
-                    Nombre
-                </span>
+                    <div class="sales-summary-meta">
 
-                <span id="cliente-nombre" class="preview-value">
-                    —
-                </span>
+                        <span id="cantidad-items">
+                            0
+                        </span>
+
+                        productos agregados
+
+                    </div>
+
+                </div>
+
+                <div
+                    style="
+                        display:flex;
+                        flex-direction:column;
+                        gap:.75rem;
+                        margin-top:1.5rem;
+                    "
+                >
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        style="
+                            width:100%;
+                            justify-content:center;
+                        "
+                    >
+                        Registrar Venta
+                    </button>
+
+                    <a
+                        href="{{ url_for('venta.index') }}"
+                        class="btn btn-ghost"
+                        style="
+                            width:100%;
+                            justify-content:center;
+                        "
+                    >
+                        Cancelar
+                    </a>
+
+                </div>
+
             </div>
-
-            <div class="preview-item">
-                <span class="preview-label">
-                    CI / NIT
-                </span>
-
-                <span id="cliente-ci" class="preview-value">
-                    —
-                </span>
-            </div>
-
-            <div class="preview-item">
-                <span class="preview-label">
-                    Dirección
-                </span>
-
-                <span id="cliente-direccion" class="preview-value">
-                    —
-                </span>
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- BUSCADOR DE JOYAS -->
-
-    <div class="card mb-6">
-
-        <div class="card-header">
-            <div class="card-title">
-                Agregar Joyas
-            </div>
-        </div>
-
-        <div class="form-group">
-
-            <label>
-                Buscar por código o nombre
-            </label>
-
-            <input
-                type="text"
-                id="buscar-joya"
-                placeholder="Ej. ANI-001 o Anillo Oro"
-                autocomplete="off"
-            >
-
-        </div>
-
-        <div
-            id="resultados-joyas"
-            class="search-results"
-        ></div>
-
-    </div>
-
-    <!-- DETALLE -->
-
-    <div class="card">
-
-        <div class="card-header">
-            <div class="card-title">
-                Detalle de Venta
-            </div>
-        </div>
-
-        <div class="table-wrapper">
-
-            <table
-                class="data-table"
-                id="tabla-detalles"
-            >
-
-                <thead>
-
-                    <tr>
-
-                        <th>Código</th>
-                        <th>Producto</th>
-                        <th>Stock</th>
-                        <th>Cantidad</th>
-                        <th>Precio</th>
-                        <th>Subtotal</th>
-                        <th></th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </div>
-
-    <!-- FOOTER -->
-
-    <div class="sales-footer">
-
-        <div>
-
-            <div class="text-sm"
-                 style="color:var(--color-text-muted);">
-                Total de la venta
-            </div>
-
-            <div
-                id="footer-total"
-                class="sales-footer-total"
-            >
-                Bs. 0.00
-            </div>
-
-        </div>
-
-        <div class="flex gap-3">
-
-            <a
-                href="{{ url_for('venta.index') }}"
-                class="btn btn-secondary"
-            >
-                Cancelar
-            </a>
-
-            <button
-                type="submit"
-                class="btn btn-primary"
-            >
-                Registrar Venta
-            </button>
 
         </div>
 
     </div>
 
 </form>
+
+{% endblock %}
+
+{% block extra_scripts %}
 
 <script>
 
@@ -315,6 +423,10 @@ buscador.addEventListener("keyup", async () => {
 
 function agregarJoya(joya){
 
+    document
+    .getElementById("empty-row")
+    ?.remove();
+
     let tbody =
         document.querySelector("#tabla-detalles tbody");
 
@@ -388,13 +500,59 @@ function agregarJoya(joya){
     buscador.value = "";
 
     recalcular();
+    actualizarEstadoDetalle();
+    actualizarCantidadItems();
 }
 
 function eliminarFila(btn){
 
     btn.closest("tr").remove();
 
+    let tbody =
+        document.getElementById(
+            "detalle-body"
+        );
+
+    if(tbody.children.length === 0){
+
+        tbody.innerHTML = `
+
+            <tr id="empty-row">
+
+                <td colspan="7">
+
+                    <div class="empty-state">
+
+                        <p
+                            style="
+                                font-weight:600;
+                                margin-bottom:.25rem;
+                            "
+                        >
+                            No existen productos agregados
+                        </p>
+
+                        <p
+                            style="
+                                color:var(--color-text-muted);
+                                font-size:.875rem;
+                            "
+                        >
+                            Utilice el buscador superior para agregar
+                            joyas a la venta.
+                        </p>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        `;
+    }
+
     recalcular();
+    actualizarCantidadItems();
 }
 
 function recalcular(){
@@ -402,7 +560,9 @@ function recalcular(){
     let total = 0;
 
     document
-    .querySelectorAll("#tabla-detalles tbody tr")
+    .querySelectorAll(
+        "#detalle-body tr:not(#empty-row)"
+    )
     .forEach(fila => {
 
         let cantidad =
@@ -415,29 +575,64 @@ function recalcular(){
                 fila.querySelector(".precio").value
             ) || 0;
 
-        let subtotal = cantidad * precio;
+        let subtotal =
+            cantidad * precio;
 
         fila.querySelector(".subtotal").innerHTML =
             `Bs. ${subtotal.toFixed(2)}`;
 
         total += subtotal;
+
     });
 
     document.getElementById(
         "total-general"
-    ).innerHTML = `Bs. ${total.toFixed(2)}`;
+    ).innerHTML =
+        `Bs. ${total.toFixed(2)}`;
 
-    document.getElementById(
-        "footer-total"
-    ).innerHTML = `Bs. ${total.toFixed(2)}`;
+    actualizarCantidadItems();
+}
 
-    document.getElementById(
-        "cantidad-items"
-    ).innerText =
+function actualizarEstadoDetalle(){
+
+    const filas =
         document.querySelectorAll(
             "#tabla-detalles tbody tr"
         ).length;
+
+    const empty =
+        document.getElementById(
+            "empty-detalle"
+        );
+
+    if(filas > 0){
+
+        empty.style.display = "none";
+
+    }else{
+
+        empty.style.display = "block";
+
+    }
+
 }
+
+function actualizarCantidadItems(){
+
+    const filas =
+        document.querySelectorAll(
+            "#detalle-body tr:not(#empty-row)"
+        ).length;
+
+    document.getElementById(
+        "cantidad-items"
+    ).textContent = filas;
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    actualizarEstadoDetalle
+);
 
 </script>
 

@@ -212,4 +212,3 @@ function openSubmenu(id, btn) {
   submenu.classList.add('submenu-open');
   chevron && chevron.style.setProperty('transform', 'rotate(180deg)');
 }
-

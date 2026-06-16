@@ -114,11 +114,16 @@
 
             <div class="form-actions">
 
+                <a
+                    href="{{ url_for('categoria.index') }}"
+                    class="btn btn-ghost"
+                >
+                    Cancelar
+                </a>
                 <button
                     type="submit"
                     class="btn btn-primary"
                 >
-
                     <svg xmlns="http://www.w3.org/2000/svg"
                          class="w-4 h-4"
                          fill="none"
@@ -131,24 +136,11 @@
                               d="M5 13l4 4L19 7"/>
 
                     </svg>
-
                     Actualizar Categoría
-
                 </button>
-
-                <a
-                    href="{{ url_for('categoria.index') }}"
-                    class="btn btn-secondary"
-                >
-                    Cancelar
-                </a>
-
             </div>
-
         </form>
-
     </div>
-
 </div>
 
 {% endblock %}

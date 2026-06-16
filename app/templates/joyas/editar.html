@@ -207,28 +207,65 @@
             </div>
         </div>
 
-        <label
+        <div
             style="
                 display:flex;
+                justify-content:space-between;
                 align-items:center;
-                gap:.75rem;
-                cursor:pointer;
+                flex-wrap:wrap;
+                gap:1rem;
             "
         >
 
-            <input
-                type="checkbox"
-                name="activo"
-                {% if joya.activo %}
-                checked
-                {% endif %}
+            <div>
+
+                <div class="font-medium">
+
+                    {% if joya.activo %}
+                        Joya Activa
+                    {% else %}
+                        Joya Inactiva
+                    {% endif %}
+
+                </div>
+
+                <div
+                    class="text-sm"
+                    style="color:var(--color-text-muted);"
+                >
+
+                    {% if joya.activo %}
+                        La joya estará disponible para ventas e inventario.
+                    {% else %}
+                        La joya permanecerá registrada pero no estará disponible para operaciones.
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <label
+                style="
+                    display:flex;
+                    align-items:center;
+                    gap:.75rem;
+                    cursor:pointer;
+                "
             >
 
-            <span>
-                Mantener joya activa en el sistema
-            </span>
+                <input
+                    type="checkbox"
+                    name="activo"
+                    {% if joya.activo %}
+                    checked
+                    {% endif %}
+                >
 
-        </label>
+                <span>Activo</span>
+
+            </label>
+
+        </div>
 
     </div>
 
@@ -279,17 +316,15 @@
     <!-- BOTONES -->
 
     <div class="form-actions">
-
         <a
             href="{{ url_for('joya.index') }}"
-            class="btn btn-secondary"
+            class="btn btn-ghost"
         >
             Cancelar
         </a>
-
         <button
-            type="submit"
-            class="btn btn-primary"
+        type="submit"
+        class="btn btn-primary"
         >
 
             <svg xmlns="http://www.w3.org/2000/svg"
@@ -304,11 +339,8 @@
                       d="M5 13l4 4L19 7"/>
 
             </svg>
-
             Actualizar Joya
-
         </button>
-
     </div>
 
 </form>
