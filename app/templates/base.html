@@ -1,9 +1,16 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="dark">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}Joyería El Illimani{% endblock %} — Illimani</title>
+
+    <script>
+    (function () {
+        const theme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+    </script>
 
   <!-- CSS compilado -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}" />
@@ -104,6 +111,9 @@
   
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
+  <!-- Busqueda Glocal JS -->
+  <script src="{{ url_for('static', filename='js/busqueda-global.js') }}" ></script>
   
   <!-- App JS -->
   <script src="{{ url_for('static', filename='js/app.js') }}"></script>

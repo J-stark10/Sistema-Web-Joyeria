@@ -12,6 +12,7 @@ from flask import (
 from flask_login import login_required, current_user
 
 from app import db
+from app.auth.decorators import roles_required
 
 from app.modules.ventas.services import VentaService
 from app.modules.clientes.services import ClienteService
@@ -24,6 +25,7 @@ venta_bp = Blueprint("venta",__name__, url_prefix="/ventas")
 # LISTADO
 @venta_bp.route("/")
 @login_required
+@roles_required('ADMIN','VENDEDOR')
 def index():
     ventas = VentaService.listar_ventas()
 
@@ -32,6 +34,7 @@ def index():
 # CREAR VENTA
 @venta_bp.route("/crear", methods=["GET", "POST"])
 @login_required
+@roles_required('ADMIN','VENDEDOR')
 def crear():
 
     if request.method == "POST":
@@ -82,6 +85,7 @@ def crear():
 # DETALLE
 @venta_bp.route("/detalle/<int:id_venta>")
 @login_required
+@roles_required('ADMIN','VENDEDOR')
 def detalle(id_venta):
     try:
         venta = VentaService.obtener_venta(id_venta)
@@ -95,6 +99,7 @@ def detalle(id_venta):
 # ANULAR
 @venta_bp.route("/anular/<int:id_venta>")
 @login_required
+@roles_required('ADMIN','VENDEDOR')
 def anular(id_venta):
     try:
         VentaService.anular_venta(id_venta)
@@ -108,6 +113,7 @@ def anular(id_venta):
 # BUSCADOR AJAX
 @venta_bp.route("/buscar-joya")
 @login_required
+@roles_required('ADMIN','VENDEDOR')
 def buscar_joya():
 
     q = request.args.get("q","").strip()

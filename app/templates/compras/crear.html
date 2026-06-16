@@ -75,19 +75,26 @@
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group joya-search-box">
 
-                <label>Buscar joya</label>
+                <label>
+                    Buscar por código o nombre
+                </label>
+
+                <div class="form-help">
+                    Busque una joya para agregarla al detalle
+                </div>
 
                 <input type="text"
-                       id="buscar-joya"
-                       placeholder="Ej. ANI-001 o Anillo Oro"
-                       autocomplete="off">
+                    id="buscar-joya"
+                    class="joya-search-input"
+                    placeholder="Ej. ANI-001 o Anillo Oro"
+                    autocomplete="off">
+
+                <div id="resultados-joyas"
+                    class="joya-search-results"></div>
 
             </div>
-
-            <div id="resultados-joyas"
-                 class="search-results"></div>
 
         </div>
 
@@ -269,10 +276,11 @@ function mostrarProveedor(select) {
 // BUSCADOR DE JOYAS
 // =====================
 const input = document.getElementById("buscar-joya");
+const box = document.getElementById("resultados-joyas");
 
 let timeout = null;
 
-input.addEventListener("input", async () => {
+input.addEventListener("input", () => {
 
     clearTimeout(timeout);
 
@@ -281,7 +289,8 @@ input.addEventListener("input", async () => {
         const q = input.value.trim();
 
         if (q.length < 2) {
-            document.getElementById("resultados-joyas").innerHTML = "";
+            box.innerHTML = "";
+            box.classList.remove("active");
             return;
         }
 
@@ -290,35 +299,45 @@ input.addEventListener("input", async () => {
             const res = await fetch(`/compras/buscar-joya?q=${encodeURIComponent(q)}`);
             const data = await res.json();
 
+            if (!data.length) {
+                box.innerHTML = `
+                    <div class="joya-search-item">
+                        <small>No se encontraron resultados</small>
+                    </div>
+                `;
+                box.classList.add("active");
+                return;
+            }
+
             let html = "";
 
             data.forEach(j => {
 
-                // IMPORTANTE: seguro contra JSON roto
                 const joyaData = JSON.stringify(j).replace(/"/g, "&quot;");
 
                 html += `
-                    <div class="search-item"
-                         style="padding:.6rem; cursor:pointer; border-bottom:1px solid var(--color-border);"
-                         onclick="addJoya(${joyaData})">
+                    <div class="joya-search-item"
+                         onclick='addJoya(${joyaData})'>
 
-                        <strong>${j.codigo}</strong><br>
-                        ${j.nombre}<br>
-                        <small>Stock: ${j.stock} | Bs ${parseFloat(j.precio).toFixed(2)}</small>
+                        <strong>${j.codigo}</strong>
+                        <small>${j.nombre} — Stock: ${j.stock} | Bs ${parseFloat(j.precio).toFixed(2)}</small>
 
                     </div>
                 `;
             });
 
-            document.getElementById("resultados-joyas").innerHTML = html;
+            box.innerHTML = html;
+            box.classList.add("active");
 
         } catch (err) {
             console.error("Error buscador:", err);
         }
 
-    }, 300);
-
+    }, 250);
 });
+
+box.innerHTML = html;
+box.classList.add("active");
 
 
 // =====================

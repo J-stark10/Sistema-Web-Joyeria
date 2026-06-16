@@ -1,4 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask_login import login_required
+from app.auth.decorators import roles_required
 
 from app.modules.joyas.services import JoyaService
 from app.modules.categorias.models import Categoria
@@ -7,6 +9,8 @@ from app.modules.materiales.models import Material
 joya_bp = Blueprint('joya', __name__, url_prefix='/joyas')
 
 @joya_bp.route("/")
+@login_required
+@roles_required('ADMIN','VENDEDOR')
 def index():
 
     joyas = JoyaService.listar_joyas()
@@ -14,6 +18,8 @@ def index():
     return render_template("joyas/index.html", joyas=joyas)
 
 @joya_bp.route("/crear", methods=["GET", "POST"])
+@login_required
+@roles_required('ADMIN')
 def crear():
 
     categorias = Categoria.get_all()
@@ -44,6 +50,8 @@ def crear():
     )
 
 @joya_bp.route("/editar/<int:id_joya>", methods=["GET", "POST"])
+@login_required
+@roles_required('ADMIN')
 def editar(id_joya):
 
     try:
@@ -86,6 +94,8 @@ def editar(id_joya):
 
 
 @joya_bp.route("/desactivar/<int:id_joya>")
+@login_required
+@roles_required('ADMIN')
 def desactivar(id_joya):
     try:
         JoyaService.desactivar_joya(id_joya)
@@ -97,6 +107,8 @@ def desactivar(id_joya):
     return redirect(url_for("joya.index"))
 
 @joya_bp.route("/activar/<int:id_joya>")
+@login_required
+@roles_required('ADMIN')
 def activar(id_joya):
     try:
         JoyaService.activar_joya(id_joya)

@@ -1,4 +1,6 @@
 from flask import Blueprint, render_template, request, flash, send_file, redirect, url_for
+from flask_login import login_required
+from app.auth.decorators import roles_required
 
 from app.modules.reportes.services import ReporteService
 from app.modules.categorias.models import Categoria
@@ -20,6 +22,8 @@ def index():
 # ==========================
 
 @reporte_bp.route("/ventas", methods=["GET", "POST"])
+@login_required
+@roles_required('ADMIN','VENDEDOR')
 def ventas():
 
     ventas = []
@@ -56,6 +60,8 @@ def ventas():
 # ==========================
 
 @reporte_bp.route("/ventas/pdf")
+@login_required
+@roles_required('ADMIN','VENDEDOR')
 def ventas_pdf():
 
     fecha_inicio = request.args.get("fecha_inicio")
@@ -92,6 +98,8 @@ def ventas_pdf():
 # ==========================
 
 @reporte_bp.route("/inventario")
+@login_required
+@roles_required('ADMIN')
 def inventario():
 
     resultado = ReporteService.reporte_inventario()
@@ -107,6 +115,8 @@ def inventario():
 # ==========================
 
 @reporte_bp.route("/inventario/pdf")
+@login_required
+@roles_required('ADMIN')
 def inventario_pdf():
 
     resultado = ReporteService.reporte_inventario()
@@ -129,6 +139,8 @@ def inventario_pdf():
 # ==========================
 
 @reporte_bp.route("/rentabilidad", methods=["GET", "POST"])
+@login_required
+@roles_required('ADMIN')
 def rentabilidad():
 
     categorias = Categoria.get_all()
@@ -178,6 +190,8 @@ def rentabilidad():
 # ==========================
 
 @reporte_bp.route("/rentabilidad/pdf")
+@login_required
+@roles_required('ADMIN')
 def rentabilidad_pdf():
 
     fecha_inicio = request.args.get("fecha_inicio")

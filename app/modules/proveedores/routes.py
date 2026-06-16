@@ -1,16 +1,21 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask_login import login_required
+from app.auth.decorators import roles_required
 
 from app.modules.proveedores.services import ProveedorService
 
 proveedor_bp = Blueprint('proveedor', __name__, url_prefix='/proveedores')
 
-
 @proveedor_bp.route("/")
+@login_required
+@roles_required('ADMIN')
 def index():
     proveedores = ProveedorService.listar_proveedores()
     return render_template("proveedores/index.html", proveedores=proveedores)
 
 @proveedor_bp.route("/crear", methods=["GET", "POST"])
+@login_required
+@roles_required('ADMIN')
 def crear():
 
     if request.method == "POST":
@@ -29,6 +34,8 @@ def crear():
     return render_template("proveedores/crear.html")
 
 @proveedor_bp.route("/editar/<int:id_proveedor>", methods=["GET", "POST"])
+@login_required
+@roles_required('ADMIN')
 def editar(id_proveedor):
 
     try:
@@ -57,6 +64,8 @@ def editar(id_proveedor):
     return render_template("proveedores/editar.html", proveedor=proveedor)
 
 @proveedor_bp.route("/desactivar/<int:id_proveedor>")
+@login_required
+@roles_required('ADMIN')
 def desactivar(id_proveedor):
     try:
         ProveedorService.desactivar_proveedor(id_proveedor)
@@ -68,6 +77,8 @@ def desactivar(id_proveedor):
     return redirect(url_for("proveedor.index"))
 
 @proveedor_bp.route("/activar/<int:id_proveedor>")
+@login_required
+@roles_required('ADMIN')
 def activar(id_proveedor):
     try:
         ProveedorService.activar_proveedor(id_proveedor)

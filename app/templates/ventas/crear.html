@@ -44,7 +44,7 @@
 
                 </div>
 
-                <div class="form-group">
+                <div class="form-group joya-search-box">
 
                     <label>
                         Buscar por código o nombre
@@ -54,19 +54,16 @@
                         Busque una joya para agregarla al detalle
                     </div>
 
-                    <input
-                        type="text"
+                    <input type="text"
                         id="buscar-joya"
+                        class="joya-search-input"
                         placeholder="Ej. ANI-001 o Anillo Oro"
-                        autocomplete="off"
-                    >
+                        autocomplete="off">
+
+                    <div id="resultados-joyas"
+                        class="joya-search-results"></div>
 
                 </div>
-
-                <div
-                    id="resultados-joyas"
-                    class="search-results"
-                ></div>
 
             </div>
 
@@ -360,66 +357,71 @@ function mostrarCliente(select){
         option.dataset.direccion || "—";
 }
 
-const buscador = document.getElementById("buscar-joya");
+// =====================
+// BUSCADOR VENTAS (REUTILIZA ESTILOS JOYAS)
+// =====================
 
-buscador.addEventListener("keyup", async () => {
+const input = document.getElementById("buscar-joya");
+const box = document.getElementById("resultados-joyas");
 
-    let texto = buscador.value.trim();
+let timeout = null;
 
-    if(texto.length < 2){
+input.addEventListener("input", () => {
 
-        document.getElementById("resultados-joyas").innerHTML = "";
-        return;
-    }
+    clearTimeout(timeout);
 
-    const response =
-        await fetch(`/ventas/buscar-joya?q=${texto}`);
+    timeout = setTimeout(async () => {
 
-    const joyas = await response.json();
+        const q = input.value.trim();
 
-    let html = "";
+        if (q.length < 2) {
+            box.innerHTML = "";
+            box.classList.remove("active");
+            return;
+        }
 
-    joyas.forEach(j => {
+        try {
 
-        html += `
+            const res = await fetch(`/ventas/buscar-joya?q=${encodeURIComponent(q)}`);
+            const data = await res.json();
 
-            <div
-                class="search-item"
-                onclick='agregarJoya(
-                    ${JSON.stringify(j)}
-                )'
-            >
+            let html = "";
 
-                <div>
-
-                    <strong>${j.codigo}</strong>
-
-                    <div>
-                        ${j.nombre}
+            if (!data.length) {
+                html = `
+                    <div class="joya-search-item">
+                        <small>No se encontraron resultados</small>
                     </div>
+                `;
+            } else {
 
-                </div>
+                data.forEach(j => {
 
-                <div>
+                    const joyaData = JSON.stringify(j).replace(/"/g, "&quot;");
 
-                    Stock: ${j.stock}
+                    html += `
+                        <div class="joya-search-item"
+                             onclick='agregarJoya(${joyaData})'>
 
-                    <br>
+                            <strong>${j.codigo}</strong>
+                            <small>${j.nombre} — Stock: ${j.stock} | Bs ${parseFloat(j.precio).toFixed(2)}</small>
 
-                    Bs. ${j.precio}
+                        </div>
+                    `;
+                });
+            }
 
-                </div>
+            box.innerHTML = html;
+            box.classList.add("active");
 
-            </div>
+        } catch (err) {
+            console.error("Error buscador:", err);
+        }
 
-        `;
-    });
-
-    document.getElementById(
-        "resultados-joyas"
-    ).innerHTML = html;
-
+    }, 250);
 });
+
+
 
 function agregarJoya(joya){
 
@@ -497,7 +499,7 @@ function agregarJoya(joya){
         "resultados-joyas"
     ).innerHTML = "";
 
-    buscador.value = "";
+    input.value = "";
 
     recalcular();
     actualizarEstadoDetalle();

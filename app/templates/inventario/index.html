@@ -193,7 +193,7 @@
 
             <tbody>
 
-                {% for ajuste in ajustes %}
+                {% for ajuste in ajustes|sort(attribute='id_ajuste', reverse=True) %}
 
                 <tr
                     data-joya="{{ ajuste.joya.nombre|lower }}"
@@ -350,7 +350,7 @@ document.addEventListener('DOMContentLoaded', function () {
     pgInventario = new Paginator({
         tableId:     'tabla-inventario',
         paginatorId: 'pg-inventario',
-        pageSize:    10,
+        pageSize:    6,
     });
 });
 

@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
-from flask_login import current_user
+from flask_login import current_user, login_required
+from app.auth.decorators import roles_required
 
 from app.modules.compras.services import CompraService
 from app.modules.proveedores.models import Proveedor
@@ -8,11 +9,15 @@ from app.modules.joyas.models import Joya
 compra_bp = Blueprint('compra', __name__, url_prefix='/compras')
 
 @compra_bp.route("/")
+@login_required
+@roles_required('ADMIN')
 def index():
     compras = CompraService.listar_compras()
     return render_template("compras/index.html", compras=compras)
 
 @compra_bp.route("/crear", methods=["GET", "POST"])
+@login_required
+@roles_required('ADMIN')
 def crear():
     proveedores = Proveedor.get_all()
     joyas = Joya.get_activos()
@@ -52,6 +57,8 @@ def crear():
     )
 
 @compra_bp.route("/detalle/<int:id_compra>")
+@login_required
+@roles_required('ADMIN')
 def detalle(id_compra):
     try:
         compra = CompraService.obtener_compra(id_compra)
@@ -66,6 +73,8 @@ def detalle(id_compra):
     )
 
 @compra_bp.route("/anular/<int:id_compra>")
+@login_required
+@roles_required('ADMIN')
 def anular(id_compra):
     try:
         CompraService.anular_compra(id_compra)
@@ -81,6 +90,8 @@ from flask import jsonify
 from sqlalchemy import or_
 
 @compra_bp.route("/buscar-joya")
+@login_required
+@roles_required('ADMIN')
 def buscar_joya():
 
     q = request.args.get("q", "").strip()

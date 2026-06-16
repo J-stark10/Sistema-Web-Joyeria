@@ -36,23 +36,23 @@
   <!-- ── Centro: búsqueda global ── -->
   <div class="flex-1 flex items-center px-4 lg:px-6">
     <div class="search-bar" style="max-width:360px;">
-      <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;color:var(--color-text-muted);flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+      
+      <svg xmlns="http://www.w3.org/2000/svg"
+          style="width:15px;height:15px;color:var(--color-text-muted);flex-shrink:0;"
+          fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
       </svg>
+
       <input
         type="text"
-        placeholder="Buscar joyas, clientes, ventas…"
-        style="min-width:0;"
-      />
-      <kbd style="
-        font-size:0.6875rem;
-        color:var(--color-text-subtle);
-        border:1px solid var(--color-border);
-        border-radius:4px;
-        padding:1px 5px;
-        font-family:var(--font-mono);
-        white-space:nowrap;
-      ">⌘K</kbd>
+        id="global-search"
+        placeholder="Buscar joyas, clientes..."
+        autocomplete="off"
+      >
+
+      <div id="search-results" class="search-results"></div>
+
     </div>
   </div>
 
@@ -106,36 +106,45 @@
         onmouseleave="this.style.background='transparent'; this.style.borderColor='transparent';"
         title="Mi cuenta"
       >
-        <!-- Avatar -->
-        {% if current_user.foto_perfil %}
-          <img
-            src="{{ url_for('static', filename='img/avatars/' + current_user.foto_perfil) }}"
-            alt="{{ current_user.nombre }}"
-            class="avatar"
-            style="width:30px;height:30px;"
-          />
-        {% else %}
-          <div class="avatar-initials" style="width:30px;height:30px;font-size:0.6875rem;">
-            {{ current_user.nombre_usuario[:2].upper() if current_user.nombre_usuario else 'US' }}
-          </div>
-        {% endif %}
 
-        <!-- Info usuario (oculto en sidebar colapsado no aplica aquí) -->
+      <!-- Avatar -->
+      {% if current_user.foto_perfil %}
+      <img
+      src="{{ url_for('static', filename='img/avatars/' + current_user.foto_perfil) }}"
+      alt="{{ current_user.nombre_usuario }}"
+      class="avatar"
+      style="width:30px;height:30px;"
+      />
+      {% else %}
+      <div class="avatar-initials" style="width:30px;height:30px;font-size:0.6875rem;">
+        {{ current_user.nombre_usuario[:2].upper() if current_user.nombre_usuario else 'US' }}
+      </div>
+      {% endif %}
+      
+      <div class="user-info">
+          <div class="user-name">
+              {{ current_user.nombre_usuario }}
+          </div>
+
+          <div class="user-role">
+              {{ 'ADMINISTRADOR' if current_user.rol == 'ADMIN' else current_user.rol }}
+          </div>
+      </div>
+      <!-- Info usuario (oculto en sidebar colapsado no aplica aquí) -->
         <div style="text-align:left;min-width:0;line-height:1.25;" class="hidden sm:block">
           <p style="font-size:0.8125rem;font-weight:500;color:var(--color-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;">
             {{ current_user.nombre_usuario | truncate(16, True, '') if current_user.nombre_usuario else 'Usuario' }}
           </p>
           <p style="font-size:0.6875rem;color:var(--color-text-muted);white-space:nowrap;">
-            {% if current_user.rol == 'admin' %}
+            {% if current_user.rol == 'ADMIN' %}
               <span style="color:var(--color-primary);">● </span>Administrador
-            {% elif current_user.rol == 'vendedor' %}
+            {% elif current_user.rol == 'VENDEDOR' %}
               <span style="color:var(--color-success);">● </span>Vendedor
             {% else %}
               <span style="color:var(--color-info);">● </span>{{ current_user.rol | capitalize }}
             {% endif %}
           </p>
         </div>
-
         <!-- Chevron -->
         <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;color:var(--color-text-muted);flex-shrink:0;transition:transform var(--transition);" id="user-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />

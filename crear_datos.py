@@ -1,4 +1,6 @@
 from decimal import Decimal
+from datetime import datetime, timedelta
+import random
 
 from app import create_app, db
 from app.modules.categorias.models import Categoria
@@ -13,6 +15,28 @@ from app.modules.ventas.models import Venta, DetalleVenta
 
 
 app = create_app("development")
+
+
+MESES_HISTORICOS = 12
+
+CLIENTES_PESOS = [25,20,15,10,8,7,5,5,5]
+PROVEEDORES_PESOS = [25,20,15,10,10,8,6,6]
+
+def hora_realista():
+    return random.randint(8, 20)
+
+def generar_fecha_mes_atras(meses_atras):
+    hoy = datetime.now()
+    mes = hoy.month - meses_atras
+    anio = hoy.year
+    while mes <= 0:
+        mes += 12
+        anio -= 1
+    if mes == 12:
+        ultimo = (datetime(anio + 1, 1, 1) - timedelta(days=1)).day
+    else:
+        ultimo = (datetime(anio, mes + 1, 1) - timedelta(days=1)).day
+    return datetime(anio, mes, random.randint(1, ultimo), hora_realista(), random.randint(0,59), random.randint(0,59))
 
 CATEGORIAS = [
     "Anillos",
@@ -245,63 +269,78 @@ def existe_ajuste_semilla(joya, data):
     ).first() is not None
 
 
+
+def variar_precio(precio, porcentaje=0.05):
+    factor = random.uniform(1 - porcentaje, 1 + porcentaje)
+    return decimal_centavos(float(precio) * factor)
+
 def crear_compras(usuario):
     creadas = 0
-    for data in COMPRAS:
-        proveedor = Proveedor.get_by_nit(data["proveedor_nit"])
-        if existe_compra_semilla(proveedor, data["detalles"]):
-            continue
+    proveedores = Proveedor.query.all()
+    joyas = Joya.query.all()
 
-        compra = Compra(id_proveedor=proveedor.id_proveedor, id_usuario=usuario.id_usuario, total_compra=Decimal("0.00"), estado="COMPLETADA")
-        db.session.add(compra)
-        db.session.flush()
+    for mes in range(MESES_HISTORICOS, 0, -1):
+        for _ in range(random.randint(3, 6)):
+            proveedor = random.choices(proveedores, weights=PROVEEDORES_PESOS[:len(proveedores)], k=1)[0]
+            compra = Compra(
+                id_proveedor=proveedor.id_proveedor,
+                id_usuario=usuario.id_usuario,
+                total_compra=Decimal("0.00"),
+                estado="COMPLETADA",
+                fecha_compra=generar_fecha_mes_atras(mes)
+            )
+            db.session.add(compra)
+            db.session.flush()
 
-        total = Decimal("0.00")
-        for item in data["detalles"]:
-            joya = Joya.get_by_codigo(item["codigo_joya"])
-            cantidad = int(item["cantidad"])
-            precio = decimal_centavos(item["precio_unit_compra"])
-            subtotal = precio * cantidad
-            total += subtotal
-            db.session.add(DetalleCompra(id_compra=compra.id_compra, id_joya=joya.id_joya, cantidad=cantidad, precio_unit_compra=precio, subtotal=subtotal))
-            joya.stock_actual += cantidad
-            joya.precio_compra = precio
-
-        compra.total_compra = total
-        creadas += 1
+            total = Decimal("0.00")
+            for joya in random.sample(joyas, random.randint(1,3)):
+                cantidad = random.randint(2,10)
+                precio = variar_precio(joya.precio_compra)
+                subtotal = precio * cantidad
+                total += subtotal
+                db.session.add(DetalleCompra(id_compra=compra.id_compra,id_joya=joya.id_joya,cantidad=cantidad,precio_unit_compra=precio,subtotal=subtotal))
+                joya.stock_actual += cantidad
+            compra.total_compra = total
+            creadas += 1
     db.session.commit()
     return creadas
-
 
 def crear_ventas(usuario):
     creadas = 0
-    for data in VENTAS:
-        cliente = Cliente.get_by_ci_nit(data["cliente_ci_nit"])
-        if existe_venta_semilla(cliente, data["detalles"]):
-            continue
+    clientes = Cliente.query.all()
+    joyas = Joya.query.all()
 
-        venta = Venta(id_usuario=usuario.id_usuario, id_cliente=cliente.id_cliente, total_venta=Decimal("0.00"), estado="COMPLETADA")
-        db.session.add(venta)
-        db.session.flush()
+    for mes in range(MESES_HISTORICOS, 0, -1):
+        for _ in range(random.randint(5,10)):
+            cliente = random.choices(clientes, weights=CLIENTES_PESOS[:len(clientes)], k=1)[0]
+            venta = Venta(
+                id_usuario=usuario.id_usuario,
+                id_cliente=cliente.id_cliente,
+                total_venta=Decimal("0.00"),
+                estado="COMPLETADA",
+                fecha_venta=generar_fecha_mes_atras(mes)
+            )
+            db.session.add(venta)
+            db.session.flush()
 
-        total = Decimal("0.00")
-        for item in data["detalles"]:
-            joya = Joya.get_by_codigo(item["codigo_joya"])
-            cantidad = int(item["cantidad"])
-            precio = decimal_centavos(item["precio_unit_venta"])
-            subtotal = precio * cantidad
-            if joya.stock_actual < cantidad:
-                raise ValueError(f"Stock insuficiente para {joya.codigo} - {joya.nombre}")
+            total = Decimal("0.00")
+            candidatas = [j for j in joyas if j.stock_actual > j.stock_minimo]
+            if not candidatas:
+                continue
 
-            total += subtotal
-            db.session.add(DetalleVenta(id_venta=venta.id_venta, id_joya=joya.id_joya, cantidad=cantidad, precio_unit_venta=precio, subtotal=subtotal))
-            joya.stock_actual -= cantidad
+            for joya in random.sample(candidatas, min(len(candidatas), random.randint(1,3))):
+                max_vender = max(1, joya.stock_actual - joya.stock_minimo)
+                cantidad = random.randint(1, min(3, max_vender))
+                precio = variar_precio(joya.precio_venta)
+                subtotal = precio * cantidad
+                total += subtotal
+                db.session.add(DetalleVenta(id_venta=venta.id_venta,id_joya=joya.id_joya,cantidad=cantidad,precio_unit_venta=precio,subtotal=subtotal))
+                joya.stock_actual -= cantidad
 
-        venta.total_venta = total
-        creadas += 1
+            venta.total_venta = total
+            creadas += 1
     db.session.commit()
     return creadas
-
 
 def crear_ajustes_inventario(usuario):
     creados = 0
