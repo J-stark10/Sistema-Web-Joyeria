@@ -25,30 +25,32 @@ from reportlab.graphics import renderPDF
 
 
 # ──────────────────────────────────────────────
-#  PALETA  —  Joyería El Illimani
+#  PALETA  —  Joyería El Illimani (Estilo Formal: Azul Marino, Slate, Gris)
 # ──────────────────────────────────────────────
-BRAND_400   = colors.HexColor("#d4a82a")   # dorado principal
-BRAND_100   = colors.HexColor("#faf3d0")   # dorado muy claro
-BRAND_900   = colors.HexColor("#3d2804")   # dorado muy oscuro
+BRAND_400   = colors.HexColor("#1e3a8a")   # azul marino principal
+BRAND_100   = colors.HexColor("#eff6ff")   # azul muy claro
+BRAND_900   = colors.HexColor("#1e293b")   # pizarra oscuro
 
 SLATE_0     = colors.HexColor("#ffffff")
-SLATE_50    = colors.HexColor("#f5f4f1")
-SLATE_100   = colors.HexColor("#eae9e4")
-SLATE_200   = colors.HexColor("#d4d2cb")
-SLATE_500   = colors.HexColor("#6b6860")
-SLATE_700   = colors.HexColor("#3a3935")
-SLATE_900   = colors.HexColor("#161512")
+SLATE_50    = colors.HexColor("#f8fafc")
+SLATE_100   = colors.HexColor("#f1f5f9")
+SLATE_200   = colors.HexColor("#e2e8f0")
+SLATE_500   = colors.HexColor("#64748b")
+SLATE_700   = colors.HexColor("#334155")
+SLATE_900   = colors.HexColor("#0f172a")
 
-GREEN_500   = colors.HexColor("#1f6b3a")   # verde sobrio (positivo)
-GREEN_100   = colors.HexColor("#dcfce7")
-GREEN_900   = colors.HexColor("#052e16")
+# Colores formales de estado (sin usar verde ni amarillo/ámbar)
+STATE_INFO_BG   = colors.HexColor("#f1f5f9") # Fondo neutral
+STATE_INFO_TXT  = colors.HexColor("#475569") # Texto neutral oscuro (para valores normales/positivos)
 
 RED_500     = colors.HexColor("#9f3a3a")   # rojo sobrio (alerta)
 RED_100     = colors.HexColor("#fee2e2")
 RED_900     = colors.HexColor("#450a0a")
 
-AMBER_500   = colors.HexColor("#a8761a")   # ámbar sobrio
-AMBER_100   = colors.HexColor("#fef3c7")
+# Reemplazo de ámbar/amarillo por azul/pizarra formal
+AMBER_500   = colors.HexColor("#475569")   # Gris pizarra formal
+AMBER_100   = colors.HexColor("#f1f5f9")
+
 
 
 # ──────────────────────────────────────────────
@@ -111,7 +113,7 @@ def _estilos():
             "titulo",
             fontName=FONT_TITLE,
             fontSize=21,
-            textColor=SLATE_900,
+            textColor=INK_900,
             spaceAfter=2,
             leading=24,
         ),
@@ -151,7 +153,7 @@ def _estilos():
             "section_title",
             fontName=FONT_BOLD,
             fontSize=8,
-            textColor=SLATE_500,
+            textColor=SLATE_0,
             spaceAfter=4,
             leading=12,
         ),
@@ -165,7 +167,7 @@ def _estilos():
             "total_value",
             fontName=FONT_BOLD,
             fontSize=13,
-            textColor=SLATE_900,
+            textColor=BRAND_900,
             alignment=TA_RIGHT,
             wordWrap="CJK",
         ),
@@ -180,7 +182,7 @@ def _estilos():
             "cell_main",
             fontName=FONT_BOLD,
             fontSize=8,
-            textColor=SLATE_900,
+            textColor=INK_900,
             leading=11,
         ),
         "cell_sub": ParagraphStyle(
@@ -224,14 +226,14 @@ def _estilos():
             "kpi_value",
             fontName=FONT_TITLE,
             fontSize=14,
-            textColor=SLATE_900,
+            textColor=INK_900,
             leading=17,
         ),
         "kpi_value_green": ParagraphStyle(
             "kpi_value_green",
             fontName=FONT_TITLE,
             fontSize=14,
-            textColor=colors.HexColor("#1f6b3a"),
+            textColor=BRAND_400,
             leading=17,
         ),
         "kpi_value_red": ParagraphStyle(
@@ -274,15 +276,17 @@ class _NumberedCanvas(pdf_canvas.Canvas):
     def _draw_footer(self, total_pages):
         W, H = letter
         self.saveState()
-        self.setFillColor(SLATE_200)
-        self.rect(0, 0, W, 8 * mm, fill=1, stroke=0)
-        self.setFillColor(SLATE_500)
+        self.setFillColor(INK_900)
+        self.rect(0, 0, W, 9 * mm, fill=1, stroke=0)
+        self.setFillColor(BRAND_400)
+        self.rect(0, 8.6 * mm, W, 0.4 * mm, fill=1, stroke=0)
+        self.setFillColor(colors.HexColor("#d7dde4"))
         self.setFont(FONT_REGULAR, 7)
         self.drawCentredString(
             W / 2,
-            3 * mm,
-            f"Sistema de Gestión — Joyería El Illimani  ·  "
-            f"Documento generado automáticamente  ·  "
+            3.2 * mm,
+            f"Sistema de Gestion - Joyeria El Illimani  ·  "
+            f"Documento generado automaticamente  ·  "
             f"Página {self._pageNumber} de {total_pages}"
         )
         self.restoreState()
@@ -292,14 +296,15 @@ class _NumberedCanvas(pdf_canvas.Canvas):
 #  PLANTILLA DE PÁGINA (cabecera + watermark)
 # ──────────────────────────────────────────────
 def _page_template(canvas, doc):
-    """Barra dorada superior y marca de agua sutil. El pie de página
+    """Barra superior formal y marca de agua sutil. El pie de página
     se dibuja por _NumberedCanvas para poder calcular el total."""
     canvas.saveState()
     W, H = letter
 
-    # barra dorada superior
+    canvas.setFillColor(INK_900)
+    canvas.rect(0, H - 12 * mm, W, 12 * mm, fill=1, stroke=0)
     canvas.setFillColor(BRAND_400)
-    canvas.rect(0, H - 4 * mm, W, 4 * mm, fill=1, stroke=0)
+    canvas.rect(0, H - 12 * mm, W, 1.2 * mm, fill=1, stroke=0)
 
     # marca de agua sutil con el logo (si existe)
     if os.path.exists(_LOGO_PATH):
@@ -327,7 +332,7 @@ def _page_template(canvas, doc):
 #  BLOQUE DE ENCABEZADO
 # ──────────────────────────────────────────────
 def _logo_flowable():
-    """Devuelve el logo real si existe; si no, un placeholder dorado con sigla."""
+    """Devuelve el logo real si existe; si no, un sello formal con sigla."""
     if os.path.exists(_LOGO_PATH):
         try:
             img = Image(_LOGO_PATH, width=24 * mm, height=24 * mm)
@@ -336,15 +341,15 @@ def _logo_flowable():
         except Exception:
             pass
 
-    logo_drawing = Drawing(28 * mm, 14 * mm)
-    logo_drawing.add(Rect(0, 0, 28 * mm, 14 * mm, fillColor=BRAND_100, strokeColor=BRAND_400, strokeWidth=0.8))
-    logo_drawing.add(String(14 * mm, 4.5 * mm, "EI", fontName=FONT_BOLD, fontSize=13,
-                             fillColor=BRAND_900, textAnchor="middle"))
+    logo_drawing = Drawing(28 * mm, 18 * mm)
+    logo_drawing.add(Rect(0, 0, 28 * mm, 18 * mm, fillColor=INK_900, strokeColor=BRAND_400, strokeWidth=1))
+    logo_drawing.add(String(14 * mm, 6.2 * mm, "EI", fontName=FONT_BOLD, fontSize=13,
+                             fillColor=BRAND_400, textAnchor="middle"))
     return logo_drawing
 
 
 def _periodo_chip(elementos, texto, estilos):
-    """Pequeño 'badge' dorado con el período/filtro del reporte."""
+    """Pequeño badge con el período/filtro del reporte."""
     data = [[Paragraph(texto, estilos["chip"])]]
     t = Table(data, colWidths=[None])
     t.setStyle(TableStyle([
@@ -354,7 +359,7 @@ def _periodo_chip(elementos, texto, estilos):
         ("LEFTPADDING",   (0, 0), (-1, -1), 8),
         ("RIGHTPADDING",  (0, 0), (-1, -1), 8),
         ("ROUNDEDCORNERS", [6]),
-        ("BOX",           (0, 0), (-1, -1), 0.5, BRAND_400),
+        ("BOX",           (0, 0), (-1, -1), 0.6, colors.HexColor("#dfc28c")),
     ]))
     return t
 
@@ -398,8 +403,8 @@ def _header_block(elementos, titulo_texto, subtitulo_texto, meta_pairs, estilos,
     ]))
 
     elementos.append(header_table)
-    elementos.append(Spacer(1, 3 * mm))
-    elementos.append(HRFlowable(width="100%", thickness=1.2, color=BRAND_400, spaceAfter=4 * mm))
+    elementos.append(Spacer(1, 4 * mm))
+    elementos.append(HRFlowable(width="100%", thickness=1.4, color=BRAND_400, spaceAfter=4 * mm))
 
 
 # ──────────────────────────────────────────────
@@ -419,6 +424,11 @@ def _kpi_cards(elementos, items, estilos):
 
     cards = []
     for label, value, color in items:
+        accent = {
+            "default": BRAND_400,
+            "green": STATE_INFO_TXT,
+            "red": RED_500,
+        }.get(color, BRAND_400)
         card_data = [
             [Paragraph(label.upper(), estilos["kpi_label"])],
             [Paragraph(value, style_map.get(color, estilos["kpi_value"]))],
@@ -426,12 +436,12 @@ def _kpi_cards(elementos, items, estilos):
         card = Table(card_data, colWidths=[(182 / max(len(items), 1)) * mm - 3])
         card.setStyle(TableStyle([
             ("BACKGROUND",    (0, 0), (-1, -1), SLATE_50),
-            ("BOX",           (0, 0), (-1, -1), 0.6, SLATE_100),
+            ("BOX",           (0, 0), (-1, -1), 0.6, SLATE_200),
+            ("LINEABOVE",     (0, 0), (-1, 0), 2.2, accent),
             ("TOPPADDING",    (0, 0), (-1, -1), 8),
             ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
             ("LEFTPADDING",   (0, 0), (-1, -1), 10),
             ("RIGHTPADDING",  (0, 0), (-1, -1), 10),
-            ("LINEABOVE",     (0, 1), (-1, 1), 0, SLATE_50),
             ("ROUNDEDCORNERS", [4]),
         ]))
         cards.append(card)
@@ -470,12 +480,13 @@ def _total_block(elementos, label, value, estilos):
         ("ALIGN",        (0, 0), (0, 0), "LEFT"),
         ("ALIGN",        (1, 0), (1, 0), "RIGHT"),
         ("VALIGN",       (0, 0), (-1, -1), "MIDDLE"),
-        ("BACKGROUND",   (0, 0), (-1, -1), SLATE_50),
+        ("BACKGROUND",   (0, 0), (-1, -1), BRAND_100),
         ("TOPPADDING",   (0, 0), (-1, -1), 7),
         ("BOTTOMPADDING",(0, 0), (-1, -1), 7),
         ("LEFTPADDING",  (0, 0), (-1, -1), 10),
         ("RIGHTPADDING", (0, 0), (-1, -1), 10),
-        ("LINEABOVE",    (0, 0), (-1, 0), 1.2, BRAND_400),
+        ("LINEABOVE",    (0, 0), (-1, 0), 1.8, BRAND_400),
+        ("BOX",          (0, 0), (-1, -1), 0.5, colors.HexColor("#dfc28c")),
         ("ROUNDEDCORNERS", [4]),
     ]))
     elementos.append(Spacer(1, 4 * mm))
@@ -755,8 +766,8 @@ def _estilo_tabla_base(n_rows):
     """Estilo base compartido por ventas y rentabilidad."""
     style = [
         # encabezado
-        ("BACKGROUND",    (0, 0), (-1, 0), SLATE_100),
-        ("TEXTCOLOR",     (0, 0), (-1, 0), SLATE_500),
+        ("BACKGROUND",    (0, 0), (-1, 0), INK_800),
+        ("TEXTCOLOR",     (0, 0), (-1, 0), SLATE_0),
         ("FONTNAME",      (0, 0), (-1, 0), FONT_BOLD),
         ("FONTSIZE",      (0, 0), (-1, 0), 7.5),
         ("BOTTOMPADDING", (0, 0), (-1, 0), 6),
@@ -771,8 +782,8 @@ def _estilo_tabla_base(n_rows):
         ("LEFTPADDING",   (0, 0), (-1, -1), 7),
         ("RIGHTPADDING",  (0, 0), (-1, -1), 7),
         ("VALIGN",        (0, 0), (-1, -1), "MIDDLE"),
-        ("ROWBACKGROUNDS",(0, 1), (-1, -1), [SLATE_0, SLATE_50]),
-        ("LINEBELOW",     (0, 1), (-1, -1), 0.4, SLATE_100),
+        ("ROWBACKGROUNDS",(0, 1), (-1, -1), [SLATE_0, colors.HexColor("#fbfcfd")]),
+        ("LINEBELOW",     (0, 1), (-1, -1), 0.35, SLATE_200),
     ]
     return TableStyle(style)
 
@@ -780,8 +791,8 @@ def _estilo_tabla_base(n_rows):
 def _estilo_tabla_inventario(n_rows, joyas):
     """Estilo para inventario, resalta filas con stock bajo."""
     base = [
-        ("BACKGROUND",    (0, 0), (-1, 0), SLATE_100),
-        ("TEXTCOLOR",     (0, 0), (-1, 0), SLATE_500),
+        ("BACKGROUND",    (0, 0), (-1, 0), INK_800),
+        ("TEXTCOLOR",     (0, 0), (-1, 0), SLATE_0),
         ("FONTNAME",      (0, 0), (-1, 0), FONT_BOLD),
         ("FONTSIZE",      (0, 0), (-1, 0), 7.5),
         ("BOTTOMPADDING", (0, 0), (-1, 0), 6),
@@ -795,7 +806,7 @@ def _estilo_tabla_inventario(n_rows, joyas):
         ("LEFTPADDING",   (0, 0), (-1, -1), 7),
         ("RIGHTPADDING",  (0, 0), (-1, -1), 7),
         ("VALIGN",        (0, 0), (-1, -1), "MIDDLE"),
-        ("LINEBELOW",     (0, 1), (-1, -1), 0.4, SLATE_100),
+        ("LINEBELOW",     (0, 1), (-1, -1), 0.35, SLATE_200),
         ("ALIGN",         (4, 0), (4, -1), "CENTER"),
         ("ALIGN",         (5, 0), (6, -1), "RIGHT"),
     ]
@@ -806,7 +817,7 @@ def _estilo_tabla_inventario(n_rows, joyas):
         if joya.stock_actual <= joya.stock_minimo:
             base.append(("BACKGROUND", (0, row), (-1, row), RED_100))
         elif row % 2 == 0:
-            base.append(("BACKGROUND", (0, row), (-1, row), SLATE_50))
+            base.append(("BACKGROUND", (0, row), (-1, row), colors.HexColor("#fbfcfd")))
         else:
             base.append(("BACKGROUND", (0, row), (-1, row), SLATE_0))
 
@@ -818,7 +829,7 @@ def _seccion_alertas(joyas_bajas, estilos):
     bloque = []
 
     # título sección
-    titulo_data = [[Paragraph("⚠  Alertas de stock mínimo", ParagraphStyle(
+    titulo_data = [[Paragraph("ALERTAS DE STOCK MINIMO", ParagraphStyle(
         "alert_title",
         fontName=FONT_BOLD,
         fontSize=9,
@@ -830,7 +841,8 @@ def _seccion_alertas(joyas_bajas, estilos):
         ("TOPPADDING",    (0, 0), (-1, -1), 6),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
         ("LEFTPADDING",   (0, 0), (-1, -1), 10),
-        ("LINEBELOW",     (0, 0), (-1, 0), 1, RED_500),
+        ("LINEBELOW",     (0, 0), (-1, 0), 1.2, RED_500),
+        ("BOX",           (0, 0), (-1, -1), 0.4, colors.HexColor("#e5b9b9")),
     ]))
     bloque.append(titulo_t)
     bloque.append(Spacer(1, 2 * mm))
@@ -864,8 +876,9 @@ def _seccion_alertas(joyas_bajas, estilos):
     col_w = [20 * mm, 82 * mm, 28 * mm, 28 * mm, 24 * mm]
     t = Table(data, colWidths=col_w)
     t.setStyle(TableStyle([
-        ("BACKGROUND",    (0, 0), (-1, 0), SLATE_100),
-        ("LINEBELOW",     (0, 0), (-1, 0), 0.8, SLATE_200),
+        ("BACKGROUND",    (0, 0), (-1, 0), INK_800),
+        ("TEXTCOLOR",     (0, 0), (-1, 0), SLATE_0),
+        ("LINEBELOW",     (0, 0), (-1, 0), 0.8, BRAND_400),
         ("FONTNAME",      (0, 0), (-1, 0), FONT_BOLD),
         ("FONTSIZE",      (0, 0), (-1, 0), 7.5),
         ("TOPPADDING",    (0, 0), (-1, -1), 5),
@@ -873,8 +886,8 @@ def _seccion_alertas(joyas_bajas, estilos):
         ("LEFTPADDING",   (0, 0), (-1, -1), 7),
         ("RIGHTPADDING",  (0, 0), (-1, -1), 7),
         ("VALIGN",        (0, 0), (-1, -1), "MIDDLE"),
-        ("ROWBACKGROUNDS",(0, 1), (-1, -1), [SLATE_0, SLATE_50]),
-        ("LINEBELOW",     (0, 1), (-1, -1), 0.3, SLATE_100),
+        ("ROWBACKGROUNDS",(0, 1), (-1, -1), [SLATE_0, colors.HexColor("#fbfcfd")]),
+        ("LINEBELOW",     (0, 1), (-1, -1), 0.3, SLATE_200),
         ("ALIGN",         (2, 0), (4, -1), "RIGHT"),
     ]))
     bloque.append(t)

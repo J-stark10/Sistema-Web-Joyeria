@@ -223,6 +223,7 @@
 
                     data-estado="{{ 'activo' if joya.activo else 'inactivo' }}"
                     data-stock="{{ 'bajo' if joya.stock_bajo else 'normal' }}"
+                    data-page-row
 
                 >
 
@@ -451,6 +452,9 @@
 
     </div>
 
+    <!-- Paginación -->
+    <div id="pg-joyas" class="pagination-wrapper"></div>
+
 </div>
 
 {% endblock %}
@@ -458,6 +462,16 @@
 {% block extra_scripts %}
 
 <script>
+
+let pgJoyas;
+
+document.addEventListener('DOMContentLoaded', function () {
+    pgJoyas = new Paginator({
+        tableId:     'tabla-joyas',
+        paginatorId: 'pg-joyas',
+        pageSize:    10,
+    });
+});
 
 function filtrarJoyas() {
 
@@ -475,7 +489,7 @@ function filtrarJoyas() {
         .value;
 
     document.querySelectorAll(
-        '#tabla-joyas tbody tr[data-busqueda]'
+        '#tabla-joyas tbody tr[data-page-row]'
     ).forEach(function(row){
 
         const coincideTexto =
@@ -499,6 +513,8 @@ function filtrarJoyas() {
             : 'none';
 
     });
+
+    if (pgJoyas) pgJoyas.refresh();
 
 }
 

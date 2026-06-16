@@ -198,6 +198,7 @@
                 <tr
                     data-joya="{{ ajuste.joya.nombre|lower }}"
                     data-tipo="{{ ajuste.tipo_ajuste }}"
+                    data-page-row
                 >
 
                     <td style="white-space:nowrap;">
@@ -332,6 +333,9 @@
 
     </div>
 
+    <!-- Paginación -->
+    <div id="pg-inventario" class="pagination-wrapper"></div>
+
 </div>
 
 {% endblock %}
@@ -339,6 +343,16 @@
 {% block extra_scripts %}
 
 <script>
+
+let pgInventario;
+
+document.addEventListener('DOMContentLoaded', function () {
+    pgInventario = new Paginator({
+        tableId:     'tabla-inventario',
+        paginatorId: 'pg-inventario',
+        pageSize:    10,
+    });
+});
 
 function filtrarInventario() {
 
@@ -352,7 +366,7 @@ function filtrarInventario() {
         .value;
 
     document.querySelectorAll(
-        '#tabla-inventario tbody tr[data-joya]'
+        '#tabla-inventario tbody tr[data-page-row]'
     ).forEach(function(row){
 
         const matchJoya =
@@ -368,6 +382,7 @@ function filtrarInventario() {
 
     });
 
+    if (pgInventario) pgInventario.refresh();
 }
 
 </script>

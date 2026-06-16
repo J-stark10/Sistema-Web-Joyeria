@@ -143,6 +143,7 @@
           {{ venta.usuario.nombre_usuario }}
           "
           data-estado="{{ venta.estado }}"
+          data-page-row
         >
 
           <!-- Venta -->
@@ -334,6 +335,9 @@
 
   </div>
 
+  <!-- Paginación -->
+  <div id="pg-ventas" class="pagination-wrapper"></div>
+
 </div>
 
 {% endblock %}
@@ -341,6 +345,16 @@
 
 {% block extra_scripts %}
 <script>
+
+let pgVentas;
+
+document.addEventListener('DOMContentLoaded', function () {
+    pgVentas = new Paginator({
+        tableId:     'tabla-ventas',
+        paginatorId: 'pg-ventas',
+        pageSize:    10,
+    });
+});
 
 function filtrarTabla() {
 
@@ -354,7 +368,7 @@ function filtrarTabla() {
         .value;
 
     document.querySelectorAll(
-        '#tabla-ventas tbody tr[data-busqueda]'
+        '#tabla-ventas tbody tr[data-page-row]'
     ).forEach(function(row) {
 
         const coincideTexto =
@@ -369,6 +383,7 @@ function filtrarTabla() {
             : 'none';
     });
 
+    if (pgVentas) pgVentas.refresh();
 }
 
 </script>

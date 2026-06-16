@@ -77,6 +77,7 @@
         <tr
           data-nombre="{{ (cliente.nombre ~ ' ' ~ cliente.ci_nit) | lower }}"
           data-estado="{{ 'activo' if cliente.activo else 'inactivo' }}"
+          data-page-row
         >
           <!-- Cliente -->
           <td>
@@ -178,6 +179,9 @@
     </table>
   </div>
 
+  <!-- Paginación -->
+  <div id="pg-clientes" class="pagination-wrapper"></div>
+
 </div>
 
 {% endblock %}
@@ -185,15 +189,28 @@
 
 {% block extra_scripts %}
 <script>
+
+let pgClientes;
+
+document.addEventListener('DOMContentLoaded', function () {
+  pgClientes = new Paginator({
+    tableId:     'tabla-clientes',
+    paginatorId: 'pg-clientes',
+    pageSize:    10,
+  });
+});
+
 function filtrarTabla() {
   const nombre = document.getElementById('filtro-nombre').value.toLowerCase();
   const estado = document.getElementById('filtro-estado').value;
 
-  document.querySelectorAll('#tabla-clientes tbody tr[data-nombre]').forEach(function(row) {
+  document.querySelectorAll('#tabla-clientes tbody tr[data-page-row]').forEach(function(row) {
     const matchNombre = row.dataset.nombre.includes(nombre);
     const matchEstado = !estado || row.dataset.estado === estado;
     row.style.display = (matchNombre && matchEstado) ? '' : 'none';
   });
+
+  if (pgClientes) pgClientes.refresh();
 }
 </script>
 {% endblock %}

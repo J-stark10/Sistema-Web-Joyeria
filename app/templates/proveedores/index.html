@@ -180,6 +180,7 @@
                 "
 
                 data-estado="{{ 'activo' if proveedor.activo else 'inactivo' }}"
+                data-page-row
 
             >
 
@@ -390,12 +391,26 @@
 
 </div>
 
+<!-- Paginación -->
+<div id="pg-proveedores" class="pagination-wrapper"></div>
+
 
 {% endblock %}
+
 
 {% block extra_scripts %}
 
 <script>
+
+let pgProveedores;
+
+document.addEventListener('DOMContentLoaded', function () {
+    pgProveedores = new Paginator({
+        tableId:     'tabla-proveedores',
+        paginatorId: 'pg-proveedores',
+        pageSize:    10,
+    });
+});
 
 function filtrarProveedores() {
 
@@ -409,7 +424,7 @@ function filtrarProveedores() {
         .value;
 
     document.querySelectorAll(
-        '#tabla-proveedores tbody tr[data-proveedor]'
+        '#tabla-proveedores tbody tr[data-page-row]'
     ).forEach(function(row) {
 
         const coincideTexto =
@@ -428,6 +443,8 @@ function filtrarProveedores() {
             : 'none';
 
     });
+
+    if (pgProveedores) pgProveedores.refresh();
 
 }
 
