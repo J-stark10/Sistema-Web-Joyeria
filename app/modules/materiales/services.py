@@ -1,4 +1,5 @@
 from app.modules.materiales.models import Material
+from app.modules.joyas.models import Joya
 
 class MaterialService:
 
@@ -70,3 +71,12 @@ class MaterialService:
             raise ValueError("No es posible eliminar el material porque tiene joyas asociadas.")
 
         material.delete()
+
+    @staticmethod
+    def contar_materiales_en_uso():
+        return (
+            Material.query
+            .join(Joya)
+            .distinct()
+            .count()
+        )

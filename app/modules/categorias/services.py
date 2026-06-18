@@ -1,4 +1,5 @@
 from app.modules.categorias.models import Categoria
+from app.modules.joyas.models import Joya
 
 class CategoriaService:
 
@@ -69,3 +70,12 @@ class CategoriaService:
             raise ValueError("No es posible eliminar la categoría porque tiene joyas asociadas.")
 
         categoria.delete()
+
+    @staticmethod
+    def contar_categorias_en_uso():
+        return (
+            Categoria.query
+            .join(Joya)
+            .distinct()
+            .count()
+        )

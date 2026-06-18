@@ -10,7 +10,8 @@ categoria_bp = Blueprint('categoria', __name__, url_prefix='/categorias')
 @roles_required('ADMIN')
 def index():
     categorias = CategoriaService.listar_categorias()
-    return render_template("categorias/index.html", categorias=categorias)
+    categorias_en_uso = CategoriaService.contar_categorias_en_uso()
+    return render_template("categorias/index.html", categorias=categorias, categorias_en_uso=categorias_en_uso)
 
 @categoria_bp.route("/crear", methods=["GET", "POST"])
 @login_required

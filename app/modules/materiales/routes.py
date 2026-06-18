@@ -10,7 +10,8 @@ material_bp = Blueprint('material', __name__, url_prefix='/materiales')
 @roles_required('ADMIN')
 def index():
     materiales = MaterialService.listar_materiales()
-    return render_template("materiales/index.html", materiales=materiales)
+    materiales_en_uso = MaterialService.contar_materiales_en_uso()
+    return render_template("materiales/index.html", materiales=materiales, materiales_en_uso=materiales_en_uso)
 
 @material_bp.route("/crear", methods=["GET", "POST"])
 @login_required
