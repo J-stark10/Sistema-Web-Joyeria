@@ -99,6 +99,27 @@
         >
       </div>
 
+      <div class="flex flex-wrap gap-3">
+        Desde:
+        <div>
+          <input
+              type="date"
+              id="fecha-desde"
+              onchange="filtrarTabla()"
+          >
+        </div>
+
+        Hasta:
+        <div>
+          <input
+              type="date"
+              id="fecha-hasta"
+              onchange="filtrarTabla()"
+          >
+        </div>
+
+      </div>
+
       <select
         id="filtro-estado"
         style="max-width:220px;"
@@ -143,6 +164,7 @@
           {{ venta.usuario.nombre_usuario }}
           "
           data-estado="{{ venta.estado }}"
+          data-fecha="{{ venta.fecha_venta.strftime('%Y-%m-%d') }}"
           data-page-row
         >
 
@@ -199,7 +221,7 @@
           <td>
 
             <span style="color:var(--color-text-muted);font-size:0.8125rem;">
-              {{ venta.fecha_venta }}
+              {{ venta.fecha_venta.strftime('%d/%m/%Y %H:%M') }}
             </span>
 
           </td>
@@ -367,6 +389,14 @@ function filtrarTabla() {
         document.getElementById('filtro-estado')
         .value;
 
+    const fechaDesde =
+        document.getElementById('fecha-desde')
+        .value;
+
+    const fechaHasta =
+        document.getElementById('fecha-hasta')
+        .value;
+
     document.querySelectorAll(
         '#tabla-ventas tbody tr[data-page-row]'
     ).forEach(function(row) {
@@ -377,8 +407,19 @@ function filtrarTabla() {
         const coincideEstado =
             !estado || row.dataset.estado === estado;
 
+        const rowFecha =
+            row.dataset.fecha;
+
+        const coincideFechaDesde =
+            !fechaDesde ||
+            rowFecha >= fechaDesde;
+
+        const coincideFechaHasta =
+            !fechaHasta ||
+            rowFecha <= fechaHasta;
+
         row.style.display =
-            coincideTexto && coincideEstado
+            coincideTexto && coincideEstado && coincideFechaDesde && coincideFechaHasta
             ? ''
             : 'none';
     });

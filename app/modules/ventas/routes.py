@@ -138,3 +138,20 @@ def buscar_joya():
         }
         for joya in joyas
     ])
+
+@venta_bp.route("/factura/<int:id_venta>")
+@login_required
+@roles_required('ADMIN','VENDEDOR')
+def factura(id_venta):
+
+    try:
+        venta = VentaService.obtener_venta(id_venta)
+
+    except ValueError as e:
+        flash(str(e), "danger")
+        return redirect(url_for("venta.index"))
+
+    return render_template(
+        "ventas/factura.html",
+        venta=venta
+    )

@@ -116,6 +116,26 @@
           <td>
             <div class="flex items-center gap-2">
 
+              <a
+                  href="{{ url_for('cliente.historial', id_cliente=cliente.id_cliente) }}"
+                  class="btn btn-info btn-sm"
+              >
+                  <svg xmlns="http://www.w3.org/2000/svg"
+                      class="w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor">
+
+                      <path stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="1.5"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+
+                  </svg>
+
+                  Historial
+              </a>
+
               <a href="{{ url_for('cliente.editar', id_cliente=cliente.id_cliente) }}"
                  class="btn btn-ghost btn-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
