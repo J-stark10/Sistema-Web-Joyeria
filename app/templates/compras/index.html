@@ -143,6 +143,27 @@
 
             </div>
 
+            <div class="flex flex-wrap gap-3">
+                Desde:
+                <div>
+                <input
+                    type="date"
+                    id="fecha-desde"
+                    onchange="filtrarCompras()"
+                >
+                </div>
+
+                Hasta:
+                <div>
+                <input
+                    type="date"
+                    id="fecha-hasta"
+                    onchange="filtrarCompras()"
+                >
+                </div>
+
+            </div>
+
             <select
                 id="filtro-estado"
                 style="max-width:220px;"
@@ -203,8 +224,8 @@
                         {{ compra.proveedor.nombre_razon_social }}
                         {{ compra.usuario.nombre_usuario }}
                     "
-
                     data-estado="{{ compra.estado }}"
+                    data-fecha="{{ compra.fecha_compra.strftime('%Y-%m-%d') }}"
                     data-page-row
 
                 >
@@ -453,6 +474,14 @@ function filtrarCompras() {
         document.getElementById('filtro-estado')
         .value;
 
+    const fechaDesde =
+        document.getElementById('fecha-desde')
+        .value;
+
+    const fechaHasta =
+        document.getElementById('fecha-hasta')
+        .value;
+
     document.querySelectorAll(
         '#tabla-compras tbody tr[data-page-row]'
     ).forEach(function(row) {
@@ -466,9 +495,20 @@ function filtrarCompras() {
             !estado ||
             row.dataset.estado === estado;
 
+        const rowFecha =
+            row.dataset.fecha;
+
+        const coincideFechaDesde =
+            !fechaDesde ||
+            rowFecha >= fechaDesde;
+
+        const coincideFechaHasta =
+            !fechaHasta ||
+            rowFecha <= fechaHasta;
+
         row.style.display =
             coincideTexto &&
-            coincideEstado
+            coincideEstado && coincideFechaDesde && coincideFechaHasta
             ? ''
             : 'none';
 

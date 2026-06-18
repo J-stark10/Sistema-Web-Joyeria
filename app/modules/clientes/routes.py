@@ -87,3 +87,23 @@ def activar(id_cliente):
         flash(str(e), "danger")
 
     return redirect(url_for("cliente.index"))
+
+@cliente_bp.route("/historial/<int:id_cliente>")
+@login_required
+@roles_required('ADMIN','VENDEDOR')
+def historial(id_cliente):
+
+    cliente = ClienteService.obtener_cliente(id_cliente)
+
+    ventas = sorted(
+        cliente.ventas,
+        key=lambda v: v.fecha_venta,
+        reverse=True
+    )
+
+    return render_template(
+        "clientes/historial.html",
+        cliente=cliente,
+        ventas=ventas
+    )
+

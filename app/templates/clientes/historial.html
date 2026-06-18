@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+
+{% block titulo %}Historial del Cliente{% endblock %}
+
+{% block content %}
+
+<div>
+
+    <!-- Header -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h1 class="page-title">
+                Historial de Compras
+            </h1>
+
+            <p class="page-subtitle">
+                Compras realizadas por {{ cliente.nombre }}
+            </p>
+
+        </div>
+
+        <div>
+
+            <a
+                href="{{ url_for('cliente.index') }}"
+                class="btn btn-ghost"
+            >
+
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 19l-7-7 7-7"
+                    />
+                </svg>
+
+                Volver
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Datos cliente -->
+
+    <div class="card mb-6">
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+            <div>
+                <div class="text-xs text-muted">
+                    Cliente
+                </div>
+
+                <div class="font-semibold">
+                    {{ cliente.nombre }}
+                </div>
+            </div>
+
+            <div>
+                <div class="text-xs text-muted">
+                    CI / NIT
+                </div>
+
+                <div>
+                    {{ cliente.ci_nit }}
+                </div>
+            </div>
+
+            <div>
+                <div class="text-xs text-muted">
+                    Teléfono
+                </div>
+
+                <div>
+                    {{ cliente.telefono or '-' }}
+                </div>
+            </div>
+
+            <div>
+                <div class="text-xs text-muted">
+                    Dirección
+                </div>
+
+                <div>
+                    {{ cliente.direccion or '-' }}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- KPIs -->
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+
+        <div class="kpi-card">
+
+            <div class="text-3xl font-semibold">
+                {{ ventas|length }}
+            </div>
+
+            <div
+                class="text-sm mt-1"
+                style="color:var(--color-text-muted);"
+            >
+                Total compras
+            </div>
+
+        </div>
+
+        <div class="kpi-card">
+
+            <div
+                class="text-3xl font-semibold"
+                style="color:var(--color-success);"
+            >
+                Bs.
+                {{
+                    (
+                        ventas
+                        | selectattr('estado','equalto','COMPLETADA')
+                        | map(attribute='total_venta')
+                        | sum
+                    )|round(2)
+                }}
+            </div>
+
+            <div
+                class="text-sm mt-1"
+                style="color:var(--color-text-muted);"
+            >
+                Monto comprado
+            </div>
+
+        </div>
+
+        <div class="kpi-card">
+
+            <div
+                class="text-3xl font-semibold"
+                style="color:var(--color-warning);"
+            >
+
+            {% if ventas %}
+                {{ ventas[0].fecha_venta.strftime('%d/%m/%Y') }}
+            {% else %}
+                -
+            {% endif %}
+
+            </div>
+
+            <div
+                class="text-sm mt-1"
+                style="color:var(--color-text-muted);"
+            >
+                Última compra
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Tabla -->
+
+    <div class="table-wrapper">
+
+        <table class="data-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Venta</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for venta in ventas|sort(attribute='id_venta', reverse=True) %}
+
+                <tr>
+
+                    <td>
+
+                        <span class="font-medium">
+                            #{{ venta.id_venta }}
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        {{ venta.fecha_venta.strftime('%d/%m/%Y %H:%M') }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="font-semibold">
+
+                            Bs.
+                            {{ "%.2f"|format(venta.total_venta) }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        {% if venta.estado == 'COMPLETADA' %}
+
+                            <span class="badge badge-success">
+                                Completada
+                            </span>
+
+                        {% elif venta.estado == 'ANULADA' %}
+
+                            <span class="badge badge-danger">
+                                Anulada
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge badge-warning">
+                                {{ venta.estado }}
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        <a
+                            href="{{ url_for('venta.detalle', id_venta=venta.id_venta) }}"
+                            class="btn btn-ghost btn-sm"
+                        >
+                            Ver detalle
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="5">
+
+                        <div class="empty-state">
+
+                            <p
+                                style="
+                                    font-weight:500;
+                                    margin-bottom:0.25rem;
+                                "
+                            >
+                                El cliente no tiene compras registradas
+                            </p>
+
+                            <p
+                                style="
+                                    font-size:0.875rem;
+                                "
+                            >
+                                Aún no existen ventas asociadas a este cliente.
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

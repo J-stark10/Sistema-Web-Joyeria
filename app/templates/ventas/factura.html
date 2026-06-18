@@ -1,0 +1,408 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+Factura
+{% endblock %}
+
+{% block content %}
+
+<div id="factura-print" class="card" style="max-width:1000px;margin:0 auto;">
+
+    <!-- ENCABEZADO -->
+
+    <div
+        style="
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-start;
+            gap:2rem;
+            border-bottom:1px solid var(--color-border);
+            padding-bottom:1.5rem;
+            margin-bottom:1.5rem;
+        "
+    >
+
+        <div>
+
+            <h1
+                style="
+                    font-size:2rem;
+                    font-weight:800;
+                    margin-bottom:.5rem;
+                "
+            >
+                JOYERÍA EL ILLIMANI
+            </h1>
+
+            <div style="color:var(--color-text-muted);">
+                Sistema de Ventas
+            </div>
+
+        </div>
+
+        <div style="text-align:right;">
+
+            <div
+                style="
+                    font-size:1.5rem;
+                    font-weight:700;
+                    margin-bottom:.5rem;
+                "
+            >
+                FACTURA
+            </div>
+
+            <div>
+                N° Venta:
+                <strong>#{{ venta.id_venta }}</strong>
+            </div>
+
+            <div>
+                Fecha:
+                <strong>
+                    {{ venta.fecha_venta.strftime('%d/%m/%Y %H:%M') }}
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- CLIENTE Y VENTA -->
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+        <div>
+
+            <div
+                style="
+                    font-weight:700;
+                    margin-bottom:.75rem;
+                "
+            >
+                DATOS DEL CLIENTE
+            </div>
+
+            <div class="card">
+
+                <div>
+                    <strong>Nombre:</strong>
+                    {{ venta.cliente.nombre if venta.cliente else 'Cliente General' }}
+                </div>
+
+                <div>
+                    <strong>CI / NIT:</strong>
+                    {{ venta.cliente.ci_nit if venta.cliente else '-' }}
+                </div>
+
+                <div>
+                    <strong>Dirección:</strong>
+                    {{ venta.cliente.direccion if venta.cliente and venta.cliente.direccion else 'Sin registro' }}
+                </div>
+
+                <div>
+                    <strong>Teléfono:</strong>
+                    {{ venta.cliente.telefono if venta.cliente and venta.cliente.telefono else 'Sin registro' }}
+                </div>
+
+            </div>
+
+        </div>
+
+        <div>
+
+            <div
+                style="
+                    font-weight:700;
+                    margin-bottom:.75rem;
+                "
+            >
+                DATOS DE LA VENTA
+            </div>
+
+            <div class="card">
+
+                <div>
+                    <strong>Vendedor:</strong>
+                    {{ venta.usuario.nombre_usuario }}
+                </div>
+
+                <div>
+                    <strong>Estado:</strong>
+
+                    {% if venta.estado == 'COMPLETADA' %}
+                        <span class="badge badge-success">
+                            COMPLETADA
+                        </span>
+                    {% else %}
+                        <span class="badge badge-danger">
+                            ANULADA
+                        </span>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- DETALLE -->
+
+    <div class="table-wrapper mb-6">
+
+        <table class="data-table">
+
+            <thead>
+
+                <tr>
+                    <th>#</th>
+                    <th>Código</th>
+                    <th>Descripción</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unit.</th>
+                    <th>Subtotal</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for d in venta.detalles %}
+
+                <tr>
+
+                    <td>{{ loop.index }}</td>
+
+                    <td>{{ d.joya.codigo }}</td>
+
+                    <td>{{ d.joya.nombre }}</td>
+
+                    <td>{{ d.cantidad }}</td>
+
+                    <td>
+                        Bs. {{ "%.2f"|format(d.precio_unit_venta) }}
+                    </td>
+
+                    <td style="font-weight:700;">
+                        Bs. {{ "%.2f"|format(d.subtotal) }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- TOTAL -->
+
+    <div
+        style="
+            display:flex;
+            justify-content:flex-end;
+            margin-bottom:2rem;
+        "
+    >
+
+        <div
+            style="
+                min-width:300px;
+                border:1px solid var(--color-border);
+                border-radius:12px;
+                padding:1rem;
+            "
+        >
+
+            <div
+                style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                "
+            >
+
+                <span style="font-size:1rem;">
+                    Total:
+                </span>
+
+                <strong
+                    style="
+                        font-size:1.7rem;
+                        color:var(--color-success);
+                    "
+                >
+                    Bs. {{ "%.2f"|format(venta.total_venta) }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SELLO -->
+
+    <div
+        style="
+            margin-top:3rem;
+            display:flex;
+            justify-content:flex-end;
+        "
+    >
+
+        <div
+            style="
+                width:220px;
+                text-align:center;
+                padding-top:1rem;
+                border-top:1px solid #999;
+            "
+        >
+
+            SELLO DE LA EMPRESA
+
+        </div>
+
+    </div>
+
+    <!-- PIE -->
+
+    <div
+        style="
+            text-align:center;
+            color:var(--color-text-muted);
+            font-size:.875rem;
+            border-top:1px solid var(--color-border);
+            padding-top:1rem;
+            margin-top:2rem;
+        "
+    >
+
+        Gracias por su compra.
+
+    </div>
+
+    <!-- BOTONES -->
+
+    <div
+        id="acciones-factura"
+        style="
+            display:flex;
+            justify-content:flex-end;
+            gap:.75rem;
+            margin-top:2rem;
+        "
+    >
+
+        <button
+            type="button"
+            onclick="window.print()"
+            class="btn btn-info"
+        >
+            Imprimir
+        </button>
+
+        <a
+            href="{{ url_for('venta.detalle', id_venta=venta.id_venta) }}"
+            class="btn btn-ghost"
+        >
+            Volver
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_styles %}
+<style>
+
+@media print {
+
+    @page {
+        size: A4;
+        margin: 15mm;
+    }
+
+    body {
+        background: #fff !important;
+    }
+
+    body * {
+        visibility: hidden;
+    }
+
+    #factura-print,
+    #factura-print * {
+        visibility: visible;
+    }
+
+    #factura-print {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        background: #fff;
+        color: #000;
+    }
+
+    #acciones-factura {
+        display: none !important;
+    }
+
+    .badge {
+        background: transparent !important;
+        color: #000 !important;
+        border: 1px solid #000 !important;
+    }
+
+    .card {
+        box-shadow: none !important;
+        border: none !important;
+        background: #fff !important;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        border: 1px solid #000 !important;
+        color: #000 !important;
+        padding: 8px;
+    }
+
+    thead th {
+        background: #f2f2f2 !important;
+        font-weight: 700;
+    }
+
+    h1,
+    h2,
+    h3,
+    strong,
+    span,
+    div,
+    p {
+        color: #000 !important;
+    }
+
+    a {
+        text-decoration: none !important;
+    }
+}
+
+</style>
+{% endblock %}
